@@ -1,5 +1,10 @@
 # Metric LP Detective
 
+A functional browser MVP is available. See [viewing and hosting instructions](docs/VISUAL_MVP.md).
+With Node 24+, run `npm ci --ignore-scripts` then `npm run dev`; open the address
+printed by Next.js and choose **Try the verified sample**. No RPC key is needed
+for this fixed indexed demo. Nothing has been publicly deployed.
+
 New independent, read-only investigation of Metric CRCLB/USDT on BNB Chain.
 The [build specification](Metric_LP_Detective_Codex_Build_Spec.md) is the contract.
 Standing autonomous Git instructions are in [AGENTS.md](AGENTS.md); milestones,
@@ -14,8 +19,9 @@ separately verified and explicitly labelled.
 Verified pool: `0xdC2b2F96bC1eb01E7286C688d5354e081AF188C4`, chain 56.
 Actual deployment/add/swap receipts, two public LP candidates and exact per-bin
 allocations are saved. The bounded position inventory is reconstructed and matches
-historical withdrawal-contract execution with zero difference. No dashboard,
-wallet connection, historical price series or earnings/PnL claims exist.
+historical withdrawal-contract execution with zero difference. The visual MVP replays that verified inventory without wallet connection or trading.
+Reference-marked endpoint performance is explicitly labelled; execution-price
+coverage remains partial.
 
 - [Protocol audit](docs/PROTOCOL_AUDIT.md): deployed identity/source match,
   accounting semantics, candidates and unresolved Stage 1 questions.
@@ -41,7 +47,7 @@ npm run scan:credentials
 npm run check
 ```
 
-47 tests and typecheck passed. Validate the real attribution fixture offline:
+54 tests, five production-browser tests and typechecking pass. Validate the real attribution fixture offline:
 
 ```sh
 npm run verify:fixture

@@ -20,6 +20,10 @@ you. These instructions persist across future Codex tasks.
   and a partial removal. Stage 1B quote/performance coverage remains separately
   labelled; never infer full verification from partial trace coverage. Consult
   the latest validation reports before extending these claims.
+- The visual MVP is authorized and implemented. Consult docs/VISUAL_MVP.md.
+  Only the reconciled sample may claim verified replay; other positions are
+  indexed-only. Never import research RPC transport into the browser. Stage 1B
+  stays PARTIAL, with a default 50-request, one-worker recovery budget.
 
 ## Git and validation
 
@@ -33,6 +37,9 @@ you. These instructions persist across future Codex tasks.
   Use `npm run check` for the automated commands. Reconcile generated fixture
   changes and inspect the staged diff; scan the exact index with
   `npm run scan:credentials -- --staged` immediately before committing/pushing.
+- Web changes also require `npm run build`, `npm run check:client` and
+  `npm run test:e2e` against production with an installed Chromium. These checks
+  must not deploy the app; public deployment still requires owner approval.
 - Blockchain acquisition changes also need relevant live RPC/fixture checks.
   Offline CI uses the saved real fixtures and needs no RPC secret. Record actual
   command outcomes, test counts, scope and unresolved errors in `docs/DEVELOPMENT_LOG.md`.

@@ -4,3 +4,8 @@ node_modules/
 !.env.example
 coverage/
 artifacts/
+.next/
+.web-data/
+test-results/
+playwright-report/
+*.tsbuildinfo

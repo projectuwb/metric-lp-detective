@@ -72,3 +72,36 @@ credential scanning (including decompressed gzip fixtures) reports zero findings
 A synthetic compressed credential sample was correctly rejected without exposing
 its value. Two newly added strict-type errors were corrected before committing;
 no reconciliation assertion was removed or relaxed.
+
+## Visual MVP — 2026-10-31
+
+Synced main f43614a from PR #2; branch codex/visual-mvp. Implemented Next.js frontend
+and server-only indexed API, public wallet/provider/salt discovery, verified sample,
+lazy 128-row event pages and 400-point overview, playback/scrubbing/inspection,
+price confidence and explicit reference-marked endpoint PnL. The web timeline has
+26,282 rows including 77 genuine rounding adjustments; all exact balances telescope
+and match independent historical checkpoints and endpoint. No ledger/evidence or
+original reconciliation tests were changed. Other positions remain indexed-only.
+
+Validation: 54 tests pass, typecheck passes, all original fixture/history/oracle/
+performance checks pass, production build passes, client asset credential check
+passes and all 4 production Chromium tests pass (desktop, mobile, real swaps,
+endpoint, wallet/salt, unsupported states, errors and retry). Credentials scan
+reports zero findings. Next API bundles include all generated index files.
+
+Stage 1B stays PARTIAL. Recovery design now caps one invocation at 50 remote attempts
+(default), paces calls and opens its circuit on a rate response; no trace scan was
+started. No public deployment, paid infrastructure or security settings changed.
+Viewing/hosting steps and limitations are in docs/VISUAL_MVP.md. GitHub API remains
+absent from this runtime allowlist, so PR/merge and hosted CI status are unobserved.
+
+## MVP push and loading-state fix — 2026-10-31
+
+MVP commit 763bb9d2613f9031c1cdb523d17ee7c5a22e3723 was pushed successfully to
+origin/codex/visual-mvp. A final state review found that returning to a cached event
+page while a different page was loading could leave its loading flag set. The
+follow-up clears that flag on cached selection and adds a production browser
+regression test. Production build and public-client credential scan passed again;
+all 5 browser tests now pass. The prior 54-test full reconciliation/security suite
+also passed; original ledger/evidence files remain unchanged. No public deployment
+was initiated. Stage 1B remains PARTIAL and no trace recovery was launched.
