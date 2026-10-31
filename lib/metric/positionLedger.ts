@@ -18,10 +18,11 @@ export const floorMulDiv = (a: bigint, b: bigint, d: bigint) => {
   return a * b / d;
 };
 const ceilMulDiv = (a: bigint, b: bigint, d: bigint) => (a * b + d - 1n) / d;
-export function snapshot(bin: Bin): Snapshot {
+export function snapshot(bin: Bin, tracked?: ReadonlySet<string>): Snapshot {
   const entitlements: Snapshot['entitlements'] = {};
-  for (const [key, shares] of bin.positions) entitlements[key] = bin.totalShares === 0n ? [0n, 0n] : [floorMulDiv(bin.reserve0, shares, bin.totalShares), floorMulDiv(bin.reserve1, shares, bin.totalShares)];
-  return { reserve0: bin.reserve0, reserve1: bin.reserve1, totalShares: bin.totalShares, shares: Object.fromEntries(bin.positions), entitlements };
+  const entries = [...bin.positions].filter(([key]) => !tracked || tracked.has(key));
+  for (const [key, shares] of entries) entitlements[key] = bin.totalShares === 0n ? [0n, 0n] : [floorMulDiv(bin.reserve0, shares, bin.totalShares), floorMulDiv(bin.reserve1, shares, bin.totalShares)];
+  return { reserve0: bin.reserve0, reserve1: bin.reserve1, totalShares: bin.totalShares, shares: Object.fromEntries(entries), entitlements };
 }
 export function portfolio(bins: Map<bigint, Bin>, key: string): [bigint, bigint] {
   let amount0 = 0n, amount1 = 0n;
@@ -37,7 +38,8 @@ const nonInventoryEvents = new Set(['BidAskRefAsymmetryUpdated', 'PauseLevelUpda
 
 /** Full deployment-origin replay. Monetary arithmetic is bigint only. Callers must
  * establish complete ordered log coverage; unknown event semantics fail closed. */
-export function replayPool(input: RawLog[], abi: Abi) {
+export function replayPool(input: RawLog[], abi: Abi, options: { entitlementPositions?: readonly string[] } = {}) {
+  const tracked = options.entitlementPositions ? new Set(options.entitlementPositions) : undefined;
   const bins = new Map<bigint, Bin>();
   const transitions: Transition[] = [];
   const swaps: { block: bigint; transactionHash: string; logIndex: bigint; legs: Transition[]; nativeDeltas: [bigint, bigint] }[] = [];
@@ -89,7 +91,7 @@ export function replayPool(input: RawLog[], abi: Abi) {
       if (index < -50n || index > 49n) throw new Error('Bin outside verified grid');
       let bin = bins.get(index);
       if (!bin) { bin = { reserve0: 0n, reserve1: 0n, totalShares: 0n, positions: new Map() }; bins.set(index, bin); }
-      const before = snapshot(bin);
+      const before = snapshot(bin, tracked);
       let delta: [bigint, bigint];
       let fee: Transition['fee'];
       if (name === 'BinSwapped') {
@@ -119,7 +121,7 @@ export function replayPool(input: RawLog[], abi: Abi) {
       bin.reserve0 += delta[0]; bin.reserve1 += delta[1];
       if (bin.reserve0 < 0n || bin.reserve1 < 0n || bin.reserve0 >= 1n << 104n || bin.reserve1 >= 1n << 104n) throw new Error('Invalid uint104 reserve');
       if ([...bin.positions.values()].reduce((n, s) => n + s, 0n) !== bin.totalShares) throw new Error('Position shares do not sum to total');
-      const after = snapshot(bin);
+      const after = snapshot(bin, tracked);
       const keys = new Set([...Object.keys(before.entitlements), ...Object.keys(after.entitlements)]);
       const positionDelta: Transition['positionDelta'] = {};
       for (const key of keys) {

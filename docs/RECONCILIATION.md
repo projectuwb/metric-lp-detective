@@ -20,3 +20,14 @@ Run `npm run verify:fixture` offline against the saved real receipts, historical
 raw storage and `eth_call` results. The expected checkpoint fixture is
 `fixtures/expected/preferred-position-checkpoint.json`. Stage 1 remains incomplete:
 no lifetime exit/current balance claim, oracle reference context or PnL is asserted.
+
+## Later complete-history extension
+
+The original checkpoint above remains unchanged and regression-tested. The later
+Stage 1A replay through fixed block 130841348 also reconciles with zero base-unit
+tolerance (2,800 state comparisons, six contract withdrawal executions). Final
+entitlements are 22973419195727555217 CRCLB and 5657408436562991299915 USDT base units.
+See STAGE_1A_HISTORY.md. Separately labelled historical block-end performance and
+partial exact execution-quote coverage are in STAGE_1B_ORACLE_PERFORMANCE.md.
+Neither an endpoint reference mark nor a partial quote series proves full execution
+reference coverage; Stage 1B remains incomplete.

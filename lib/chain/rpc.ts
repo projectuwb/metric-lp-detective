@@ -14,7 +14,7 @@ function classify(message: string, code?: number): RpcFailure {
   if (/range|too many (results|logs)|limit.*(block|result)|response size/i.test(message)) return new RpcFailure('range', code);
   return new RpcFailure(code === -32601 || code === -32602 ? 'invalid' : 'temporary', code);
 }
-const methods = new Set(['eth_chainId', 'eth_blockNumber', 'eth_getCode', 'eth_getLogs', 'eth_call', 'eth_getStorageAt', 'eth_getTransactionReceipt', 'eth_getBlockByNumber']);
+const methods = new Set(['eth_chainId', 'eth_blockNumber', 'eth_getCode', 'eth_getLogs', 'eth_call', 'eth_getStorageAt', 'eth_getTransactionReceipt', 'eth_getBlockByNumber', 'debug_traceTransaction']);
 export function configuredRpc(): Rpc {
   const endpoint = process.env.BNB_RPC_URL;
   if (!endpoint) throw new RpcFailure('configuration');

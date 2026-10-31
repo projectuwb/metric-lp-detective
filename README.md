@@ -4,10 +4,12 @@ New independent, read-only investigation of Metric CRCLB/USDT on BNB Chain.
 The [build specification](Metric_LP_Detective_Codex_Build_Spec.md) is the contract.
 Standing autonomous Git instructions are in [AGENTS.md](AGENTS.md); milestones,
 commit hashes and outstanding issues are in [the development log](docs/DEVELOPMENT_LOG.md).
-**Stage 0 identity/source/ABI and real-deposit gate passed.** Individual-LP
-attribution now passes real Tests A–D through checkpoint `126553642`.
-**Stage 1 is not fully complete**: lifetime/current state and exact oracle context
-are unverified.
+**Stage 0 identity/source/ABI and real-deposit gate passed.** Original individual-LP
+attribution A–D tests remain intact. Stage 1A now reconciles the complete selected
+position through fixed head `130841348` (two adds, one partial removal).
+**Stage 1B is partial**: 2,014 execution-trace transactions are verified; remaining
+execution quote coverage is rate-limited. Block-end reference performance is
+separately verified and explicitly labelled.
 
 Verified pool: `0xdC2b2F96bC1eb01E7286C688d5354e081AF188C4`, chain 56.
 Actual deployment/add/swap receipts, two public LP candidates and exact per-bin
@@ -39,7 +41,7 @@ npm run scan:credentials
 npm run check
 ```
 
-42 tests and typecheck passed. Validate the real attribution fixture offline:
+47 tests and typecheck passed. Validate the real attribution fixture offline:
 
 ```sh
 npm run verify:fixture
@@ -58,7 +60,12 @@ npm run verify:fixture
 Provider errors identify the method and redacted category/code. No endpoint/key
 is printed or saved. Never commit `.env` or use a `NEXT_PUBLIC_` credential.
 Public sample receipts are stored, not user wallet search history. No browser RPC,
-write transactions or other pools/chains are implemented. Full lifetime coverage,
-closure and applied oracle quotes remain unverified. Per-LP swap attribution is
-verified for the explicit early interval only. See the validation report before
+write transactions or other pools/chains are implemented. Inventory coverage is verified through the fixed head;
+closure and complete execution-quote coverage remain unverified. Per-LP swap
+attribution is reconciled across the full acquired interval. See the validation report before
 extending coverage; no dashboard work has started.
+
+Latest milestones: [Stage 1A history](docs/STAGE_1A_HISTORY.md) and
+[Stage 1B oracle/performance](docs/STAGE_1B_ORACLE_PERFORMANCE.md).
+Run `npm run verify:history`, `npm run verify:oracle` and
+`npm run verify:performance`; `npm run check` includes all checks.
