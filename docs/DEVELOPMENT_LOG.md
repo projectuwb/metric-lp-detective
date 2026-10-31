@@ -288,3 +288,20 @@ Remote reconstruction, fourth independent fixture, main merge and new public rep
 remain NOT VERIFIED. Stage 4 and original Stage 1B remain PARTIAL. The smallest
 browser-only setup is integrate Stage 4, explicitly approve/add BNB_RPC_URL as a
 repo Actions secret, then Run workflow on main with the documented pilot ID.
+
+### Stage 4 Git receipt
+
+Implementation 115f3df51fd3228bb8d113104459e2d71eab49eb is pushed to
+origin/codex/stage4-remote-owner-worker; git ls-remote confirms the identical SHA.
+Exact staged scan: 23 files, zero findings. Official actionlint v1.7.7 release
+checksum verified; both workflows pass semantic lint (no workflow errors).
+GitHub's public page shows Validate run 41251471309 in progress for this commit:
+https://github.com/projectuwb/metric-lp-detective/actions/runs/41251471309
+
+PR creation was attempted with a full description and failed exactly:
+Post "https://api.github.com/graphql": Forbidden.
+No PR/main merge or Stage 4 deployment is claimed. Main was fetched again and
+remains 07fbef99e21a8a66800467d7b6bbdb194059f2c3. Integration can use the
+connected GitHub account or restored enforced api.github.com:443 egress; no direct
+main bypass was attempted. Remote owner reconstruction remains NOT VERIFIED until
+its actual first dispatch, independent evidence and deployed replay are observed.
