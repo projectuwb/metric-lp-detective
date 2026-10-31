@@ -1,0 +1,59 @@
+{
+  "id": "0x3eb210eaa4026f62d027fafaba1fa5592febb06a:363274826789293944322560",
+  "slug": "632f7d8c3d6ef54f",
+  "name": "Smaller verified sample",
+  "pool": "0xdC2b2F96bC1eb01E7286C688d5354e081AF188C4",
+  "chainId": 56,
+  "through": "130841348",
+  "indexEndHash": "0xd4b50c9afe0934057d61ccf2821e30c5b6dbf3553b6348ccb846e9f5a074ea7e",
+  "sourceHash": "0x2c6c8e6f1f3175cca4e31d0231777255deb75132ddf1b1804d6cf28db08f8f51",
+  "funding": [
+    {
+      "block": "128750025",
+      "transactionHash": "0xa072e353ca8cd375bbc562df0693f5955f48308fdd9b04eab7cfc0ed090d0ce6",
+      "logIndex": "840",
+      "type": "deposit",
+      "tokens": [
+        "5581308503708253008",
+        "3906222415174827386047"
+      ]
+    },
+    {
+      "block": "128750137",
+      "transactionHash": "0x018eb226bb4373f419b47b4a473ad4d333b17040517a3c1ec5e26e888cb57ca4",
+      "logIndex": "492",
+      "type": "deposit",
+      "tokens": [
+        "433769151916363882",
+        "112248401005050293734"
+      ]
+    },
+    {
+      "block": "128750274",
+      "transactionHash": "0xe55c7863a6dda4f30883e1392b2bbbb0dbf5ebe2c7cfa009d71e4cd3fc2ef33d",
+      "logIndex": "280",
+      "type": "deposit",
+      "tokens": [
+        "124814834512074572",
+        "32391558938275282647"
+      ]
+    },
+    {
+      "block": "128752283",
+      "transactionHash": "0x1eecbac1ff505109332535ec78f76c26079a1120ab99383012e9dcf645f1633a",
+      "logIndex": "419",
+      "type": "withdrawal",
+      "tokens": [
+        "0",
+        "-4543728066440139855352"
+      ]
+    }
+  ],
+  "eventCount": 14,
+  "swaps": 9,
+  "final": [
+    "0",
+    "0"
+  ],
+  "ownerCode": "0x"
+}

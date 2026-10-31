@@ -3,7 +3,7 @@
 A functional browser MVP is available. See [viewing and hosting instructions](docs/VISUAL_MVP.md).
 With Node 24+, run `npm ci --ignore-scripts` then `npm run dev`; open the address
 printed by Next.js and choose **Try the verified sample**. No RPC key is needed
-for this fixed indexed demo. Nothing has been publicly deployed.
+for this fixed indexed demo. The owner reports the main branch is deployed on Vercel. This task initiates no deployment.
 
 New independent, read-only investigation of Metric CRCLB/USDT on BNB Chain.
 The [build specification](Metric_LP_Detective_Codex_Build_Spec.md) is the contract.
@@ -47,7 +47,7 @@ npm run scan:credentials
 npm run check
 ```
 
-54 tests, five production-browser tests and typechecking pass. Validate the real attribution fixture offline:
+Run the complete check suite and production-browser tests before integrating any change. Validate the real attribution fixture offline:
 
 ```sh
 npm run verify:fixture
@@ -67,11 +67,34 @@ Provider errors identify the method and redacted category/code. No endpoint/key
 is printed or saved. Never commit `.env` or use a `NEXT_PUBLIC_` credential.
 Public sample receipts are stored, not user wallet search history. No browser RPC,
 write transactions or other pools/chains are implemented. Inventory coverage is verified through the fixed head;
-closure and complete execution-quote coverage remain unverified. Per-LP swap
+the original sample remains open, while the second sample has a verified full withdrawal. Complete execution-quote coverage for the original remains unverified. Per-LP swap
 attribution is reconciled across the full acquired interval. See the validation report before
-extending coverage; no dashboard work has started.
+extending coverage.
 
 Latest milestones: [Stage 1A history](docs/STAGE_1A_HISTORY.md) and
 [Stage 1B oracle/performance](docs/STAGE_1B_ORACLE_PERFORMANCE.md).
 Run `npm run verify:history`, `npm run verify:oracle` and
 `npm run verify:performance`; `npm run check` includes all checks.
+
+## Stage 2
+
+Two independently reconciled samples are playable. **Try the smaller sample · 9
+swaps** follows three deposits through full withdrawal in fourteen real events.
+Initial-versus-selected inventory, cumulative funding/withdrawals and selected-point
+cashflow PnL use exact token accounting and separately labelled historical
+block-end marks. Missing prices stay unavailable. A holding basket that cannot
+fund the same withdrawals is explicitly unsupported.
+
+See [Stage 2 evidence and limits](docs/STAGE_2.md). To reproduce the bounded
+proof for one other provider/salt (server-side RPC required):
+
+```sh
+NODE_USE_ENV_PROXY=1 npm run analyse:position -- --id publicProvider:uint80Salt
+npm run verify:position -- 632f7d8c3d6ef54f
+```
+
+The verifier above rechecks the saved second sample offline. The collector writes
+a deterministic artifact identifier for the requested position; use that identifier
+to verify a new capture. Arbitrary hosted-wallet replay is not yet enabled:
+other detected positions remain indexed-only; there is no hidden job queue.
+Both browser demonstrations require no RPC configuration or new infrastructure.

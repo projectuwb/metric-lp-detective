@@ -229,3 +229,17 @@ The user subsequently authorized the mandatory attribution investigation. Its
 bounded first-add-to-checkpoint reconstruction, real A–D cases and independent
 archive/contract-execution reconciliation are in LP_SWAP_ATTRIBUTION_VALIDATION.
 Longer history and exact applied references remain open. No dashboard or PnL claims.
+
+## Stage 2 update — 2026-10-31
+
+The second sample provider `0x3eB210eAa4026f62D027fafABA1fa5592feBb06A`, salt
+`363274826789293944322560`, is independently reconciled: 9 swaps, three deposits
+and full withdrawal, bins 2–5, 15 historical checkpoints, 6,000 exact storage
+comparisons and 12 historical withdrawal calls; zero base-unit discrepancy.
+Four actual receipts and seven raw transaction traces (nine swap quotes) are retained under
+`fixtures/positions/632f7d8c3d6ef54f/`. The bounded capture used 69 RPC requests plus 15 canonical-header confirmations
+(84 total), one worker, at least one-second pacing. No unrestricted trace scan ran.
+Thirteen block-end reference marks cover all twelve event blocks plus fixed head.
+The original sample and all original verification evidence remain unchanged.
+See [Stage 2](STAGE_2.md) for transaction/log identifiers, reproduction, valuation
+limits and incomplete arbitrary-wallet support. Stage 1B remains PARTIAL overall.

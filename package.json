@@ -20,7 +20,7 @@
     "verify:history": "node --import tsx scripts/verify-history.ts",
     "capture:oracle": "node --import tsx scripts/acquire-oracle-traces.ts",
     "verify:oracle": "node --import tsx scripts/verify-oracle.ts",
-    "verify:performance": "node --import tsx scripts/verify-performance.ts && python3 scripts/verify_performance.py",
+    "verify:performance": "node --import tsx scripts/verify-performance.ts && python3 scripts/verify_performance.py && python3 scripts/verify_position_performance.py",
     "check": "npm test && npm run typecheck && npm run verify:fixture && npm run verify:history && npm run verify:oracle && npm run verify:performance && npm run scan:credentials",
     "prepare:web": "node --max-old-space-size=4096 --import tsx scripts/prepare-web.ts",
     "dev": "npm run prepare:web && next dev --hostname 0.0.0.0",
@@ -29,7 +29,9 @@
     "start": "next start --hostname 0.0.0.0",
     "test:e2e": "playwright test",
     "pretest": "npm run prepare:web",
-    "check:client": "node scripts/check-client-bundle.mjs"
+    "check:client": "node scripts/check-client-bundle.mjs",
+    "analyse:position": "node --max-old-space-size=4096 --import tsx scripts/analyse-position.ts",
+    "verify:position": "node --max-old-space-size=4096 --import tsx scripts/verify-position.ts"
   },
   "dependencies": {
     "lucide-react": "1.66.0",
