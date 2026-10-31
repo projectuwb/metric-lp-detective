@@ -7,9 +7,9 @@ import { positionReplay } from '../lib/metric/positionReplay.js';
 import { executionQuotes, PROVIDER, QUOTE_SELECTOR } from '../lib/metric/oracleTrace.js';
 import { POOL, TOKEN0, TOKEN1 } from '../lib/chain/poolConfig.js';
 import { signedPair } from '../lib/chain/decode.js';
-export function verifyPosition(slug: string) {
+export function verifyPosition(slug: string, capturedRoot?: URL) {
   if (!/^[0-9a-f]{16}$/.test(slug)) throw new Error('Invalid artifact identifier');
-  const root = new URL('../fixtures/positions/' + slug + '/', import.meta.url);
+  const root = capturedRoot ?? new URL('../fixtures/positions/' + slug + '/', import.meta.url);
   const read = (name: string) => JSON.parse(readFileSync(new URL(name, root), 'utf8'));
   const config = read('config.json'), h = historyInputs();
   assert.equal(config.pool, POOL); assert.equal(config.chainId, 56); assert.equal(config.ownerCode, '0x');

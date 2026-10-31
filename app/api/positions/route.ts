@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     }
     text += decoder.decode();
     const body = JSON.parse(text);
-    if (typeof body.wallet !== 'string' || !isAddress(body.wallet, { strict: false })) return Response.json({ error: 'Enter a valid public 0x wallet address.' }, { status: 400 });
+    if (typeof body?.wallet !== 'string' || !isAddress(body.wallet, { strict: false })) return Response.json({ error: 'Enter a valid public 0x wallet address.' }, { status: 400 });
     const meta = getMeta();
     return Response.json({ positions: positionsFor(body.wallet), from: meta.from, through: meta.through, message: 'Discovery covers this pool only through the indexed block. Manager ownership paths are not inferred.' }, { headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {

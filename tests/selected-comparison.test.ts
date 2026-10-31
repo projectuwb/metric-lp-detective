@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 vi.mock('server-only', () => ({}));
-import { getMeta, getPage, positionsFor, getRegistry } from '../lib/server/replay';
+import { getMeta, getPage, positionsFor, getRegistry, getPositions } from '../lib/server/replay';
 import { GET } from '../app/api/replay/route';
 import { SMALL_SAMPLE_ID } from '../lib/domain/samples';
 import { selectedComparison } from '../lib/metric/comparison';
@@ -11,14 +12,18 @@ describe('initial inventory, multiple funding flows and selected-point valuation
   it('registers only independently reconciled positions and keeps each salt isolated', async () => {
     expect(positionIdentity('0x3eB210eAa4026f62D027fafABA1fa5592feBb06A:0001')).toBe('0x3eb210eaa4026f62d027fafaba1fa5592febb06a:1');
     expect(() => positionIdentity(SMALL_SAMPLE_ID.split(':')[0] + ':' + (1n << 80n))).toThrow('uint80');
-    expect(getRegistry()).toHaveLength(2);
+    // Exact registry membership: the two curated samples plus independently
+    // verified, explicitly published owner artifacts. No third-wallet allowlist.
+    const published = readdirSync('fixtures/positions').filter(s => /^[a-f0-9]{16}$/.test(s) && existsSync('fixtures/positions/' + s + '/request-proof.json')).sort().map(s => JSON.parse(readFileSync('fixtures/positions/' + s + '/config.json', 'utf8')).id);
+    expect(getRegistry().map(p => p.id)).toEqual([getMeta().id, SMALL_SAMPLE_ID, ...published]);
+    expect(getRegistry().some(p => p.id === '0xa19899f6b8416d8266f0d4f14688c8c6eeaec818:671085802901633847509096')).toBe(true);
     expect(meta.eventCount).toBe(14); expect(meta.closed).toBe(true);
     expect(events.filter(e => e.type === 'swap')).toHaveLength(9);
     expect(events.every(e => e.type !== 'swap' || e.reference?.kind === 'EXECUTION')).toBe(true);
     const detected = positionsFor(SMALL_SAMPLE_ID.split(':')[0]);
     expect(detected.find(p => p.id === SMALL_SAMPLE_ID)?.status).toBe('reconciled');
     expect(detected.length).toBeGreaterThan(1);
-    const other = detected.find(p => p.id !== SMALL_SAMPLE_ID)!;
+    const other = [...detected, ...getPositions()].find(p => p.status === 'indexed-only')!;
     expect(other.status).toBe('indexed-only'); expect(getPage(other.id, 0)).toBeNull();
     expect((await GET(new Request('http://local/api/replay?id=' + encodeURIComponent(SMALL_SAMPLE_ID)))).status).toBe(200);
     expect((await GET(new Request('http://local/api/replay?id=../../secret'))).status).toBe(409);

@@ -169,3 +169,78 @@ Forbidden, so repository permission/protection queries and automatic PR/merge
 remain blocked. Main is still 9c1bc7dd1bdd637c63928c24ece470aaad7e63f8.
 No deployment was initiated or verified. This final documentation receipt does not
 change code or chain evidence; the code milestone passed all local and remote gates.
+
+## Stage 3.1 exit economics — 1 November 2026 (Australia/Sydney)
+
+Synced actual main 3720e12 (PR #5); branch codex/stage3-outcomes-wallet-beta.
+Read Issues #7 and #6 in full; #7 prioritizes exit explanation before processing.
+Implemented cashflow bridge, full-close hero, dated flow ledger, start/selected
+comparison, bin-share-based exit/re-entry markers, own-time exact CRCLB-equivalent
+translation and separately labelled hypothetical settlement. Existing inventory
+and unsupported holding detail remain accessible. No source ledger/old evidence
+or reconciliation assertion was removed.
+
+Validation: 65 tests, all original fixture/history/oracle/performance checks,
+190 independent Python Fraction checks, typecheck and credential scan PASS.
+Pinned source/runtime recompile PASS (initial sandbox subprocess restriction was
+resolved with the supported execution permission). Production build/client scan
+PASS; all 10 production browser tests PASS, including original 8 and phone layout.
+Stage 1B stays PARTIAL. Gate 2 is not declared passed; architecture decision is
+owner-local durable beta, no fake hosted queue or new paid service.
+
+## Stage 3.2–3.3 owner beta / real wallet — 1 November 2026 (Australia/Sydney)
+
+Exit milestone d881208 was pushed; GitHub Actions run 41243033629 independently
+reports SUCCESS. Implemented loopback-only durable owner queue, one separate
+worker, source-version idempotency, persistent per-job/day quotas, canonical
+checkpoint/cache resume, failure/retry/cancel, immutable checksum-checked bundles
+and generic owner-artifact export/registration. Public Vercel mode remains honest
+file download, with no fake accepted/processing state or provider work in a request.
+
+Real new input 0xa19899f6b8416d8266f0d4f14688c8c6eeaec818:671085802901633847509096
+was INDEXED_ONLY, browser-submitted to persisted QUEUED, observed RUNNING, survived
+browser-context close/reopen, reconciled with zero discrepancy and became playable.
+Job 92177d753cb2865a0e9152d59f3d2d7cd5c8b07bc99d40087665257177e1076b: 86 real
+RPC attempts, 15 checkpoints, 6,000 storage comparisons, 12 withdrawal executions,
+10 swaps / 12 events, fully closed. Raw receipts/traces/state/marks and browser
+proof exported under fixtures/positions/dcc159a95741b233. No extra provider reads
+were needed to export/verify/publish. Source acquisition is unchanged.
+
+An early local UI guard rejected Next's normalized Host before any job/RPC call;
+corrected without removing foreign-origin/Vercel restrictions. Fixed observed
+zombie lease recovery. A test expecting QUEUED for a now-published wallet exposed
+an unnecessary duplicate-work case: verified replays now reuse without new jobs,
+and the queued-status regression uses an actually unverified indexed position.
+Original reconciliation assertions remain intact; registry membership now matches
+the exact curated + verified-published set rather than a permanent count of two.
+
+All 71 tests and full original checks PASS; Python verifies 310 exact values over
+31 selected real events. Production build and client scan PASS; all 13 offline
+production browser tests PASS, plus the separate real new-wallet test PASS (1.8m).
+All six API traces contain all 215 generated data files and exclude private job
+folders/Git metadata. No credential findings. The future clean-main publish helper
+is guarded/syntax-checked; it cannot be fully exercised until Stage 3 reaches main.
+Hosted on-demand Gate 2 and Stage 1B remain PARTIAL. No paid resource, new Vercel
+project, permission/security setting or deployment command was created.
+
+## Stage 3 push / CI / integration receipt — 1 November 2026 (Australia/Sydney)
+
+Worker/evidence milestone 49f15bae0dd042bbdfba00b1c8c9017cab8734a0 is pushed to
+codex/stage3-outcomes-wallet-beta. Public Actions run 41247811765 reports SUCCESS;
+exit milestone d881208/run 41243033629 also reports SUCCESS. Remote branch fetch
+matched local code. Main remains 3720e128ac611ec987582ee5e066d4a6ddca0e47.
+
+Final production checks pass after the UI updates its position card to verified
+when the replay loads; exit navigation is prominent, actual net token movement is
+separate from return, and endpoint sign colors follow the numeric result.
+Source recompile, all original independent reconciliation, 71 tests, 310 Fraction
+checks, production build, client/staged credential scans, 13 offline browser tests
+and the separate actual-RPC browser proof pass. Screenshots were visually inspected.
+
+PR creation was attempted with a complete body file and failed exactly:
+Post "https://api.github.com/graphql": Forbidden.
+No branch-policy bypass or direct main push was attempted. Required capability is
+HTTPS api.github.com:443 or another authorized GitHub integration connector.
+Stage 3 remains PARTIAL for truly hosted on-demand jobs; the owner-local path is
+operational and proved, public file handoff is honest. No new paid service,
+provider upgrade, Vercel project, security setting or deployment was created.

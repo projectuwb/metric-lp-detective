@@ -1,0 +1,39 @@
+{
+  "id": "0xa19899f6b8416d8266f0d4f14688c8c6eeaec818:671085802901633847509096",
+  "slug": "dcc159a95741b233",
+  "name": "Owner-requested public position",
+  "pool": "0xdC2b2F96bC1eb01E7286C688d5354e081AF188C4",
+  "chainId": 56,
+  "through": "130841348",
+  "indexEndHash": "0xd4b50c9afe0934057d61ccf2821e30c5b6dbf3553b6348ccb846e9f5a074ea7e",
+  "sourceHash": "0x2c6c8e6f1f3175cca4e31d0231777255deb75132ddf1b1804d6cf28db08f8f51",
+  "funding": [
+    {
+      "block": "129056551",
+      "transactionHash": "0x372a325001d88a19b6e3f39322e6a05cff7c3fd6fc23f30a1d4bf2072ec3b879",
+      "logIndex": "215",
+      "type": "deposit",
+      "tokens": [
+        "0",
+        "99999999999999999883"
+      ]
+    },
+    {
+      "block": "129093793",
+      "transactionHash": "0xf468cdefc138331bddc0d8bef4d52bc304ce3345b0e32e56cb9dae2f5d943829",
+      "logIndex": "161",
+      "type": "withdrawal",
+      "tokens": [
+        "0",
+        "-99956637992935193954"
+      ]
+    }
+  ],
+  "eventCount": 12,
+  "swaps": 10,
+  "final": [
+    "0",
+    "0"
+  ],
+  "ownerCode": "0x"
+}

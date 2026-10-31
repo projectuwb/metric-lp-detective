@@ -98,3 +98,24 @@ a deterministic artifact identifier for the requested position; use that identif
 to verify a new capture. Arbitrary hosted-wallet replay is not yet enabled:
 other detected positions remain indexed-only; there is no hidden job queue.
 Both browser demonstrations require no RPC configuration or new infrastructure.
+
+## Stage 3
+
+The exit summary now leads with **Total put in → Received → Still in LP → Net**,
+with USDT-equivalent, hypothetical flow-time CRCLB-equivalent and actual-token
+views. Full exits and partial withdrawals retain distributions instead of treating
+zero remaining inventory as a loss. Historical marks, timestamps, a dated flow
+ledger and clearly hypothetical settlement translation explain the result.
+
+An owner-controlled, disk-backed new-wallet beta is functional on an existing
+trusted machine: build, run `npm run beta`, open `http://127.0.0.1:3100`, input a
+public wallet and explicitly request its bounded reconstruction. A real new-wallet
+browser test survived close/reopen, independently reconciled with zero discrepancy
+and unlocked replay. Its proof is now published in the repository and playable
+through normal wallet lookup. Both original demos remain; the nine-swap demo is
+the first/easiest choice.
+
+**Public hosted analysis remains PARTIAL:** Vercel does not pretend to have a
+queue. It offers a browser request download for owner import/process/publication.
+No new paid service or hosting project was created. See [Stage 3 evidence](docs/STAGE_3.md),
+[the owner runbook](docs/OWNER_BETA_RUNBOOK.md) and [the architecture decision](docs/STAGE_3_ARCHITECTURE.md).

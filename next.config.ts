@@ -2,6 +2,7 @@ import type { NextConfig } from 'next';
 const config: NextConfig = {
   poweredByHeader: false,
   outputFileTracingIncludes: { '/api/**': ['./.web-data/**/*'] },
+  outputFileTracingExcludes: { '/api/**': ['./artifacts/**/*', './.git/**/*', './.env*'] },
   async headers() {
     return [{ source: '/(.*)', headers: [
       { key: 'X-Content-Type-Options', value: 'nosniff' },

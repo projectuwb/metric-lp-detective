@@ -1,0 +1,20 @@
+{
+  "status": "VERIFIED",
+  "id": "0xa19899f6b8416d8266f0d4f14688c8c6eeaec818:671085802901633847509096",
+  "slug": "dcc159a95741b233",
+  "swaps": 10,
+  "events": 12,
+  "checkpoints": 15,
+  "storageComparisons": 6000,
+  "withdrawalChecks": 12,
+  "closed": true,
+  "final": [
+    "0",
+    "0"
+  ],
+  "tolerance": "0",
+  "from": "129056551",
+  "lastEventBlock": "129093793",
+  "indexedThrough": "130841348",
+  "executionQuoteEvents": 10
+}
