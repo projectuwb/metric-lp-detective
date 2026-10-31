@@ -65,7 +65,7 @@ export default function Detective() {
     finally { if (id === lookupId.current) setBusy(''); }
   }
   useEffect(() => {
-    if (!meta || pages[page]) return;
+    if (!meta || pages[page]) { setPageLoading(false); return; }
     lastAction.current = 'events';
     const controller = new AbortController();
     setPageLoading(true);

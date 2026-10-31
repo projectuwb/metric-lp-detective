@@ -47,7 +47,7 @@ npm run scan:credentials
 npm run check
 ```
 
-54 tests, four production-browser tests and typechecking pass. Validate the real attribution fixture offline:
+54 tests, five production-browser tests and typechecking pass. Validate the real attribution fixture offline:
 
 ```sh
 npm run verify:fixture

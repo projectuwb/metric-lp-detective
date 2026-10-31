@@ -88,9 +88,9 @@ or account database; it is not distributed rate limiting.
   recovery circuit-breaking; typecheck and original fixture/history/oracle/
   performance verification and credential scan pass.
 - `npm run build` and `npm run check:client`: pass.
-- `npm run test:e2e`: 4 production Chromium tests pass, covering sample swaps,
+- `npm run test:e2e`: 5 production Chromium tests pass, covering sample swaps,
   pause, endpoint scrub, transaction links, wallet/salt selection, indexed-only
-  and empty results, mobile layout, failures and successful retries.
+  and empty results, mobile layout, failures, successful retries and cancelled-page loading recovery.
 
 For browser tests use an installed Chromium with
 `PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run test:e2e`, or install the

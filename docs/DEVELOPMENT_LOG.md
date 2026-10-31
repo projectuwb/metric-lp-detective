@@ -94,3 +94,14 @@ Stage 1B stays PARTIAL. Recovery design now caps one invocation at 50 remote att
 started. No public deployment, paid infrastructure or security settings changed.
 Viewing/hosting steps and limitations are in docs/VISUAL_MVP.md. GitHub API remains
 absent from this runtime allowlist, so PR/merge and hosted CI status are unobserved.
+
+## MVP push and loading-state fix — 2026-10-31
+
+MVP commit 763bb9d2613f9031c1cdb523d17ee7c5a22e3723 was pushed successfully to
+origin/codex/visual-mvp. A final state review found that returning to a cached event
+page while a different page was loading could leave its loading flag set. The
+follow-up clears that flag on cached selection and adds a production browser
+regression test. Production build and public-client credential scan passed again;
+all 5 browser tests now pass. The prior 54-test full reconciliation/security suite
+also passed; original ledger/evidence files remain unchanged. No public deployment
+was initiated. Stage 1B remains PARTIAL and no trace recovery was launched.

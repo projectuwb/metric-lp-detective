@@ -76,3 +76,18 @@ test('event-page failures stop the spinner and retry the selected event', async 
   await page.getByRole('button', { name: 'Retry', exact: true }).click();
   await expect(page.getByTestId('stock-balance')).toContainText('22.973419');
 });
+test('returning to a cached page cancels pending loading state', async ({ page }) => {
+  await page.goto('/');
+  await page.getByRole('button', { name: /Try the verified sample/ }).click();
+  await expect(page.getByTestId('stock-balance')).toContainText('37.037279');
+  await page.route(/\/api\/replay\/.*\/events\?page=205$/, async route => {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    await route.continue().catch(() => {});
+  });
+  await page.getByLabel('Replay event', { exact: true }).focus(); await page.keyboard.press('End');
+  await expect(page.getByRole('status')).toContainText('Loading event');
+  await page.getByLabel('Replay event', { exact: true }).focus(); await page.keyboard.press('Home');
+  await expect(page.getByTestId('stock-balance')).toContainText('37.037279');
+  await expect(page.getByRole('status')).toHaveCount(0);
+  await expect(page.locator('.event-label')).toContainText('Liquidity added');
+});
