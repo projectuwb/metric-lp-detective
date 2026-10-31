@@ -1,0 +1,9 @@
+{
+  "status": "PARTIAL",
+  "verifiedTransactions": 2014,
+  "verifiedSwaps": 2146,
+  "targetTransactions": 25191,
+  "pendingTransactions": 23177,
+  "fullRawTraceProbe": "0xb4f8bea7a1ba7a5b89cc4876c7d9bc215d5a5dec615a6c4508ff31b484a6918c",
+  "quoteMeaning": "Exact Q64.64 bid/ask/reference returned to the pool within each recorded successful swap; no block-end substitution"
+}

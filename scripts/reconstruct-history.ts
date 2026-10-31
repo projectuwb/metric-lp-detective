@@ -1,6 +1,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { gunzipSync } from 'node:zlib';
-import { encodeAbiParameters, encodeFunctionData, decodeFunctionResult, keccak256, type Abi, type Hex } from 'viem';
+import { encodeAbiParameters, encodeFunctionData, decodeFunctionResult, encodeEventTopics, keccak256, type Abi, type Hex } from 'viem';
+import { sourceAbi } from '../lib/chain/decode.js';
 import { configuredRpc, type RawLog } from '../lib/chain/rpc.js';
 import { POOL } from '../lib/chain/poolConfig.js';
 import { replayPool, portfolio } from '../lib/metric/positionLedger.js';
@@ -19,7 +20,8 @@ export function reconstruct() {
   const { acquisition, logs, abi } = historyInputs();
   if (acquisition.status !== 'ACQUIRED_NOT_RECONCILED' || logs.length !== acquisition.logCount) throw new Error('Incomplete acquisition');
   const replay = replayPool(logs, abi, { entitlementPositions: [key] });
-  const selectedLogIds = new Set(logs.filter(l => l.topics.length === 3 && l.topics[1]?.toLowerCase().endsWith(owner.slice(2).toLowerCase()) && BigInt(l.topics[2]) === salt).map(l => `${l.transactionHash}:${BigInt(l.logIndex)}`));
+  const liquidityTopics = new Set((['LiquidityAdded', 'LiquidityRemoved'] as const).map(eventName => encodeEventTopics({ abi: sourceAbi, eventName })[0]));
+  const selectedLogIds = new Set(logs.filter(l => liquidityTopics.has(l.topics[0] as Hex) && l.topics.length === 3 && l.topics[1]?.toLowerCase().endsWith(owner.slice(2).toLowerCase()) && BigInt(l.topics[2]) === salt).map(l => `${l.transactionHash}:${BigInt(l.logIndex)}`));
   const funding = replay.transitions.filter(t => ['LiquidityAdded', 'LiquidityRemoved'].includes(t.event) && selectedLogIds.has(`${t.transactionHash}:${t.logIndex}`));
   const relevant = replay.swaps.filter(s => s.legs.some(l => (l.before.shares[key] ?? 0n) > 0n));
   const counts = { positions: replay.positions.size, swaps: replay.swaps.length, relevantSwaps: relevant.length, relevantBinSteps: relevant.reduce((n, s) => n + s.legs.filter(l => (l.before.shares[key] ?? 0n) > 0n).length, 0) };

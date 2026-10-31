@@ -1,0 +1,73 @@
+{
+  "convention": "On-chain provider reference at cashflow block end and fixed endpoint; values in USDT-equivalent, not independently verified USD; gas excluded",
+  "records": [
+    {
+      "block": "130841348",
+      "blockHash": "0xd4b50c9afe0934057d61ccf2821e30c5b6dbf3553b6348ccb846e9f5a074ea7e",
+      "timestamp": "0x6ae5c348",
+      "method": "eth_call",
+      "call": {
+        "from": "0x0000000000000000000000000000000000000000",
+        "to": "0xd352e157fd2bad7b8b524013151b19b0a90b79bc",
+        "data": "0x171755b1"
+      },
+      "raw": "0x0000000000000000000000000000000000000000000000492b3ef9edd4c52cb40000000000000000000000000000000000000000000000493e495fe860662e42000000000000000000000000000000000000000000000049364c62067f201e23",
+      "bidX64": "1349728520172856487092",
+      "askX64": "1351100541336103038530",
+      "referenceX64": "1350524927337117523491",
+      "provenance": "HISTORICAL_BLOCK_END_PROVIDER_CALL",
+      "executionTimeQuote": false
+    },
+    {
+      "block": "126509253",
+      "blockHash": "0xbf069a4e09ca629116d6cdd82a91eb1f49e06e4b30cb78832daac57f66e77641",
+      "timestamp": "0x6ac7ff52",
+      "method": "eth_call",
+      "call": {
+        "from": "0x0000000000000000000000000000000000000000",
+        "to": "0xd352e157fd2bad7b8b524013151b19b0a90b79bc",
+        "data": "0x171755b1"
+      },
+      "raw": "0x000000000000000000000000000000000000000000000050ffd62e934a8f0d510000000000000000000000000000000000000000000000510f429c8cabbe5ef6000000000000000000000000000000000000000000000051000b51c029735496",
+      "bidX64": "1494174499231597792593",
+      "askX64": "1495285883357496237814",
+      "referenceX64": "1494189456080988492950",
+      "provenance": "HISTORICAL_BLOCK_END_PROVIDER_CALL",
+      "executionTimeQuote": false
+    },
+    {
+      "block": "126663082",
+      "blockHash": "0xbf07a94f310659e573b4dea8d18ebec2a46c1a28776eedd95486bb623c9cebb8",
+      "timestamp": "0x6ac90dd0",
+      "method": "eth_call",
+      "call": {
+        "from": "0x0000000000000000000000000000000000000000",
+        "to": "0xd352e157fd2bad7b8b524013151b19b0a90b79bc",
+        "data": "0x171755b1"
+      },
+      "raw": "0x000000000000000000000000000000000000000000000056b2229989dc80bb8f000000000000000000000000000000000000000000000056c407e524d52dfdab000000000000000000000000000000000000000000000056b4a07616a4d85779",
+      "bidX64": "1599255981044369767311",
+      "askX64": "1600545501041650433451",
+      "referenceX64": "1599435523101749172089",
+      "provenance": "HISTORICAL_BLOCK_END_PROVIDER_CALL",
+      "executionTimeQuote": false
+    },
+    {
+      "block": "128844379",
+      "blockHash": "0x70b9f04448c21e1d4cfc8cc2d4390d9f90719cb26eccc1085fc1c78437ee6efd",
+      "timestamp": "0x6ad80b2e",
+      "method": "eth_call",
+      "call": {
+        "from": "0x0000000000000000000000000000000000000000",
+        "to": "0xd352e157fd2bad7b8b524013151b19b0a90b79bc",
+        "data": "0x171755b1"
+      },
+      "raw": "0x000000000000000000000000000000000000000000000056707297d693acfe06000000000000000000000000000000000000000000000056783d133bcc6e4d6900000000000000000000000000000000000000000000005670ab4c99a51d12fb",
+      "bidX64": "1594522695966470766086",
+      "askX64": "1595084092744705920361",
+      "referenceX64": "1594538657315070743291",
+      "provenance": "HISTORICAL_BLOCK_END_PROVIDER_CALL",
+      "executionTimeQuote": false
+    }
+  ]
+}

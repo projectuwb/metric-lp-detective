@@ -52,3 +52,23 @@ archive reads; 2,800 storage checks and six withdrawal executions have zero erro
 Validation: 43 tests, typecheck, original checkpoint fixture, full-history verifier
 and credential scan passed. Execution quote recovery/performance is a separate
 Stage 1B milestone and is not asserted complete by this commit.
+
+## Stage 1B — 2026-10-31
+
+Stage 1A milestone 4a7a633 was pushed to codex/stage1-history-oracle.
+Execution quote recovery verified 2,014 transactions / 2,146 swaps; 23,177 target
+transactions remain unverified after debug_traceTransaction HTTP 429. Recovery is
+resumable and stops uncached requests after exhausting rate retries. No plan change.
+Historical block-end valuation inputs at all three cashflow blocks and fixed head
+were read successfully at low volume. Exact TypeScript performance reconciles with
+an independent Python Fraction calculation; convention is USDT-equivalent reference
+marks, not execution-price cashflows, USD peg verification or realized dollar PnL.
+Stage 1B remains partial; no dashboard started. See STAGE_1B_ORACLE_PERFORMANCE.md.
+
+Validation for the Stage 1B milestone: 47 tests pass, TypeScript passes, original
+checkpoint fixture and complete-history reconciliation pass, all saved oracle
+witnesses validate, independent Python performance verification passes, and
+credential scanning (including decompressed gzip fixtures) reports zero findings.
+A synthetic compressed credential sample was correctly rejected without exposing
+its value. Two newly added strict-type errors were corrected before committing;
+no reconciliation assertion was removed or relaxed.

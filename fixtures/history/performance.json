@@ -1,0 +1,47 @@
+{
+  "flows": [
+    {
+      "block": "126509253",
+      "tokens": [
+        "37037279576802627270",
+        "2999999999999999997560"
+      ]
+    },
+    {
+      "block": "126663082",
+      "tokens": [
+        "0",
+        "2999999999999999997160"
+      ]
+    },
+    {
+      "block": "128844379",
+      "tokens": [
+        "0",
+        "-1489456801526956294126"
+      ]
+    }
+  ],
+  "result": {
+    "status": "DERIVED_FROM_VERIFIED_INPUTS",
+    "denominator": "18446744073709551616",
+    "unit": "USDT base units",
+    "finalValue": "135386940839717876958104564198146626015187",
+    "cashflowPnl": "-3158607801507889107437272453608339591217",
+    "holdingPnl": "-5320943316356346260824670154833130546930",
+    "vsHolding": "2162335514848457153387397701224790955713",
+    "netFundedTokens": [
+      "37037279576802627270",
+      "4510543198473043700594"
+    ],
+    "holdingConvention": "Hold each actually funded token; deliver the same token withdrawals at their historical times; unsupported if any holding inventory would go negative",
+    "valuationConvention": "Historical on-chain provider reference at each cashflow block end and fixed endpoint; not execution prices or independently verified USD; gas excluded"
+  },
+  "display": {
+    "finalValue": "7339.340769",
+    "cashflowPnl": "-171.228472",
+    "holdingPnl": "-288.448915",
+    "vsHolding": "117.220443",
+    "unit": "USDT-equivalent; six decimals truncated toward zero"
+  }
+}

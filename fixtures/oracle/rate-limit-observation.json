@@ -1,0 +1,11 @@
+{
+  "method": "debug_traceTransaction",
+  "httpStatus": 429,
+  "error": "debug_traceTransaction: RPC rate (code 429)",
+  "observedConcurrency": 24,
+  "correctiveAction": "Stopped bulk requests; subsequent runs limited to concurrency 1..6, circuit-break on exhausted rate retries; successful cache exported without network access",
+  "examples": [
+    "0x466ee37c33f1e991a81dd85fa4d9a7dc673a6c4041997857b491479565090ca1",
+    "0x1b05e75d1468fc8051419315d706dc3c97d9d8933265e0aacc7e0a6ae29376a7"
+  ]
+}

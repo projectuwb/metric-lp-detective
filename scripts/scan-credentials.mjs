@@ -1,6 +1,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { relative, resolve } from 'node:path';
+import { gunzipSync } from 'node:zlib';
 
 // Reports file/rule only, never matching text, environment values or endpoint.
 const root = process.cwd();
@@ -40,7 +41,9 @@ try {
   } else walk(root);
   let failures = 0;
   for (const file of files) {
-    const content = staged ? execFileSync('git', ['show', `:${file}`], { maxBuffer: 16 * 1024 * 1024 }).toString() : readFileSync(resolve(root, file), 'utf8');
+    const bytes = staged ? execFileSync('git', ['show', `:${file}`], { maxBuffer: 64 * 1024 * 1024 }) : readFileSync(resolve(root, file));
+    // Public history/trace fixtures are compressed; scan their contents too.
+    const content = (file.endsWith('.gz') ? gunzipSync(bytes, { maxOutputLength: 128 * 1024 * 1024 }) : bytes).toString('utf8');
     const basename = file.split('/').at(-1);
     if ((/^\.env(?:\.|$)/.test(basename) && basename !== '.env.example') || /^(?:id_rsa|id_ed25519|credentials(?:\.json)?)$/.test(basename)) {
       console.error(`Credential scan: prohibited file: ${file}`); failures++;

@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync } from 'node:fs';
-import { decodeFunctionData, decodeFunctionResult, type Hex } from 'viem';
+import { decodeFunctionData, decodeFunctionResult, decodeEventLog, parseAbi, encodeEventTopics, type Hex } from 'viem';
 import { reconstruct, key } from './reconstruct-history.js';
 import { replayPool, portfolio } from '../lib/metric/positionLedger.js';
+import { POOL, TOKEN0, TOKEN1 } from '../lib/chain/poolConfig.js';
 export function verifyHistory() {
   const h = reconstruct();
   let cursor = BigInt(h.acquisition.from);
@@ -33,9 +34,21 @@ export function verifyHistory() {
     assert.ok(blockLogs.every(l => l.blockHash === s.blockHash));
   }
   const txs = [...new Set(h.funding.map(t => t.transactionHash))];
+  const transferAbi = parseAbi(['event Transfer(address indexed from,address indexed to,uint256 value)']);
+  const transferTopic = encodeEventTopics({ abi: transferAbi, eventName: 'Transfer' })[0];
   for (const tx of txs) {
     const receipt = JSON.parse(readFileSync(new URL(`../fixtures/history/receipts/${tx}.json`, import.meta.url), 'utf8'));
     assert.equal(receipt.status, '0x1');
+    const expected = h.funding.filter(t => t.transactionHash === tx).reduce<[bigint, bigint]>((n, t) => [n[0] + t.poolDelta[0], n[1] + t.poolDelta[1]], [0n, 0n]);
+    const transferred: [bigint, bigint] = [0n, 0n];
+    for (const log of receipt.logs) {
+      if (log.topics[0] !== transferTopic || ![TOKEN0.toLowerCase(), TOKEN1.toLowerCase()].includes(log.address.toLowerCase())) continue;
+      const event = decodeEventLog({ abi: transferAbi, topics: log.topics as [Hex, ...Hex[]], data: log.data as Hex, strict: true });
+      const i = log.address.toLowerCase() === TOKEN0.toLowerCase() ? 0 : 1;
+      if (event.args.to.toLowerCase() === POOL.toLowerCase()) transferred[i] += event.args.value;
+      if (event.args.from.toLowerCase() === POOL.toLowerCase()) transferred[i] -= event.args.value;
+    }
+    assert.deepEqual(transferred, expected, 'Funding/removal token Transfers differ from credited pool flows');
     for (const l of h.logs.filter(l => l.transactionHash === tx)) {
       const raw = receipt.logs.find((r: any) => r.logIndex === l.logIndex);
       assert.deepEqual([raw.data, raw.topics, receipt.blockHash], [l.data, l.topics, l.blockHash]);
