@@ -115,6 +115,9 @@ you. These instructions persist across future Codex tasks.
   all 100 requests/day with no refunds, refuse reruns, stop at UTC rollover and
   keep the lifetime job/attempt, checkpoint and trace caps. Do not delete/reset
   the state branch to bypass quota. Coordinate other provider clients separately.
+- Never create a fresh job to reset an unexpired same-context position's counters.
+  Require explicit resume from the latest attempt's durable checkpoint; a lost
+  latest checkpoint makes spent requests unknown, so refuse stale-cache resume.
 - Public wallet copy/link is not admission. Only GitHub's actual run state may
   claim queued/running. Resume must be explicit and matching/unexpired, with safe
   paths/checksums and canonical-header checks. Public-chain checkpoint Git history

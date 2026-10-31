@@ -24,24 +24,31 @@ export function reservationRpc(rpc: Rpc, day: string, now = () => new Date()): R
     return rpc(method, params);
   };
 }
-export interface Reservation { day: string; runId: string; key: string; requests: number }
+export interface Reservation { day: string; runId: string; key: string; requests: number; expiresAt: string }
 export interface Snapshot { runId: string; key: string; contextHash: string; expiresAt: string; sha256: string; gzip: string }
 export interface RemoteState { schema: 1; reservations: Reservation[]; snapshot?: Snapshot }
 const hash = (v: string) => /^[a-f0-9]{64}$/.test(v);
 export function checkedState(value: unknown): RemoteState {
   const s = value as RemoteState;
-  if (!s || s.schema !== 1 || !Array.isArray(s.reservations) || s.reservations.length > 100 || s.reservations.some(r => !/^\d{4}-\d{2}-\d{2}$/.test(r.day) || !/^\d{1,20}$/.test(r.runId) || !hash(r.key) || r.requests !== SERVICE_LIMITS.jobRequests)) throw new Error('Remote budget ledger invalid; refusing all RPC work');
+  if (!s || s.schema !== 1 || !Array.isArray(s.reservations) || s.reservations.length > 100 || s.reservations.some(r => !/^\d{4}-\d{2}-\d{2}$/.test(r.day) || !/^\d{1,20}$/.test(r.runId) || !hash(r.key) || r.requests !== SERVICE_LIMITS.jobRequests || !Number.isFinite(Date.parse(r.expiresAt)))) throw new Error('Remote budget ledger invalid; refusing all RPC work');
   if (new Set(s.reservations.map(r => r.runId)).size !== s.reservations.length) throw new Error('Duplicate remote reservation');
   if (s.snapshot && (!hash(s.snapshot.key) || !hash(s.snapshot.sha256) || !hash(s.snapshot.contextHash) || !/^\d{1,20}$/.test(s.snapshot.runId) || !Number.isFinite(Date.parse(s.snapshot.expiresAt)) || typeof s.snapshot.gzip !== 'string' || s.snapshot.gzip.length > 24_000_000)) throw new Error('Remote checkpoint envelope invalid');
   return s;
 }
-export function reserveRun(state: RemoteState, runId: string, key: string, now = new Date()): RemoteState {
+export function requireResume(state: RemoteState, key: string, resume: boolean, now = Date.now()) {
+  checkedState(state);
+  const previous = [...state.reservations].reverse().find(r => r.key === key && Date.parse(r.expiresAt) > now);
+  if (previous && !resume) throw new Error('An unexpired job already exists. Explicit checkpoint resume is required; a fresh dispatch cannot reset its lifetime budget.');
+  if (resume && (!previous || state.snapshot?.key !== key || state.snapshot.runId !== previous.runId)) throw new Error('The latest attempt has no matching durable checkpoint. Its spent requests are unknown; resume is refused until job expiry.');
+}
+export function reserveRun(state: RemoteState, runId: string, key: string, now = new Date(), expiresAt = new Date(now.getTime() + 86400000).toISOString()): RemoteState {
   checkedState(state);
   if (!hash(key) || !/^\d{1,20}$/.test(runId)) throw new Error('Invalid reservation identity');
   const day = now.toISOString().slice(0, 10);
   if (state.reservations.some(r => r.runId === runId) || state.reservations.filter(r => r.day === day).reduce((n, r) => n + r.requests, 0) + SERVICE_LIMITS.jobRequests > SERVICE_LIMITS.dailyRequests) throw new Error('Daily RPC allowance already reserved. No RPC sent; dispatch on the next UTC day.');
   // Reserve the entire allowance before the first request. No refunds, even on cancellation.
-  return { ...state, reservations: [...state.reservations.filter(r => r.day >= new Date(now.getTime() - 8 * 86400000).toISOString().slice(0, 10)), { day, runId, key, requests: SERVICE_LIMITS.jobRequests }] };
+  if (!Number.isFinite(Date.parse(expiresAt)) || Date.parse(expiresAt) <= now.getTime() || Date.parse(expiresAt) > now.getTime() + 86400000) throw new Error('Invalid job reservation expiry');
+  return { ...state, reservations: [...state.reservations.filter(r => r.day >= new Date(now.getTime() - 8 * 86400000).toISOString().slice(0, 10)), { day, runId, key, requests: SERVICE_LIMITS.jobRequests, expiresAt }] };
 }
 
 export interface GitHub { request(method: string, route: string, body?: unknown): Promise<any> }
@@ -120,6 +127,6 @@ export function restoreSnapshot(s: Snapshot, folder: string, key: string, c: Ana
     return [name, bytes] as const;
   });
   const job = JSON.parse(decoded.find(([name]) => name === 'job.json')![1].toString());
-  if (job.key !== key || job.id !== positionIdentity(job.id) || jobKey(job.id, c) !== key || !/^[a-f0-9]{16}$/.test(job.slug) || contextHash(job.context) !== contextHash(c) || !Number.isSafeInteger(job.requests) || job.requests < 0 || job.requests > 100 || !Number.isSafeInteger(job.attempts) || job.attempts < 0 || job.attempts >= 3 || Date.parse(job.expiresAt) <= now || Date.parse(job.expiresAt) > now + 86400000) throw new Error('Checkpoint job identity/budget/expiry invalid');
+  if (job.key !== key || job.id !== positionIdentity(job.id) || jobKey(job.id, c) !== key || !/^[a-f0-9]{16}$/.test(job.slug) || contextHash(job.context) !== contextHash(c) || !Number.isSafeInteger(job.requests) || job.requests < 0 || job.requests > 100 || !Number.isSafeInteger(job.attempts) || job.attempts < 0 || job.attempts >= 3 || !Number.isFinite(Date.parse(job.expiresAt)) || Date.parse(job.expiresAt) <= now || Date.parse(job.expiresAt) > now + 86400000) throw new Error('Checkpoint job identity/budget/expiry invalid');
   for (const [name, bytes] of decoded) { const file = path.join(folder, name); mkdirSync(path.dirname(file), { recursive: true, mode: 0o700 }); writeFileSync(file, bytes, { flag: 'wx', mode: 0o600 }); }
 }

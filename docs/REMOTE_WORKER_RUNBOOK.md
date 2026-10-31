@@ -122,6 +122,13 @@ checkpoint reuse rechecks canonical headers. A mismatched/expired/exhausted
 checkpoint is refused, without silently starting fresh work. A fresh job after
 expiry needs a new explicit dispatch with resume off.
 
+An unexpired position job **cannot** be restarted with resume off to reset its
+lifetime counters, even on the next UTC day. The durable reservation records the
+exact expiry. Resume requires the latest attempt's checkpoint; after a hard loss,
+an older snapshot cannot prove how many additional requests were spent. That case
+is refused until job expiry rather than undercounting requests. A new job's local
+expiry is clamped to the durable expiry so API latency cannot open a reset gap.
+
 Only allowlisted JSON/compressed public-chain files are restored; symlinks,
 path traversal, changed identities/budgets, corrupted compression/checksums,
 oversized input and configured credentials are rejected. Partial progress survives

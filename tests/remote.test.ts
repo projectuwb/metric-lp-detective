@@ -4,7 +4,7 @@ import path from 'node:path';
 import os from 'node:os';
 import { createHash } from 'node:crypto';
 import { gzipSync } from 'node:zlib';
-import { authorizeRun, reserveRun, checkedState, github, loadState, saveState, snapshot, restoreSnapshot, rejectSecrets, reservationRpc, type GitHub, type Snapshot } from '../lib/analysis/remote';
+import { authorizeRun, reserveRun, requireResume, checkedState, github, loadState, saveState, snapshot, restoreSnapshot, rejectSecrets, reservationRpc, type GitHub, type Snapshot } from '../lib/analysis/remote';
 import { atomicJson, context, submit, jobFolder, readJson } from '../lib/analysis/store';
 import { SMALL_SAMPLE_ID } from '../lib/domain/samples';
 const folders: string[] = [];
@@ -44,6 +44,18 @@ it('confirms the remote commit before RPC admission and never force-updates stat
   expect(calls.find(c => c.method === 'PATCH')?.body.force).toBe(false);
   corrupt = true;
   await expect(saveState(api, state, 'second', 'raced')).rejects.toThrow('lost a race');
+});
+it('cannot reset a live job across UTC days or reuse a checkpoint from before a lost attempt', () => {
+  const key = 'a'.repeat(64), firstDay = new Date('2026-10-31T23:00:00Z'), nextDay = new Date('2026-11-01T01:00:00Z');
+  let state = reserveRun({ schema: 1, reservations: [] }, '1', key, firstDay);
+  expect(() => requireResume(state, key, false, nextDay.getTime())).toThrow('cannot reset');
+  expect(() => requireResume(state, key, true, nextDay.getTime())).toThrow('spent requests are unknown');
+  state.snapshot = { runId: '1', key, contextHash: key, expiresAt: state.reservations[0].expiresAt, sha256: key, gzip: '' };
+  expect(() => requireResume(state, key, true, nextDay.getTime())).not.toThrow();
+  state = reserveRun(state, '2', key, nextDay, state.reservations[0].expiresAt);
+  // The runner was lost after reservation: never go back to run 1's counters.
+  expect(() => requireResume(state, key, true, nextDay.getTime())).toThrow('latest attempt');
+  expect(() => requireResume(state, key, false, Date.parse(state.reservations[0].expiresAt) + 1)).not.toThrow();
 });
 it('stops before any request could spend a reservation across UTC midnight', async () => {
   const rpc = vi.fn(async () => '0x38');

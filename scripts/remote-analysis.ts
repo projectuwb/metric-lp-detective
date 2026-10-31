@@ -2,7 +2,7 @@
 import { appendFileSync } from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { authorizeRun, contextHash, github, loadState, saveState, reserveRun, snapshot, restoreSnapshot, reservationRpc, rejectSecrets, REPOSITORY, WORKFLOW, type RunIdentity } from '../lib/analysis/remote';
+import { authorizeRun, contextHash, github, loadState, saveState, reserveRun, requireResume, snapshot, restoreSnapshot, reservationRpc, rejectSecrets, REPOSITORY, WORKFLOW, type RunIdentity } from '../lib/analysis/remote';
 import { atomicJson, context, getJob, jobFolder, jobKey, readJson, storeRoot, submit, updateJob } from '../lib/analysis/store';
 import { positionIdentity } from '../lib/domain/position';
 import { positionPlan } from '../lib/analysis/collect';
@@ -33,16 +33,21 @@ async function main() {
     const plan = positionPlan(id);
     if (plan.r.events.filter(e => e.type === 'swap').length >= 100) throw new Error('Remote pilot requires fewer than 100 swaps');
     const api = github(), loaded = await loadState(api);
-    if (process.env.RESUME_CHECKPOINT === 'true') {
+    const resuming = process.env.RESUME_CHECKPOINT === 'true';
+    requireResume(loaded.state, key, resuming);
+    if (resuming) {
       if (!loaded.state.snapshot) throw new Error('No saved remote checkpoint is available');
       restoreSnapshot(loaded.state.snapshot, jobFolder(key), key, c);
       const previous = getJob(key)!;
       if (!['RUNNING', 'FAILED', 'PARTIAL', 'RATE_LIMITED'].includes(previous.status) || previous.requests >= 100) throw new Error('Checkpoint is not retryable within the lifetime budget');
       updateJob(key, { status: 'QUEUED', cancelled: false, error: undefined, phase: 'Owner explicitly resumed a durable remote checkpoint' });
     }
-    const state = reserveRun(loaded.state, run.runId, key), head = await saveState(api, state, loaded.head, 'Reserve full bounded owner analysis allowance for run ' + run.runId);
+    const state = reserveRun(loaded.state, run.runId, key, new Date(), getJob(key)?.expiresAt), head = await saveState(api, state, loaded.head, 'Reserve full bounded owner analysis allowance for run ' + run.runId);
     atomicJson(path.join(storeRoot(), 'budget.json'), { day: new Date().toISOString().slice(0, 10), issued: 0, jobs: 0 });
     const job = getJob(key) ?? submit(id, c).job;
+    // New jobs inherit the exact durable expiry; GitHub API latency cannot open
+    // a gap where fresh admission resets a still-live job's lifetime budget.
+    updateJob(key, { expiresAt: state.reservations.at(-1)!.expiresAt });
     atomicJson(controlFile, { runId: run.runId, sha: run.sha, id, key, contextHash: contextHash(c), reservationDay: state.reservations.at(-1)!.day, reservationHead: head, initialRequests: job.requests });
     summary(`Owner authorization and durable 100-attempt reservation confirmed. Job ${key}; ${plan.r.events.length} events, ${plan.blocks.length} checkpoints, ${plan.swapTransactions.length} traces, <=${plan.upperBound} reads. No anonymous queue. Public evidence/checkpoints will be retained in Git.`);
     output('proceed', 'true'); output('key', key);

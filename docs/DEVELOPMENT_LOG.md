@@ -322,3 +322,27 @@ RPC capture or proof of a live Actions worker. Production code/UI are unchanged
 from the hosted-CI-passing implementation; all 16 production-browser checks remain
 applicable. No new blockchain requests, evidence rewrites or secret/setting
 changes were made. Stage 4 remote/public gate stays NOT VERIFIED.
+
+### Cross-dispatch lifetime-budget hardening
+
+Recovery milestone b080d9a34011c6aa5b23b0af558cdff8bf285dac is pushed; hosted
+Validate run 41252076642 completed SUCCESS. Earlier implementation and receipt
+runs 41251471309 / 41251782467 also completed SUCCESS.
+
+Final review caught an admission loophole before integration: a later-day fresh
+workflow could otherwise reset an unfinished job's counters when resume was left
+off. Fixed by persisting the exact reservation/job expiry, requiring explicit
+resume of any unexpired same-context job, and refusing a checkpoint older than
+the latest reserved attempt (unknown spent requests after a lost runner). A fresh
+local job inherits the durable expiry; API latency cannot extend its lifetime.
+No RPC was sent while investigating or testing this issue.
+
+Final npm run check PASS: 80/80 automated tests, typecheck, all original independent
+reconciliation and performance checks, 310 exact Fraction comparisons, credential
+scan (208 files, zero findings). The added safety test covers cross-UTC dispatch,
+missing/latest/stale checkpoints and expiry. Actionlint still passes. Existing
+production build/client scan and all 16 browser tests passed for the unchanged
+web code; the final pushed revision also receives the complete hosted CI suite.
+Original blockchain fixtures remain byte-for-byte unchanged. Remote Actions
+reconstruction and fourth public replay remain NOT VERIFIED, and GitHub API PR /
+merge remains blocked as recorded above. No secrets/settings/deployments changed.
