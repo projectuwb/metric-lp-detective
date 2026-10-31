@@ -45,9 +45,10 @@ Examples and corrective action are saved in `rate-limit-observation.json`.
 The bulk scan was stopped and successful results were exported without further
 network requests. No missing quote was replaced by a mock or a block-end quote.
 
-The worker is now bounded to 1..6 concurrent requests, retries temporary/rate
-failures with capped backoff, and stops further uncached requests after exhausted
-rate-limit retries. It resumes from local caches and committed compressed witnesses.
+The visual MVP update bounds the worker to 1..2 concurrent requests (default 1),
+at least one second between reservations, and 50 remote attempts per invocation
+(default; hard maximum 100). Retries consume budget. The first rate response
+opens the circuit so queued work cannot issue more remote requests. It resumes from local caches and committed compressed witnesses.
 Missing witnesses keep PARTIAL status. No provider plan or paid infrastructure was
 changed. Cheapest sound continuation: resume at concurrency 1 under the existing
 provider's documented trace quota, or obtain an explicitly approved higher quota.

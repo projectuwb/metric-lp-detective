@@ -6,7 +6,7 @@ import { gunzipSync } from 'node:zlib';
 // Reports file/rule only, never matching text, environment values or endpoint.
 const root = process.cwd();
 const staged = process.argv.includes('--staged');
-const excluded = new Set(['.git', 'node_modules', 'artifacts', 'coverage']);
+const excluded = new Set(['.git', 'node_modules', 'artifacts', 'coverage', '.next', '.web-data', 'test-results', 'playwright-report']);
 const configured = new Set();
 for (const [name, value] of Object.entries(process.env)) {
   if (value && value.length >= 12 && /(?:API_KEY|TOKEN|PASSWORD|SECRET|RPC_URL)$/.test(name)) configured.add(value);
