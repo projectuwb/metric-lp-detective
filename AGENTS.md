@@ -76,3 +76,26 @@ you. These instructions persist across future Codex tasks.
 - End each task with completed work, validation, exact commit/branch/PR and
   pushed/merged status, plus blockers requiring owner action. Request only the
   precise missing permission when independent work is exhausted.
+
+## Stage 3 operational boundaries
+
+- Read docs/STAGE_3.md and docs/OWNER_BETA_RUNBOOK.md. Exit economics use exact
+  rationals for each flow at its own historical mark; CRCLB-equivalent is
+  hypothetical translation, not actual CRCLB received. Never turn zero LP inventory
+  or a withdrawal into an investment loss, or invent a feasible holding benchmark.
+- The owner-local disk queue/worker has a real new-wallet browser proof. It is
+  loopback-only and always disabled on Vercel. Public mode downloads a request
+  without claiming acceptance; hosted on-demand analysis remains PARTIAL.
+- Preserve source-version deduplication, one worker, hard 100-attempt job/day caps,
+  two new jobs/day, ten trace-transaction cap, conservative preflight and independent
+  reconciliation before replay promotion. Never weaken caps to pass a fixture.
+- Failed/cancelled/unverified artifacts stay locked. Preserve immutable published
+  proof; additional replays are discovered from independently verified owner
+  artifacts, not a manual wallet allowlist. Do not overwrite a different indexed
+  head under the same published artifact path.
+- Live RPC browser proof is explicit (`npm run test:beta:live`) and consumes real
+  quota; default CI is offline. A previously published wallet must not be relabelled
+  as a new live request. Keep published replay and original browser regressions.
+- Owner publication can use beta:publish after Stage 3 reaches main; no Git write
+  credentials belong in a browser/public job trigger. Never claim merge/deployment
+  solely from a successful push or an auto-merge request.

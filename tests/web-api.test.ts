@@ -15,6 +15,7 @@ describe('bounded public server API and generated ledger', () => {
     expect((await empty.json()).positions).toEqual([]);
   });
   it('rejects invalid/oversized input, invalid pages and unreconciled positions', async () => {
+    expect((await POST(new Request('http://local/api/positions', { method: 'POST', body: 'null' }))).status).toBe(400);
     expect((await POST(new Request('http://local/api/positions', { method: 'POST', body: JSON.stringify({ wallet: 'bad' }) }))).status).toBe(400);
     expect((await POST(new Request('http://local/api/positions', { method: 'POST', body: 'a'.repeat(1025) }))).status).toBe(413);
     const id = getMeta().id;

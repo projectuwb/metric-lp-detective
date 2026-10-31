@@ -61,3 +61,24 @@ allowances. The GitHub Actions option needs (1) confirmation of remaining free
 usage, (2) a server-only Actions RPC secret, and (3) authenticated job admission
 without exposing a write token in Vercel/browser code. No settings or secrets are
 created by this task. A new public queue is not claimed by merely adding a workflow.
+
+## Implementation and observed outcome
+
+The owner-local option is now implemented and proved end to end in a local
+production build. A new entered provider/salt (not a preset button) produced a
+persisted job, continued after browser-context close/reopen, completed 86 bounded
+RPC attempts, reconciled exactly and unlocked a twelve-event/ten-swap replay.
+Immutable raw/observational evidence is committed under
+`fixtures/positions/dcc159a95741b233/`. Other eligible positions use the same
+pipeline; EOA/history/trace budgets still apply. No public API trigger executes a
+pool replay or blockchain scan within a serverless request.
+
+The public deployment path remains file handoff plus owner-controlled publication;
+no durable Internet queue or GitHub dispatch is claimed. The local runner uses the
+existing machine/volume and requires it to remain available. It is not appropriate
+for untrusted shared hosts or public port forwarding. Actual TTL/access and cleanup
+behavior, owner commands and remaining integration prerequisites are in
+OWNER_BETA_RUNBOOK.md. The future main-based automated publish helper is guarded and
+syntax-checked; this task used the equivalent validated feature-branch Git workflow.
+No higher provider plan or additional paid service was created. Unknown provider,
+Actions and Vercel allowances are not asserted as free capacity.

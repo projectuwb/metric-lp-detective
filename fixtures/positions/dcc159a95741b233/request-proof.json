@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "key": "92177d753cb2865a0e9152d59f3d2d7cd5c8b07bc99d40087665257177e1076b",
+  "id": "0xa19899f6b8416d8266f0d4f14688c8c6eeaec818:671085802901633847509096",
+  "context": {
+    "chainId": 56,
+    "pool": "0xdc2b2f96bc1eb01e7286c688d5354e081af188c4",
+    "indexEnd": "130841348",
+    "indexEndHash": "0xd4b50c9afe0934057d61ccf2821e30c5b6dbf3553b6348ccb846e9f5a074ea7e",
+    "sourceHash": "0x2c6c8e6f1f3175cca4e31d0231777255deb75132ddf1b1804d6cf28db08f8f51",
+    "accountingVersion": "50eddbdfa73d44c51460956b03a786c6f90a12f04e8b674af4f33be05ffa7e16"
+  },
+  "createdAt": "2026-10-31T21:47:12.410Z",
+  "verifiedAt": "2026-10-31T21:48:54.302Z",
+  "requests": 86,
+  "attempts": 1,
+  "verification": {
+    "status": "VERIFIED",
+    "id": "0xa19899f6b8416d8266f0d4f14688c8c6eeaec818:671085802901633847509096",
+    "slug": "dcc159a95741b233",
+    "swaps": 10,
+    "events": 12,
+    "checkpoints": 15,
+    "storageComparisons": 6000,
+    "withdrawalChecks": 12,
+    "closed": true,
+    "final": [
+      "0",
+      "0"
+    ],
+    "tolerance": "0",
+    "from": "129056551",
+    "lastEventBlock": "129093793",
+    "indexedThrough": "130841348",
+    "executionQuoteEvents": 10
+  },
+  "processingMode": "OWNER_LOCAL_DURABLE",
+  "note": "A real explicit job, not an anonymous hosted queue; browser proof and source evidence are independently checked."
+}

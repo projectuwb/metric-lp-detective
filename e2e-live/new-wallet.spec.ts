@@ -1,0 +1,47 @@
+// Explicit live test: real provider reads. Not part of credential-free offline CI.
+import { test, expect } from '@playwright/test';
+import { writeFileSync, mkdirSync } from 'node:fs';
+const positionId = process.env.LIVE_POSITION_ID ?? '0xa19899f6b8416d8266f0d4f14688c8c6eeaec818:671085802901633847509096';
+const [provider, salt] = positionId.split(':');
+test('new entered wallet: persisted request survives browser close, independently verifies and becomes playable', async ({ page, context, browser }) => {
+  await page.goto('/');
+  await page.getByLabel('START WITH A PUBLIC WALLET').fill(provider);
+  await page.getByRole('button', { name: 'Find positions', exact: true }).click();
+  const position = page.getByRole('button', { name: new RegExp('salt ' + salt) });
+  await expect(position).toContainText('Indexed only'); await position.click();
+  await expect(page.getByRole('button', { name: 'Request verified reconstruction', exact: true })).toBeVisible();
+  const response = page.waitForResponse(r => r.url().endsWith('/api/analysis') && r.request().method() === 'POST');
+  await page.getByRole('button', { name: 'Request verified reconstruction', exact: true }).click();
+  const accepted = await (await response).json(); expect(accepted.accepted).toBe(true); expect(accepted.job.status).toBe('QUEUED');
+  const key = accepted.job.key;
+  await expect.poll(async () => (await (await page.request.get('/api/analysis/' + key)).json()).job.status, { timeout: 30000 }).toBe('RUNNING');
+  mkdirSync('artifacts', { recursive: true });
+  await page.screenshot({ path: 'artifacts/stage3-live-processing.png', fullPage: true });
+  await context.close();
+  const reopened = await browser.newContext({ baseURL: 'http://127.0.0.1:3100', viewport: { width: 1440, height: 1000 } });
+  const again = await reopened.newPage(); await again.goto('/');
+  await again.getByLabel('START WITH A PUBLIC WALLET').fill(provider);
+  await again.getByRole('button', { name: 'Find positions', exact: true }).click();
+  await again.getByRole('button', { name: new RegExp('salt ' + salt) }).click();
+  const persisted = await (await again.request.get('/api/analysis/' + key)).json();
+  expect(persisted.job.key).toBe(key); expect(persisted.job.createdAt).toBe(accepted.job.createdAt);
+  await expect.poll(async () => {
+    const body = await (await again.request.get('/api/analysis/' + key)).json();
+    if (['FAILED', 'RATE_LIMITED', 'UNSUPPORTED', 'PARTIAL'].includes(body.job.status)) throw new Error(JSON.stringify({ status: body.job.status, method: body.job.method, error: body.job.error, requests: body.job.requests }));
+    return body.job.status;
+  }, { timeout: 240000, intervals: [2000] }).toBe('VERIFIED');
+  await expect(again.getByTestId('stock-balance')).toBeVisible({ timeout: 20000 });
+  await expect(again.getByRole('button', { name: new RegExp('salt ' + salt) })).toContainText('Verified replay');
+  await expect(again.getByTestId('outcome-net')).not.toHaveText('Unavailable');
+  await again.getByRole('button', { name: 'Next event', exact: true }).click();
+  await expect(again.getByTestId('source-link')).toHaveAttribute('href', /^https:\/\/bscscan.com\/tx\/0x[0-9a-f]{64}$/);
+  await again.getByRole('button', { name: /Exit Summary/ }).click();
+  await expect(again.getByText('Fully withdrawn', { exact: true })).toBeVisible();
+  const final = (await (await again.request.get('/api/analysis/' + key)).json()).job;
+  const meta = await (await again.request.get('/api/replay?id=' + encodeURIComponent(positionId))).json();
+  expect(final.verification.tolerance).toBe('0'); expect(final.verification.closed).toBe(true); expect(meta.final).toEqual(['0', '0']);
+  const outcome = await again.getByTestId('outcome-net').textContent();
+  writeFileSync('artifacts/live-beta-proof.json', JSON.stringify({ schema: 1, positionId, key, initialState: 'INDEXED_ONLY', acceptedState: accepted.job.status, processingObserved: 'RUNNING', browserContextClosedAndReopened: true, finalJob: final, servedReplay: { id: meta.id, eventCount: meta.eventCount, final: meta.final, sourceHashes: meta.sourceHashes }, selectedExitUsdtOutcome: outcome, mode: 'OWNER_LOCAL_DURABLE', productionDeploymentVerified: false }, null, 2));
+  await again.screenshot({ path: 'artifacts/stage3-live-replay.png', fullPage: true });
+  await reopened.close();
+});

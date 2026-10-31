@@ -32,7 +32,12 @@
     "check:client": "node scripts/check-client-bundle.mjs",
     "analyse:position": "node --max-old-space-size=4096 --import tsx scripts/analyse-position.ts",
     "verify:position": "node --max-old-space-size=4096 --import tsx scripts/verify-position.ts",
-    "verify:outcomes": "node --import tsx scripts/verify-outcomes.ts && python3 scripts/verify_outcomes.py"
+    "verify:outcomes": "node --import tsx scripts/verify-outcomes.ts && python3 scripts/verify_outcomes.py",
+    "beta": "node scripts/beta-launch.mjs",
+    "beta:import": "node --import tsx scripts/beta-import.ts",
+    "beta:export": "node --max-old-space-size=4096 --import tsx scripts/beta-export.ts",
+    "test:beta:live": "playwright test --config playwright.beta.config.ts",
+    "beta:publish": "node scripts/beta-publish.mjs"
   },
   "dependencies": {
     "lucide-react": "1.66.0",

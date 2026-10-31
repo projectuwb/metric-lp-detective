@@ -67,3 +67,69 @@ See STAGE_3_ARCHITECTURE.md for the no-cost go/no-go decision. No new paid servi
 Vercel project, provider plan, permission expansion or deployment has been created.
 The full hosted release gate must remain PARTIAL until a new-wallet processing
 path has been proved and production availability is separately verified.
+
+## Gate 2 / 3: OWNER-LOCAL PROVEN; PUBLIC ON-DEMAND PARTIAL
+
+The owner-local disk queue, separate worker, explicit request/download/import,
+read-cache/checkpoint recovery, quota ledger and immutable checksum-checked replay
+promotion are implemented. A real new-wallet test has passed. This is not merely a
+third prebuilt sample: the previously indexed-only position was submitted by the
+browser to the actual queue and became playable only after independent validation.
+The build now also discovers intentionally exported owner artifacts generically.
+See [the operational runbook](OWNER_BETA_RUNBOOK.md).
+
+### New entered wallet and chain evidence
+
+Provider `0xA19899f6B8416D8266F0D4f14688C8c6eeAec818`,
+salt `671085802901633847509096`.
+
+- Initial add: block 129056551, log 215,
+  `0x372a325001d88a19b6e3f39322e6a05cff7c3fd6fc23f30a1d4bf2072ec3b879`.
+- Full withdrawal: block 129093793, log 161,
+  `0xf468cdefc138331bddc0d8bef4d52bc304ce3345b0e32e56cb9dae2f5d943829`.
+- Ten swaps, twelve total events, fifteen checkpoints, 6,000 exact storage
+  comparisons, twelve historical full-withdrawal calls, two real liquidity
+  receipts, ten raw transaction traces/ten execution quotes and thirteen block-end
+  marks. Final inventory [0,0]; permitted discrepancy zero base units.
+- Add block hash:
+  `0x5a273cd544c6fba9b9b04b2f30c466661fe6c66e6b65e9442124c3a806df0a77`.
+- Withdrawal block hash:
+  `0xb43a4b348faaa8ab8cc63100a8e5adec375ca23542b9027eae6c0abf930d0c88`.
+- Independent fixed-head reconciliation through 130841348, hash
+  `0xd4b50c9afe0934057d61ccf2821e30c5b6dbf3553b6348ccb846e9f5a074ea7e`.
+
+Actual entry: 0 CRCLB + 99.999999999999999883 USDT. Actual distributions:
+0 CRCLB + 99.956637992935193954 USDT. Fully closed reference-marked cashflow PnL:
+-0.043362 USDT-equivalent, or +0.012225 hypothetical flow-time CRCLB-equivalent.
+The exact-token holding benchmark is feasible here: holding PnL 0, LP versus holding
+-0.043362 USDT-equivalent. Zero initial stock percentage is N/A, not division by zero.
+
+All raw and observational proof is in `fixtures/positions/dcc159a95741b233/`.
+The browser job key is
+`92177d753cb2865a0e9152d59f3d2d7cd5c8b07bc99d40087665257177e1076b`.
+The successful run used 86 attempts: four identity/head reads, thirty checkpoint
+headers, fifteen storage calls, twelve withdrawal calls, thirteen quote calls,
+two receipts and ten traces. No original-sample bulk recovery was launched.
+
+An initial private-browser attempt exposed Next's internal localhost-vs-Host
+normalization and made no job/RPC request. Host/origin checks were corrected and
+security regression-tested; zombie-process lease recovery was also fixed. The
+successful request and its data were not replaced by mocks. Synthetic rate-limit
+unit vectors are separate from this actual successful provider run.
+
+### What remains incomplete
+
+Public Vercel mode intentionally offers file download, not fictitious admission.
+The owner can import/process/publish that file on existing resources; the private
+beta can process other eligible indexed wallets without code changes. A truly
+hosted authenticated admission/worker/shared-store path is not provisioned. Stage 3
+is therefore PARTIAL against the full public release gate. The smallest decision
+is to keep the operational owner-run handoff, or authorize/configure a specific
+free durable authenticated relay/worker arrangement; no paid service is assumed.
+
+GitHub API access still returns Forbidden; permissions/branch protections and
+automatic PR/merge cannot be inspected through it. No main change, Vercel project,
+production environment setting, paid plan or deployment command is implied by a
+feature-branch push. Stage 1B remains PARTIAL. Existing samples stay available;
+remove the owner artifact registration to roll back additional playback, or revert
+Stage 3 commits to restore Stage 2. Stop the beta process to disable private analysis.

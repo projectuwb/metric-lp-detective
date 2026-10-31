@@ -187,3 +187,38 @@ resolved with the supported execution permission). Production build/client scan
 PASS; all 10 production browser tests PASS, including original 8 and phone layout.
 Stage 1B stays PARTIAL. Gate 2 is not declared passed; architecture decision is
 owner-local durable beta, no fake hosted queue or new paid service.
+
+## Stage 3.2–3.3 owner beta / real wallet — 1 November 2026 (Australia/Sydney)
+
+Exit milestone d881208 was pushed; GitHub Actions run 41243033629 independently
+reports SUCCESS. Implemented loopback-only durable owner queue, one separate
+worker, source-version idempotency, persistent per-job/day quotas, canonical
+checkpoint/cache resume, failure/retry/cancel, immutable checksum-checked bundles
+and generic owner-artifact export/registration. Public Vercel mode remains honest
+file download, with no fake accepted/processing state or provider work in a request.
+
+Real new input 0xa19899f6b8416d8266f0d4f14688c8c6eeaec818:671085802901633847509096
+was INDEXED_ONLY, browser-submitted to persisted QUEUED, observed RUNNING, survived
+browser-context close/reopen, reconciled with zero discrepancy and became playable.
+Job 92177d753cb2865a0e9152d59f3d2d7cd5c8b07bc99d40087665257177e1076b: 86 real
+RPC attempts, 15 checkpoints, 6,000 storage comparisons, 12 withdrawal executions,
+10 swaps / 12 events, fully closed. Raw receipts/traces/state/marks and browser
+proof exported under fixtures/positions/dcc159a95741b233. No extra provider reads
+were needed to export/verify/publish. Source acquisition is unchanged.
+
+An early local UI guard rejected Next's normalized Host before any job/RPC call;
+corrected without removing foreign-origin/Vercel restrictions. Fixed observed
+zombie lease recovery. A test expecting QUEUED for a now-published wallet exposed
+an unnecessary duplicate-work case: verified replays now reuse without new jobs,
+and the queued-status regression uses an actually unverified indexed position.
+Original reconciliation assertions remain intact; registry membership now matches
+the exact curated + verified-published set rather than a permanent count of two.
+
+All 71 tests and full original checks PASS; Python verifies 310 exact values over
+31 selected real events. Production build and client scan PASS; all 13 offline
+production browser tests PASS, plus the separate real new-wallet test PASS (1.8m).
+All six API traces contain all 215 generated data files and exclude private job
+folders/Git metadata. No credential findings. The future clean-main publish helper
+is guarded/syntax-checked; it cannot be fully exercised until Stage 3 reaches main.
+Hosted on-demand Gate 2 and Stage 1B remain PARTIAL. No paid resource, new Vercel
+project, permission/security setting or deployment command was created.
