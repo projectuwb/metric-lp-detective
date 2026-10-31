@@ -3,6 +3,8 @@ test('smaller verified lifecycle: initial funding, swaps, selected marks and ful
   const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto('/');
   await page.getByRole('button', { name: /Try the smaller sample/ }).click();
+  await expect(page.getByTestId('outcome-net')).toHaveText('-1.812248');
+  await page.getByRole('button', { name: /Initial deposit · #1/ }).click();
   await expect(page.getByTestId('stock-balance')).toContainText('5.581308');
   await expect(page.getByTestId('initial-value')).toContainText('4355.903941');
   await expect(page.getByLabel('Replay event', { exact: true })).toHaveAttribute('max', '13');
@@ -50,5 +52,7 @@ test('smaller-sample failures retry the requested position, without an endless l
   await expect(page.getByRole('alert').filter({ hasText: 'Small sample temporarily unavailable' })).toBeVisible();
   await expect(page.getByRole('status')).toHaveCount(0);
   await page.getByRole('button', { name: 'Retry', exact: true }).click();
+  await expect(page.getByTestId('outcome-net')).toHaveText('-1.812248');
+  await page.getByRole('button', { name: /Initial deposit · #1/ }).click();
   await expect(page.getByTestId('stock-balance')).toContainText('5.581308');
 });

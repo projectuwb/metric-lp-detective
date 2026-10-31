@@ -11,16 +11,20 @@ import { signedPair } from '../chain/decode';
 import { RpcFailure, type Rpc } from '../chain/rpc';
 import { atomicJson, readJson, AnalysisLimit } from './store';
 import { SERVICE_LIMITS } from './types';
-export async function collectPosition(id: string, slug: string, root: URL, rpc: Rpc, requests: () => number, report: (progress: { phase: string; completedCheckpoints: number; totalCheckpoints: number }) => void) {
-  mkdirSync(root, { recursive: true }); mkdirSync(new URL('receipts/', root), { recursive: true }); mkdirSync(new URL('traces/', root), { recursive: true });
-  const save = (name: string, value: unknown) => atomicJson(fileURLToPath(new URL(name, root)), value);
-  const read = (name: string, fallback: any) => existsSync(new URL(name, root)) ? readJson(fileURLToPath(new URL(name, root))) : fallback;
+export function positionPlan(id: string) {
   const h = historyInputs(), r = positionReplay(h.logs, h.abi, id), [owner, salt] = id.split(':');
   const swapTransactions = [...new Set(r.events.filter(e => e.type === 'swap').map(e => e.transactionHash))];
   const fundingTransactions = [...new Set(r.funding.map(f => f.transactionHash))];
   const blocks = [...new Set([h.acquisition.to, (BigInt(r.events[0].block) - 1n).toString(), (BigInt(r.events.at(-1)!.block) - 1n).toString(), ...r.events.map(e => e.block)])].sort((a, b) => BigInt(a) < BigInt(b) ? -1 : 1);
   const upperBound = 4 + blocks.length * 5 + fundingTransactions.length + swapTransactions.length;
   if (r.events.filter(e => e.type === 'swap').length > SERVICE_LIMITS.maxSwaps || blocks.length > SERVICE_LIMITS.maxCheckpoints || swapTransactions.length > SERVICE_LIMITS.maxTraceTransactions || upperBound > SERVICE_LIMITS.jobRequests) throw new AnalysisLimit('UNSUPPORTED', `Too large for the conservative beta: ${r.events.filter(e => e.type === 'swap').length} swaps, ${blocks.length} checkpoints, ${swapTransactions.length} trace transactions, at most ${upperBound} reads. No RPC scan started. Owner review required.`);
+  return { h, r, owner, salt, swapTransactions, fundingTransactions, blocks, upperBound };
+}
+export async function collectPosition(id: string, slug: string, root: URL, rpc: Rpc, requests: () => number, report: (progress: { phase: string; completedCheckpoints: number; totalCheckpoints: number }) => void) {
+  const { h, r, owner, salt, swapTransactions, fundingTransactions, blocks } = positionPlan(id);
+  mkdirSync(root, { recursive: true }); mkdirSync(new URL('receipts/', root), { recursive: true }); mkdirSync(new URL('traces/', root), { recursive: true });
+  const save = (name: string, value: unknown) => atomicJson(fileURLToPath(new URL(name, root)), value);
+  const read = (name: string, fallback: any) => existsSync(new URL(name, root)) ? readJson(fileURLToPath(new URL(name, root))) : fallback;
   const fingerprint = { id, indexEndHash: h.acquisition.endHash, sourceHash: keccak256(readFileSync(new URL('../../fixtures/history/pool-logs.json.gz', import.meta.url))) };
   const previous = read('capture-context.json', null);
   if (previous && JSON.stringify(previous) !== JSON.stringify(fingerprint)) throw new Error('Capture/index context changed; cached state is not reusable');

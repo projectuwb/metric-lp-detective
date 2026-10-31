@@ -3,6 +3,12 @@
 1 November 2026 (Australia/Sydney). **Operational on a trusted owner machine;
 not a hosted public queue.** No new paid service or Vercel project is used.
 
+Stage 4 adds a browser-only GitHub owner-workflow handoff; see
+[REMOTE_WORKER_RUNBOOK.md](REMOTE_WORKER_RUNBOOK.md) for its setup and unverified
+remote gate. The local commands below remain an optional, preserved alternative.
+Stage 3 is now merged via PR #8 with deployment owner-confirmed; statements below
+about the original feature-branch validation describe that historical run.
+
 ## Start and use it
 
 Node 24+, the existing server-side BNB_RPC_URL and current repository dependencies
