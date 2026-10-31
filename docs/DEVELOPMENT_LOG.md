@@ -222,3 +222,25 @@ folders/Git metadata. No credential findings. The future clean-main publish help
 is guarded/syntax-checked; it cannot be fully exercised until Stage 3 reaches main.
 Hosted on-demand Gate 2 and Stage 1B remain PARTIAL. No paid resource, new Vercel
 project, permission/security setting or deployment command was created.
+
+## Stage 3 push / CI / integration receipt — 1 November 2026 (Australia/Sydney)
+
+Worker/evidence milestone 49f15bae0dd042bbdfba00b1c8c9017cab8734a0 is pushed to
+codex/stage3-outcomes-wallet-beta. Public Actions run 41247811765 reports SUCCESS;
+exit milestone d881208/run 41243033629 also reports SUCCESS. Remote branch fetch
+matched local code. Main remains 3720e128ac611ec987582ee5e066d4a6ddca0e47.
+
+Final production checks pass after the UI updates its position card to verified
+when the replay loads; exit navigation is prominent, actual net token movement is
+separate from return, and endpoint sign colors follow the numeric result.
+Source recompile, all original independent reconciliation, 71 tests, 310 Fraction
+checks, production build, client/staged credential scans, 13 offline browser tests
+and the separate actual-RPC browser proof pass. Screenshots were visually inspected.
+
+PR creation was attempted with a complete body file and failed exactly:
+Post "https://api.github.com/graphql": Forbidden.
+No branch-policy bypass or direct main push was attempted. Required capability is
+HTTPS api.github.com:443 or another authorized GitHub integration connector.
+Stage 3 remains PARTIAL for truly hosted on-demand jobs; the owner-local path is
+operational and proved, public file handoff is honest. No new paid service,
+provider upgrade, Vercel project, security setting or deployment was created.

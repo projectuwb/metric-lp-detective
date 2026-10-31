@@ -61,7 +61,16 @@ client credential scan pass, all 10 production Chromium tests pass. Original 61
 tests and 8 browser tests remain in place. Screenshots are local test artifacts,
 not blockchain evidence. Stage 1B remains PARTIAL.
 
-## Gate 2: implementation in progress — no hosted queue claim
+### Intermediate selected point
+
+In the nine-swap sample at event index 1 / block 128750042, inventory is
+8.081029088073744341 CRCLB + 3704.755571252441345928 USDT. Only the initial
+contribution has occurred: 4355.903941 USDT-equivalent contributed, zero withdrawn,
+4355.842420 remaining and -0.061521 net, all display-truncated to six decimals.
+The two later deposits are excluded until their actual event indexes. This is
+reference-marked performance, not an isolated fee-income figure.
+
+## Gate 2 status — owner-local working; hosted processing PARTIAL
 
 See STAGE_3_ARCHITECTURE.md for the no-cost go/no-go decision. No new paid service,
 Vercel project, provider plan, permission expansion or deployment has been created.
@@ -133,3 +142,23 @@ production environment setting, paid plan or deployment command is implied by a
 feature-branch push. Stage 1B remains PARTIAL. Existing samples stay available;
 remove the owner artifact registration to roll back additional playback, or revert
 Stage 3 commits to restore Stage 2. Stop the beta process to disable private analysis.
+
+## Git and validation receipt
+
+Exit code d881208 and worker/evidence code
+49f15bae0dd042bbdfba00b1c8c9017cab8734a0 are pushed on
+`codex/stage3-outcomes-wallet-beta`. Public GitHub Actions independently reports
+SUCCESS for [exit run 41243033629](https://github.com/projectuwb/metric-lp-detective/actions/runs/41243033629)
+and [worker run 41247811765](https://github.com/projectuwb/metric-lp-detective/actions/runs/41247811765).
+
+Final local validation: 71 tests, original fixtures/history/oracle/performance
+checks, deployed source/runtime checks, 310 independent Python Fraction checks,
+production build, client/staged credential scans and all 13 production browser
+tests PASS. The separate actual provider/browser test also passed in 1.8 minutes.
+Screenshot: `artifacts/stage3-exit-usdt.png`; live proof screenshots are under
+`artifacts/stage3-live-*.png` (local artifacts, not chain evidence).
+
+Actual PR creation failed: `Post "https://api.github.com/graphql": Forbidden`.
+Outbound HTTPS access to `api.github.com:443` (or an external authorized integration
+connector) is needed for PR/policy-aware merge. Main remains
+3720e128ac611ec987582ee5e066d4a6ddca0e47; no Stage 3 production deployment is verified.
