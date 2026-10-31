@@ -1,0 +1,21 @@
+{
+  "status": "PASS",
+  "scope": "DEPLOYMENT_TO_FIXED_HEAD",
+  "through": "130841348",
+  "endHash": "0xd4b50c9afe0934057d61ccf2821e30c5b6dbf3553b6348ccb846e9f5a074ea7e",
+  "position": "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974",
+  "positions": 236,
+  "swaps": 26203,
+  "relevantSwaps": 26202,
+  "relevantBinSteps": 35429,
+  "final": [
+    "22973419195727555217",
+    "5657408436562991299915"
+  ],
+  "storageComparisons": 2800,
+  "withdrawalExecutions": 6,
+  "selectedLiquidityTransactions": 3,
+  "toleranceBaseUnits": "0",
+  "closed": false,
+  "oracleVerified": false
+}

@@ -15,10 +15,11 @@ you. These instructions persist across future Codex tasks.
   failed/incomplete research with truthful PASS/FAIL/NOT VERIFIED and coverage.
 - Never remove or weaken blockchain reconciliation tests to obtain a green build.
   Resolve failures before merging; document blockers rather than relabeling them.
-- Current evidence: Stage 0 verified; Stage 1 attribution A–D passes only through
-  checkpoint 126553642. Later history, exact execution-time oracle references and
-  a competing-removal example remain unverified. Consult the latest validation
-  report before extending these claims.
+- Current evidence: Stage 0 verified; original A–D checkpoint tests are retained.
+  Stage 1A inventory reconciles through fixed head 130841348, including both adds
+  and a partial removal. Stage 1B quote/performance coverage remains separately
+  labelled; never infer full verification from partial trace coverage. Consult
+  the latest validation reports before extending these claims.
 
 ## Git and validation
 

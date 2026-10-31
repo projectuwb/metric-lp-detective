@@ -41,3 +41,14 @@ main merge is claimed. Apply the saved api.github.com egress addition in environ
 settings, then publish the environment; the agent can retry API access, inspect
 policies, create the PR and merge after required checks. No new token is requested
 until the existing injected authentication has been tested with API connectivity.
+
+## Stage 1A — 2026-10-31
+
+Synced main at dd123da (merged PR #1). Branch: codex/stage1-history-oracle.
+Complete inventory history through fixed block 130841348 reconciles exactly: 62,207
+pool logs, 26,202 selected-position swaps, 35,429 relevant bin steps, both adds and
+the partial removal. Final balances and every sampled full-pool state agree with
+archive reads; 2,800 storage checks and six withdrawal executions have zero error.
+Validation: 43 tests, typecheck, original checkpoint fixture, full-history verifier
+and credential scan passed. Execution quote recovery/performance is a separate
+Stage 1B milestone and is not asserted complete by this commit.

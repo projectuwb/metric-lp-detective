@@ -15,7 +15,10 @@
     "verify:fixture": "node --import tsx scripts/verify-attribution.ts",
     "capture:attribution": "node --import tsx scripts/acquire-attribution.ts --refresh-logs",
     "scan:credentials": "node scripts/scan-credentials.mjs",
-    "check": "npm test && npm run typecheck && npm run verify:fixture && npm run scan:credentials"
+    "capture:history": "node --import tsx scripts/acquire-history.ts",
+    "reconstruct:history": "node --import tsx scripts/reconstruct-history.ts",
+    "verify:history": "node --import tsx scripts/verify-history.ts",
+    "check": "npm test && npm run typecheck && npm run verify:fixture && npm run verify:history && npm run scan:credentials"
   },
   "dependencies": {
     "viem": "2.38.5"
