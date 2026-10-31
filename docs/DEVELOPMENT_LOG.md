@@ -169,3 +169,21 @@ Forbidden, so repository permission/protection queries and automatic PR/merge
 remain blocked. Main is still 9c1bc7dd1bdd637c63928c24ece470aaad7e63f8.
 No deployment was initiated or verified. This final documentation receipt does not
 change code or chain evidence; the code milestone passed all local and remote gates.
+
+## Stage 3.1 exit economics — 1 November 2026 (Australia/Sydney)
+
+Synced actual main 3720e12 (PR #5); branch codex/stage3-outcomes-wallet-beta.
+Read Issues #7 and #6 in full; #7 prioritizes exit explanation before processing.
+Implemented cashflow bridge, full-close hero, dated flow ledger, start/selected
+comparison, bin-share-based exit/re-entry markers, own-time exact CRCLB-equivalent
+translation and separately labelled hypothetical settlement. Existing inventory
+and unsupported holding detail remain accessible. No source ledger/old evidence
+or reconciliation assertion was removed.
+
+Validation: 65 tests, all original fixture/history/oracle/performance checks,
+190 independent Python Fraction checks, typecheck and credential scan PASS.
+Pinned source/runtime recompile PASS (initial sandbox subprocess restriction was
+resolved with the supported execution permission). Production build/client scan
+PASS; all 10 production browser tests PASS, including original 8 and phone layout.
+Stage 1B stays PARTIAL. Gate 2 is not declared passed; architecture decision is
+owner-local durable beta, no fake hosted queue or new paid service.

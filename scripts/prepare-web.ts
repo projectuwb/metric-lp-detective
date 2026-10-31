@@ -39,7 +39,14 @@ function publish(id: string, directory: string, label: string, r: ReturnType<typ
   if (directory) mkdirSync(new URL(directory + '/', destination), { recursive: true });
   const prefix = directory ? directory + '/' : '';
   const events = r.events, balance = r.final.map(String) as Amounts;
-  const funding = r.funding.map(f => ({ index: events.findIndex(e => e.transactionHash === f.transactionHash && e.logIndex === f.logIndex), block: f.block, tokens: f.tokens }));
+  const funding = r.funding.map(f => ({ index: events.findIndex(e => e.transactionHash === f.transactionHash && e.logIndex === f.logIndex), block: f.block, tokens: f.tokens, transactionHash: f.transactionHash, logIndex: f.logIndex }));
+  const shares = new Map<string, bigint>();
+  const milestones: ReplayMeta['milestones'] = []; let funded = false, exited = false;
+  for (const e of events) {
+    for (const b of e.bins) shares.set(b.bin, BigInt(b.sharesAfter));
+    if (e.type === 'deposit') { milestones.push({ index: e.index, block: e.block, kind: !funded ? 'INITIAL_DEPOSIT' : exited ? 'REENTRY' : 'ADD' }); funded = true; exited = false; }
+    if (e.type === 'withdrawal') { const closed = [...shares.values()].every(s => s === 0n); milestones.push({ index: e.index, block: e.block, kind: closed ? 'FULL_CLOSE' : 'PARTIAL_WITHDRAWAL' }); exited = closed; }
+  }
   if (funding.some(f => f.index < 0)) throw new Error('Missing funding event');
   const endpoint = marks.find(m => m.block === h.acquisition.to);
   if (!endpoint) throw new Error('Endpoint mark missing');
@@ -48,7 +55,7 @@ function publish(id: string, directory: string, label: string, r: ReturnType<typ
   for (let i = 0; i < events.length; i += pageSize) save(prefix + 'events-' + i / pageSize + '.json', events.slice(i, i + pageSize));
   const chart = events.filter((_, i) => i % Math.ceil(events.length / 400) === 0 || i === events.length - 1).map(e => ({ index: e.index, block: e.block, balances: e.after }));
   const refs = events.filter(e => e.reference);
-  const metadata: ReplayMeta = { id, label, closed: r.final.every(n => n === 0n), initialFunding: funding[0].tokens, funding, marks,
+  const metadata: ReplayMeta = { id, label, closed: r.final.every(n => n === 0n), initialFunding: funding[0].tokens, funding, marks, milestones,
     eventCount: events.length, pageSize, from: h.acquisition.from, through: h.acquisition.to, final: balance, positionsCount: positions.length, chart,
     referencePoints: refs.filter((_, i) => i % Math.ceil(refs.length / 350) === 0 || i === refs.length - 1).map(e => ({ index: e.index, referenceX64: e.reference!.referenceX64 })),
     performance: { finalValue: formatUsdt(p.finalValue), cashflowPnl: formatUsdt(p.cashflowPnl), holdingPnl: p.holdingPnl === null ? null : formatUsdt(p.holdingPnl), vsHolding: p.vsHolding === null ? null : formatUsdt(p.vsHolding), unit: 'USDT-equivalent' },
