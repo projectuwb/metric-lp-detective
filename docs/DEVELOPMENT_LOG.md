@@ -305,3 +305,20 @@ remains 07fbef99e21a8a66800467d7b6bbdb194059f2c3. Integration can use the
 connected GitHub account or restored enforced api.github.com:443 egress; no direct
 main bypass was attempted. Remote owner reconstruction remains NOT VERIFIED until
 its actual first dispatch, independent evidence and deployed replay are observed.
+
+### Successful-checkpoint recovery regression
+
+Documentation receipt bcebbae3868e82ca0e8ab4abc82e2ec26a761373 was pushed.
+Hosted Validate run 41251471309 for implementation 115f3df completed SUCCESS,
+including every check/build/client/browser/unchanged-fixture step.
+
+The final test refinement also replaces a runner after a successful raw storage
+checkpoint, restores the sanitized cache and lifetime counters, revalidates
+canonical headers and completes the real saved nine-swap fixture in three bounded
+attempts within 100 total requests. Independent 6,000 storage / 12 withdrawal
+checks still agree exactly. Focused worker/remote suite: 9/9 PASS. Failures here
+are explicitly synthetic transport tests over real saved chain inputs, not a new
+RPC capture or proof of a live Actions worker. Production code/UI are unchanged
+from the hosted-CI-passing implementation; all 16 production-browser checks remain
+applicable. No new blockchain requests, evidence rewrites or secret/setting
+changes were made. Stage 4 remote/public gate stays NOT VERIFIED.

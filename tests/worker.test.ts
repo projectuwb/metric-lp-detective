@@ -38,9 +38,24 @@ it('real saved evidence: failed request, bounded retry, independent promotion, i
     }
     throw new Error('Fixture has no response for this exact method/call');
   };
-  await processJob(next, fixtureRpc, async () => {});
+  // Also lose the runner after a SUCCESSFUL canonical storage checkpoint. This
+  // exercises real cached responses/header revalidation, not just an empty job.
+  let interrupt = true;
+  await processJob(next, async (method, params) => {
+    if (interrupt && method === 'eth_getBlockByNumber' && getJob(job.key)!.completedCheckpoints > 0) {
+      interrupt = false; throw new RpcFailure('rate', 429);
+    }
+    return fixtureRpc(method, params);
+  }, async () => {});
+  const checkpointed = getJob(job.key)!;
+  expect(checkpointed.status).toBe('RATE_LIMITED'); expect(checkpointed.completedCheckpoints).toBeGreaterThan(0);
+  const resumed = snapshot(jobFolder(job.key), job.key, context(), '124', checkpointed.expiresAt);
+  rmSync(jobFolder(job.key), { recursive: true }); restoreSnapshot(resumed, jobFolder(job.key), job.key, context());
+  expect(getJob(job.key)?.requests).toBe(checkpointed.requests);
+  await processJob(retryJob(job.key), fixtureRpc, async () => {});
   const finished = getJob(job.key)!;
   expect(finished.status).toBe('VERIFIED'); expect(finished.requests).toBeLessThanOrEqual(100);
+  expect(finished.attempts).toBe(3);
   expect(finished.verification).toMatchObject({ storageComparisons: 6000, withdrawalChecks: 12, tolerance: '0' });
   expect(runtimeMeta(job.id)?.final).toEqual(['0', '0']); expect(runtimePage(job.id, 0)).toHaveLength(14);
   const issued = finished.requests;
