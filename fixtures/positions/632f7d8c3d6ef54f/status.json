@@ -1,0 +1,10 @@
+{
+  "id": "0x3eb210eaa4026f62d027fafaba1fa5592febb06a:363274826789293944322560",
+  "slug": "632f7d8c3d6ef54f",
+  "status": "VERIFIED",
+  "phase": "independent offline reconciliation passed",
+  "requests": 69,
+  "completedCheckpoints": 15,
+  "observedAt": "2026-10-31T12:00:55.599Z",
+  "totalCheckpoints": 15
+}

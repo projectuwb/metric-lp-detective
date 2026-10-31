@@ -105,3 +105,30 @@ regression test. Production build and public-client credential scan passed again
 all 5 browser tests now pass. The prior 54-test full reconciliation/security suite
 also passed; original ledger/evidence files remain unchanged. No public deployment
 was initiated. Stage 1B remains PARTIAL and no trace recovery was launched.
+
+## Stage 2A evidence milestone — 2026-10-31
+
+Synced main 9c1bc7dd1bdd637c63928c24ece470aaad7e63f8 (PR #3); working branch
+codex/stage2-second-position. Read Issue #4 in full via public github.com because
+api.github.com still returns Forbidden. HTTPS git fetch works; main is unchanged.
+
+Found and independently verified provider 0x3eb210eaa4026f62d027fafaba1fa5592febb06a,
+salt 363274826789293944322560: 9 swaps, 3 deposits, 1 rounding adjustment, full
+withdrawal, 14 rows. Historical range 128750025–128752283; index coverage verified
+through 130841348. Fifteen checkpoints, 6,000 raw storage comparisons, twelve
+historical withdrawal executions and four actual receipt token-transfer checks
+reconcile with zero base-unit discrepancy. Seven raw traces verify all nine of this sample's
+execution quotes; thirteen block-end marks cover all twelve event blocks + head.
+Original source ledger and original reconciliation evidence/tests remain intact.
+
+Capture: 69 paced read-only RPC requests; 15 further canonical-header reads, 84
+total. No rate failure, unbounded scan, plan change or deployment. Repeating the
+completed CLI job revalidates immutable artifacts with zero remote requests.
+The general bounded CLI remains incomplete for large or contract-owned positions;
+there is no hosted/durable queue. See docs/STAGE_2.md for evidence and limits.
+
+Validated worktree: npm run check passes (61 tests, typecheck, original A–D fixtures,
+full-history/oracle/performance checks, independent Python Fraction checks and
+credential scan). Second sample cashflow PnL is -1.812248 USDT-equivalent; matched
+holding after the full withdrawal is unsupported, not zero. Browser additions and
+selected-point UI are the next milestone; Stage 1B stays PARTIAL overall.
