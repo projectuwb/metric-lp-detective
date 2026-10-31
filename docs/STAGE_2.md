@@ -75,6 +75,16 @@ than the holding basket contains after selling CRCLB. Its final matched-withdraw
 holding comparison is UNSUPPORTED; cashflow-aware absolute PnL is still derivable.
 Do not replace that null benchmark with zero or a fictional sale.
 
+Actual initially funded tokens: 5.581308503708253008 CRCLB and
+3906.222415174827386047 USDT. Initial reference-marked value is 4355.903941
+USDT-equivalent (six decimals, truncated). After the first swap (block 128750042,
+event index 1), withdrawable balances are 8.081029088073744341 CRCLB and
+3704.755571252441345928 USDT. Full withdrawal at index 13 leaves exactly zero
+inventory; cumulative USDT withdrawn is 4543.728066440139855352. Absolute cashflow
+PnL is -1.812248 USDT-equivalent, not a 100% investment loss. Independent Python
+Fraction calculation agrees with TypeScript; these are block-end reference marks,
+not dollar profit or execution-time cashflow prices.
+
 ## Integration and rollback
 
 Keep the original sample as the default. Remove the second sample registration
@@ -99,3 +109,23 @@ lease/retry policy and immutable artifact storage. Reuse the current provider
 quota and run one explicit job at a time. Existing fixtures plus a CLI worker
 are the zero-new-service proof of concept; hosted always-on cost and provider
 throughput have not been measured and no paid service is required for the demos.
+
+## Final local validation
+
+- `npm run check`: 61 tests pass, including the original 54 tests; typechecking,
+  original attribution A–D, complete-history verification, oracle fixtures,
+  TypeScript/Python valuation cross-checks and credential scanning pass.
+- `npm run build`: production Next.js build passes. Every API file-trace includes
+  all 212 generated replay/index files, including the second position's pages.
+- `npm run check:client`: 11 public asset files, PASS; no RPC URL/key exposure.
+- `PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run test:e2e`: 8 pass,
+  covering original large-history lazy replay, smaller full lifecycle, initial
+  value and selected marks, source links, sample switching, multi-salt wallet
+  selection, unsupported states, error/retry, playback and desktop/mobile layout.
+
+GitHub API permission/check queries fail with
+`Get "https://api.github.com/repos/projectuwb/metric-lp-detective": Forbidden`.
+HTTPS Git fetch/push works. The required network capability for automatic PR and
+policy-aware merge is outbound HTTPS to `api.github.com:443`; no bypass or security
+setting change is attempted. CI is triggered by branch pushes; its result and
+Vercel production deployment are not inferred from a successful Git push.

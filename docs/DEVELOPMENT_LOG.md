@@ -132,3 +132,28 @@ full-history/oracle/performance checks, independent Python Fraction checks and
 credential scan). Second sample cashflow PnL is -1.812248 USDT-equivalent; matched
 holding after the full withdrawal is unsupported, not zero. Browser additions and
 selected-point UI are the next milestone; Stage 1B stays PARTIAL overall.
+
+## Stage 2 web milestone — 2026-10-31
+
+Evidence commit 9b4f77e was pushed to origin/codex/stage2-second-position.
+Both registered samples now use the same deterministic event builder. The original
+26,282-row replay, endpoint balances and PnL remain unchanged. Smaller sample,
+wallet/salt selection, exact inventory/flow comparisons, initial marked value,
+selected-block mark/time and cashflow PnL are functional. Unsupported holding
+and missing prices remain explicit. Added bounded public verification-status API;
+no durable queue or arbitrary-wallet reconstruction is promised.
+
+Final checks: npm run check PASS (61 tests, typecheck, all original fixture/history/
+oracle/performance checks, independent Python checks and credential scan).
+Production build PASS; all four API traces contain all 212 generated data files.
+Client scan PASS (11 assets). All 8 production Chromium tests PASS, including the
+original 5, the second lifecycle, mobile, multi-salt selection, sample switching
+and failures/retry. A new browser test's ambiguous alert selector was corrected;
+no reconciliation test was removed or weakened. Screenshots visually inspected.
+
+GitHub API permission read still fails exactly:
+Get "https://api.github.com/repos/projectuwb/metric-lp-detective": Forbidden.
+HTTPS Git works. Required network capability: outbound HTTPS api.github.com:443.
+Cannot observe required checks/policies or safely create/merge a PR through this
+API. No direct main push, deployment command, paid service or setting change.
+Stage 1B and arbitrary hosted-wallet replay remain incomplete as documented.

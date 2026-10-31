@@ -21,9 +21,16 @@ you. These instructions persist across future Codex tasks.
   labelled; never infer full verification from partial trace coverage. Consult
   the latest validation reports before extending these claims.
 - The visual MVP is authorized and implemented. Consult docs/VISUAL_MVP.md.
-  Only the reconciled sample may claim verified replay; other positions are
+  Only independently reconciled registered samples may claim verified replay; other positions are
   indexed-only. Never import research RPC transport into the browser. Stage 1B
   stays PARTIAL, with a default 50-request, one-worker recovery budget.
+- Stage 2 adds a second closed position (9 swaps) and selected-point inventory /
+  cashflow comparison. Read docs/STAGE_2.md. Verify new artifacts with
+  scripts/verify-position.ts before registering playback; never trust cached status
+  alone. Keep matched-withdrawal holding benchmarks null when infeasible and prices
+  unavailable when the selected/cashflow block-end marks are missing. The bounded
+  research CLI is not a hosted queue. Do not promise processing for indexed-only
+  positions or overwrite a completed verified artifact with a partial retry.
 
 ## Git and validation
 

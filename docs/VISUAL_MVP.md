@@ -1,7 +1,7 @@
 # Functional visual MVP
 
 Built from main f43614a (PR #2). Next.js/React frontend and server-side API.
-**Not publicly deployed. Stage 1B remains PARTIAL.** No live bulk trace scan,
+**The owner reports main is deployed on Vercel. Stage 1B remains PARTIAL.** No live bulk trace scan,
 wallet connection, signing or blockchain writes were performed.
 
 ## View locally
@@ -31,13 +31,13 @@ into Vercel or another managed Next.js host. Use Node 24, install command
 output. Static export is unsupported: Node API routes are required. The fixed
 index needs no database, paid service or RPC secret. Research/acquisition commands
 still require the existing server-only BNB_RPC_URL. API output tracing was checked:
-all 209 generated data files are included. No hosting settings were changed.
+all 212 generated data files are included. No hosting settings were changed.
 
 ## Supported behavior and truthfulness
 
 - Wallet lookup discovers 236 provider/salt positions in this one pool's indexed
-  coverage, from deployment through fixed block 130841348. Only the independently
-  reconciled sample has replay enabled. Other positions are explicitly indexed-only;
+  coverage, from deployment through fixed block 130841348. The two independently
+  reconciled samples have replay enabled. Other positions are explicitly indexed-only;
   unsupported manager ownership is not inferred. Empty results do not imply
   lifetime absence or no later activity.
 - Replay has 26,282 actual rows: 26,202 attributable swaps, 3 own liquidity events,
@@ -83,14 +83,14 @@ or account database; it is not distributed rate limiting.
 
 ## Verification
 
-- `npm run check`: 54 tests pass, including all original reconciliation tests,
+- `npm run check`: 61 tests pass, including all original reconciliation tests,
   generated event continuity, independent checkpoint agreement, API errors and
   recovery circuit-breaking; typecheck and original fixture/history/oracle/
   performance verification and credential scan pass.
 - `npm run build` and `npm run check:client`: pass.
-- `npm run test:e2e`: 5 production Chromium tests pass, covering sample swaps,
+- `npm run test:e2e`: 8 production Chromium tests pass, covering sample swaps,
   pause, endpoint scrub, transaction links, wallet/salt selection, indexed-only
-  and empty results, mobile layout, failures, successful retries and cancelled-page loading recovery.
+  and empty results, mobile layout, failures, successful retries and cancelled-page loading recovery. Stage 2 adds the smaller closed lifecycle, initial/selected valuation, multi-salt selection and switching between samples.
 
 For browser tests use an installed Chromium with
 `PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium npm run test:e2e`, or install the
@@ -109,3 +109,22 @@ Mechanical unit tests verify these limits without claiming extra on-chain result
 Existing coverage stays 2,014 transactions / 2,146 swaps; 23,177 transactions remain
 unverified. Review provider quotas before any further acquisition. No higher plan,
 paid worker or unrestricted scheduled recovery job was created.
+
+## Stage 2 additions
+
+The original sample remains the default. A second button loads the smaller closed
+position (9 swaps, 14 total events). Wallet results select the actual provider/salt,
+not a shared demo. Metadata accepts `GET /api/replay?id=<encoded-position-id>`;
+only a verified build-time registry can resolve IDs to data paths. Unknown or
+indexed-only positions receive 409 and never trigger scans.
+
+Initial funding and selected inventory are shown alongside absolute/percentage
+token differences, gross deposits/withdrawals and net contributions. Selected-point
+PnL uses only verified block-end marks at the selected event block and each
+preceding cashflow block. Every block in the smaller replay has a captured mark;
+most original-sample selected points correctly show unavailable. No web request
+fetches new historical marks. The fixed endpoint panel remains distinct.
+
+No production hosting settings, environment publishing or deployment commands were
+used. The existing Vercel integration can build merged main using the same commands.
+See [Stage 2](STAGE_2.md) for evidence, financial conventions and rollback.
