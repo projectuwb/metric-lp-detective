@@ -1,0 +1,34 @@
+{
+  "position": "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974",
+  "status": "PASS",
+  "evidence": {
+    "startBlock": "126509253",
+    "endBlock": "126553642",
+    "startingEntitlement": [
+      "37037279576802627270",
+      "2999999999999999997560"
+    ],
+    "swapDelta": [
+      "-10785847865962889862",
+      "877219497229389548729"
+    ],
+    "competitorRoundingDelta": [
+      "0",
+      "0"
+    ],
+    "reconstructed": [
+      "26251431710839737408",
+      "3877219497229389546289"
+    ],
+    "independentlyExecuted": [
+      "26251431710839737408",
+      "3877219497229389546289"
+    ],
+    "difference": [
+      "0",
+      "0"
+    ],
+    "toleranceBaseUnits": "0",
+    "checkpointOnly": true
+  }
+}

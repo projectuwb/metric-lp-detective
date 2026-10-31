@@ -1,0 +1,816 @@
+{
+  "sourceRevision": "ddf8ae0cdb2ad0041c3ff3aebc200cf488d5b0d3",
+  "coverage": {
+    "from": "126502643",
+    "to": "126553642",
+    "logCount": 11,
+    "swapCount": 3,
+    "binStepCount": 5,
+    "unknownEvents": 0
+  },
+  "primary": "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974",
+  "secondary": "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491",
+  "results": {
+    "A": {
+      "status": "PASS",
+      "evidence": {
+        "transactionHash": "0xb4f8bea7a1ba7a5b89cc4876c7d9bc215d5a5dec615a6c4508ff31b484a6918c",
+        "block": "126532510",
+        "logIndex": "184",
+        "bin": "0",
+        "before": {
+          "reserve0": "3703727957680262727",
+          "reserve1": "0",
+          "totalShares": "7397760061908989030",
+          "shares": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030"
+          },
+          "entitlements": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+              "3703727957680262727",
+              "0"
+            ]
+          }
+        },
+        "after": {
+          "reserve0": "20967973401027141",
+          "reserve1": "298909851633504834959",
+          "totalShares": "7397760061908989030",
+          "shares": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030"
+          },
+          "entitlements": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+              "20967973401027141",
+              "298909851633504834959"
+            ]
+          }
+        },
+        "poolDelta": [
+          "-3682759984279235586",
+          "298909851633504834959"
+        ],
+        "positionDelta": {
+          "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+            "-3682759984279235586",
+            "298909851633504834959"
+          ]
+        },
+        "fee": {
+          "lp": "2540743472601943",
+          "platform": "448366495165041",
+          "inputToken": 1
+        },
+        "independentlyQuotedBefore": [
+          "3703727957680262727",
+          "0"
+        ],
+        "independentlyQuotedAfter": [
+          "20967973401027141",
+          "298909851633504834959"
+        ]
+      }
+    },
+    "B": {
+      "status": "PASS",
+      "evidence": {
+        "primary": {
+          "transactionHash": "0xf5ec0f818fa9ab68963fd23daede91029f4c164fe471948961b743887c3ce171",
+          "block": "126552254",
+          "logIndex": "99",
+          "bin": "1",
+          "before": {
+            "reserve0": "151734189374346232",
+            "reserve1": "1066061456754416376006",
+            "totalShares": "26535185088855730787",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030",
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": "19137425026946741757"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "42302065066472796",
+                "297207908741156784639"
+              ],
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": [
+                "109432124307873435",
+                "768853548013259591366"
+              ]
+            }
+          },
+          "after": {
+            "reserve0": "0",
+            "reserve1": "1078454429642264658524",
+            "totalShares": "26535185088855730787",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030",
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": "19137425026946741757"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "0",
+                "300662953036911438214"
+              ],
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": [
+                "0",
+                "777791476605353220309"
+              ]
+            }
+          },
+          "poolDelta": [
+            "-151734189374346232",
+            "12392972887848282518"
+          ],
+          "positionDelta": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+              "-42302065066472796",
+              "3455044295754653575"
+            ],
+            "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": [
+              "-109432124307873435",
+              "8937928592093628943"
+            ]
+          },
+          "fee": {
+            "lp": "598292052562106",
+            "platform": "105580950452136",
+            "inputToken": 1
+          },
+          "independentlyQuotedBefore": [
+            "42302065066472796",
+            "297207908741156784639"
+          ],
+          "independentlyQuotedAfter": [
+            "0",
+            "300662953036911438214"
+          ]
+        },
+        "secondary": {
+          "transactionHash": "0xf5ec0f818fa9ab68963fd23daede91029f4c164fe471948961b743887c3ce171",
+          "block": "126552254",
+          "logIndex": "99",
+          "bin": "1",
+          "before": {
+            "reserve0": "151734189374346232",
+            "reserve1": "1066061456754416376006",
+            "totalShares": "26535185088855730787",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030",
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": "19137425026946741757"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "42302065066472796",
+                "297207908741156784639"
+              ],
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": [
+                "109432124307873435",
+                "768853548013259591366"
+              ]
+            }
+          },
+          "after": {
+            "reserve0": "0",
+            "reserve1": "1078454429642264658524",
+            "totalShares": "26535185088855730787",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030",
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": "19137425026946741757"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "0",
+                "300662953036911438214"
+              ],
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": [
+                "0",
+                "777791476605353220309"
+              ]
+            }
+          },
+          "poolDelta": [
+            "-151734189374346232",
+            "12392972887848282518"
+          ],
+          "positionDelta": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+              "-42302065066472796",
+              "3455044295754653575"
+            ],
+            "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": [
+              "-109432124307873435",
+              "8937928592093628943"
+            ]
+          },
+          "fee": {
+            "lp": "598292052562106",
+            "platform": "105580950452136",
+            "inputToken": 1
+          },
+          "independentlyQuotedBefore": [
+            "109432124307873435",
+            "768853548013259591366"
+          ],
+          "independentlyQuotedAfter": [
+            "0",
+            "777791476605353220309"
+          ]
+        },
+        "beforeDust": [
+          "1",
+          "1"
+        ],
+        "afterDust": [
+          "0",
+          "1"
+        ]
+      }
+    },
+    "C": {
+      "status": "PASS",
+      "evidence": {
+        "competitorAdd": {
+          "transactionHash": "0x6a72450dbeb1d0697369ee41479f0bd0d274d6c7c0253b009ca3c6590809e31f",
+          "block": "126543141",
+          "logIndex": "206",
+          "bin": "1",
+          "before": {
+            "reserve0": "42302065066472796",
+            "reserve1": "297207908741156784639",
+            "totalShares": "7397760061908989030",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "42302065066472796",
+                "297207908741156784639"
+              ]
+            }
+          },
+          "after": {
+            "reserve0": "151734189374346232",
+            "reserve1": "1066061456754416376006",
+            "totalShares": "26535185088855730787",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030",
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": "19137425026946741757"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "42302065066472796",
+                "297207908741156784639"
+              ],
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": [
+                "109432124307873435",
+                "768853548013259591366"
+              ]
+            }
+          },
+          "poolDelta": [
+            "109432124307873436",
+            "768853548013259591367"
+          ],
+          "positionDelta": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+              "0",
+              "0"
+            ],
+            "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": [
+              "109432124307873435",
+              "768853548013259591366"
+            ]
+          },
+          "independentlyQuotedBefore": [
+            "42302065066472796",
+            "297207908741156784639"
+          ],
+          "independentlyQuotedAfter": [
+            "42302065066472796",
+            "297207908741156784639"
+          ]
+        },
+        "firstSubsequentSwap": {
+          "transactionHash": "0xf5ec0f818fa9ab68963fd23daede91029f4c164fe471948961b743887c3ce171",
+          "block": "126552254",
+          "logIndex": "99",
+          "bin": "1",
+          "selectedDelta": [
+            "-42302065066472796",
+            "3455044295754653575"
+          ]
+        }
+      }
+    },
+    "D": {
+      "status": "PASS",
+      "evidence": {
+        "startBlock": "126509253",
+        "endBlock": "126553642",
+        "startingEntitlement": [
+          "37037279576802627270",
+          "2999999999999999997560"
+        ],
+        "swapDelta": [
+          "-10785847865962889862",
+          "877219497229389548729"
+        ],
+        "competitorRoundingDelta": [
+          "0",
+          "0"
+        ],
+        "reconstructed": [
+          "26251431710839737408",
+          "3877219497229389546289"
+        ],
+        "independentlyExecuted": [
+          "26251431710839737408",
+          "3877219497229389546289"
+        ],
+        "difference": [
+          "0",
+          "0"
+        ],
+        "toleranceBaseUnits": "0",
+        "checkpointOnly": true
+      }
+    }
+  },
+  "storageComparisons": 1200,
+  "quoteComparisons": 56,
+  "swaps": [
+    {
+      "block": "126532510",
+      "transactionHash": "0xb4f8bea7a1ba7a5b89cc4876c7d9bc215d5a5dec615a6c4508ff31b484a6918c",
+      "logIndex": "188",
+      "legs": [
+        {
+          "block": "126532510",
+          "transactionHash": "0xb4f8bea7a1ba7a5b89cc4876c7d9bc215d5a5dec615a6c4508ff31b484a6918c",
+          "transactionIndex": "26",
+          "logIndex": "184",
+          "event": "BinSwapped",
+          "bin": "0",
+          "before": {
+            "reserve0": "3703727957680262727",
+            "reserve1": "0",
+            "totalShares": "7397760061908989030",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "3703727957680262727",
+                "0"
+              ]
+            }
+          },
+          "after": {
+            "reserve0": "20967973401027141",
+            "reserve1": "298909851633504834959",
+            "totalShares": "7397760061908989030",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "20967973401027141",
+                "298909851633504834959"
+              ]
+            }
+          },
+          "poolDelta": [
+            "-3682759984279235586",
+            "298909851633504834959"
+          ],
+          "fee": {
+            "lp": "2540743472601943",
+            "platform": "448366495165041",
+            "inputToken": 1
+          },
+          "positionDelta": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+              "-3682759984279235586",
+              "298909851633504834959"
+            ]
+          },
+          "feeOwnershipRationals": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": {
+              "numerator": "18795810589170609621037794743685290",
+              "denominator": "7397760061908989030",
+              "inputToken": 1,
+              "note": "Economic fee share before claim rounding; already in reserves, never add again"
+            }
+          },
+          "classification": "CHANGES_SELECTED_ENTITLEMENT"
+        }
+      ],
+      "nativeDeltas": [
+        "-3682759984279235586",
+        "298910300000000000000"
+      ],
+      "selectedBefore": [
+        "37037279576802627270",
+        "2999999999999999997560"
+      ],
+      "selectedAfter": [
+        "33354519592523391684",
+        "3298909851633504832519"
+      ],
+      "selectedTokenDeltas": [
+        "-3682759984279235586",
+        "298909851633504834959"
+      ],
+      "referencePrice": null,
+      "referenceReason": "Exact provider quote at execution not recovered"
+    },
+    {
+      "block": "126532512",
+      "transactionHash": "0x72e3c551c029f4a14e86c0b5c2c5038b93b9afa9b4debd54fb6c077a05e232ec",
+      "logIndex": "166",
+      "legs": [
+        {
+          "block": "126532512",
+          "transactionHash": "0x72e3c551c029f4a14e86c0b5c2c5038b93b9afa9b4debd54fb6c077a05e232ec",
+          "transactionIndex": "25",
+          "logIndex": "161",
+          "event": "BinSwapped",
+          "bin": "0",
+          "before": {
+            "reserve0": "20967973401027141",
+            "reserve1": "298909851633504834959",
+            "totalShares": "7397760061908989030",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "20967973401027141",
+                "298909851633504834959"
+              ]
+            }
+          },
+          "after": {
+            "reserve0": "0",
+            "reserve1": "300611794525852885280",
+            "totalShares": "7397760061908989030",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "0",
+                "300611794525852885280"
+              ]
+            }
+          },
+          "poolDelta": [
+            "-20967973401027141",
+            "1701942892348050321"
+          ],
+          "fee": {
+            "lp": "14466570007122",
+            "platform": "2552924118903",
+            "inputToken": 1
+          },
+          "positionDelta": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+              "-20967973401027141",
+              "1701942892348050321"
+            ]
+          },
+          "feeOwnershipRationals": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": {
+              "numerator": "107020213831497570592642919871660",
+              "denominator": "7397760061908989030",
+              "inputToken": 1,
+              "note": "Economic fee share before claim rounding; already in reserves, never add again"
+            }
+          },
+          "classification": "CHANGES_SELECTED_ENTITLEMENT"
+        },
+        {
+          "block": "126532512",
+          "transactionHash": "0x72e3c551c029f4a14e86c0b5c2c5038b93b9afa9b4debd54fb6c077a05e232ec",
+          "transactionIndex": "25",
+          "logIndex": "162",
+          "event": "BinSwapped",
+          "bin": "1",
+          "before": {
+            "reserve0": "3703727957680262727",
+            "reserve1": "0",
+            "totalShares": "7397760061908989030",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "3703727957680262727",
+                "0"
+              ]
+            }
+          },
+          "after": {
+            "reserve0": "42302065066472796",
+            "reserve1": "297207908741156784639",
+            "totalShares": "7397760061908989030",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "42302065066472796",
+                "297207908741156784639"
+              ]
+            }
+          },
+          "poolDelta": [
+            "-3661425892613789931",
+            "297207908741156784639"
+          ],
+          "fee": {
+            "lp": "2526276902594821",
+            "platform": "445813571046137",
+            "inputToken": 1
+          },
+          "positionDelta": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+              "-3661425892613789931",
+              "297207908741156784639"
+            ]
+          },
+          "feeOwnershipRationals": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": {
+              "numerator": "18688790375339112050445151823813630",
+              "denominator": "7397760061908989030",
+              "inputToken": 1,
+              "note": "Economic fee share before claim rounding; already in reserves, never add again"
+            }
+          },
+          "classification": "CHANGES_SELECTED_ENTITLEMENT"
+        }
+      ],
+      "nativeDeltas": [
+        "-3682393866014817072",
+        "298910300000000000000"
+      ],
+      "selectedBefore": [
+        "33354519592523391684",
+        "3298909851633504832519"
+      ],
+      "selectedAfter": [
+        "29672125726508574612",
+        "3597819703267009667479"
+      ],
+      "selectedTokenDeltas": [
+        "-3682393866014817072",
+        "298909851633504834960"
+      ],
+      "referencePrice": null,
+      "referenceReason": "Exact provider quote at execution not recovered"
+    },
+    {
+      "block": "126552254",
+      "transactionHash": "0xf5ec0f818fa9ab68963fd23daede91029f4c164fe471948961b743887c3ce171",
+      "logIndex": "104",
+      "legs": [
+        {
+          "block": "126552254",
+          "transactionHash": "0xf5ec0f818fa9ab68963fd23daede91029f4c164fe471948961b743887c3ce171",
+          "transactionIndex": "31",
+          "logIndex": "99",
+          "event": "BinSwapped",
+          "bin": "1",
+          "before": {
+            "reserve0": "151734189374346232",
+            "reserve1": "1066061456754416376006",
+            "totalShares": "26535185088855730787",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030",
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": "19137425026946741757"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "42302065066472796",
+                "297207908741156784639"
+              ],
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": [
+                "109432124307873435",
+                "768853548013259591366"
+              ]
+            }
+          },
+          "after": {
+            "reserve0": "0",
+            "reserve1": "1078454429642264658524",
+            "totalShares": "26535185088855730787",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030",
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": "19137425026946741757"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "0",
+                "300662953036911438214"
+              ],
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": [
+                "0",
+                "777791476605353220309"
+              ]
+            }
+          },
+          "poolDelta": [
+            "-151734189374346232",
+            "12392972887848282518"
+          ],
+          "fee": {
+            "lp": "598292052562106",
+            "platform": "105580950452136",
+            "inputToken": 1
+          },
+          "positionDelta": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+              "-42302065066472796",
+              "3455044295754653575"
+            ],
+            "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": [
+              "-109432124307873435",
+              "8937928592093628943"
+            ]
+          },
+          "feeOwnershipRationals": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": {
+              "numerator": "4426021051801501401363603747697180",
+              "denominator": "26535185088855730787",
+              "inputToken": 1,
+              "note": "Economic fee share before claim rounding; already in reserves, never add again"
+            },
+            "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": {
+              "numerator": "11449769300125382852706540586060242",
+              "denominator": "26535185088855730787",
+              "inputToken": 1,
+              "note": "Economic fee share before claim rounding; already in reserves, never add again"
+            }
+          },
+          "classification": "CHANGES_SELECTED_ENTITLEMENT"
+        },
+        {
+          "block": "126552254",
+          "transactionHash": "0xf5ec0f818fa9ab68963fd23daede91029f4c164fe471948961b743887c3ce171",
+          "transactionIndex": "31",
+          "logIndex": "100",
+          "event": "BinSwapped",
+          "bin": "2",
+          "before": {
+            "reserve0": "13264026964983438098",
+            "reserve1": "0",
+            "totalShares": "26493330520715658929",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030",
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": "19095570458806669899"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "3703727957680262727",
+                "0"
+              ],
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": [
+                "9560299007303175370",
+                "0"
+              ]
+            }
+          },
+          "after": {
+            "reserve0": "1165114074216197166",
+            "reserve1": "988230950611220849100",
+            "totalShares": "26493330520715658929",
+            "shares": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": "7397760061908989030",
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": "19095570458806669899"
+            },
+            "entitlements": {
+              "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+                "325336007077898319",
+                "275944749666625225235"
+              ],
+              "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": [
+                "839778067138298846",
+                "712286200944595623864"
+              ]
+            }
+          },
+          "poolDelta": [
+            "-12098912890767240932",
+            "988230950611220849100"
+          ],
+          "fee": {
+            "lp": "47708546544657537",
+            "platform": "8419155272586623",
+            "inputToken": 1
+          },
+          "positionDelta": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": [
+              "-3378391950602364408",
+              "275944749666625225235"
+            ],
+            "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": [
+              "-8720520940164876524",
+              "712286200944595623864"
+            ]
+          },
+          "feeOwnershipRationals": {
+            "0x3216fbdef81be1842a80d648c83c7aa10bc00787:198136120981933274567974": {
+              "numerator": "352936380239793625587567863239819110",
+              "denominator": "26493330520715658929",
+              "inputToken": 1,
+              "note": "Economic fee share before claim rounding; already in reserves, never add again"
+            },
+            "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491": {
+              "numerator": "911021912030765489686857640361378763",
+              "denominator": "26493330520715658929",
+              "inputToken": 1,
+              "note": "Economic fee share before claim rounding; already in reserves, never add again"
+            }
+          },
+          "classification": "CHANGES_SELECTED_ENTITLEMENT"
+        }
+      ],
+      "nativeDeltas": [
+        "-12250647080141587164",
+        "1000632448235292170377"
+      ],
+      "selectedBefore": [
+        "29672125726508574612",
+        "3597819703267009667479"
+      ],
+      "selectedAfter": [
+        "26251431710839737408",
+        "3877219497229389546289"
+      ],
+      "selectedTokenDeltas": [
+        "-3420694015668837204",
+        "279399793962379878810"
+      ],
+      "referencePrice": null,
+      "referenceReason": "Exact provider quote at execution not recovered"
+    }
+  ],
+  "notAttributableToBackup": [
+    {
+      "transactionHash": "0xb4f8bea7a1ba7a5b89cc4876c7d9bc215d5a5dec615a6c4508ff31b484a6918c",
+      "block": "126532510",
+      "logIndex": "184",
+      "bin": "0",
+      "position": "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491",
+      "sharesAtExecution": "0",
+      "delta": [
+        "0",
+        "0"
+      ],
+      "reason": "Bin was funded by this position only later; historical ownership was zero"
+    },
+    {
+      "transactionHash": "0x72e3c551c029f4a14e86c0b5c2c5038b93b9afa9b4debd54fb6c077a05e232ec",
+      "block": "126532512",
+      "logIndex": "161",
+      "bin": "0",
+      "position": "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491",
+      "sharesAtExecution": "0",
+      "delta": [
+        "0",
+        "0"
+      ],
+      "reason": "Bin was funded by this position only later; historical ownership was zero"
+    },
+    {
+      "transactionHash": "0x72e3c551c029f4a14e86c0b5c2c5038b93b9afa9b4debd54fb6c077a05e232ec",
+      "block": "126532512",
+      "logIndex": "162",
+      "bin": "1",
+      "position": "0xadd454f43aff689f0b694161a950dd8f82a5d0d4:1068754547228601823113491",
+      "sharesAtExecution": "0",
+      "delta": [
+        "0",
+        "0"
+      ],
+      "reason": "Bin was funded by this position only later; historical ownership was zero"
+    }
+  ],
+  "ignored": [
+    {
+      "event": "BidAskRefAsymmetryUpdated",
+      "block": "126504411",
+      "logIndex": "201"
+    }
+  ],
+  "fixtures": [
+    {
+      "file": "pool-logs.json",
+      "sha256": "3485d268060560c2d2bf79e724711c726c94ee43eb8f8c69e32f339fb626cde2"
+    },
+    {
+      "file": "historical-state.json",
+      "sha256": "1f5b7da72d3556f8a6337a876baf32193a71f0c841f7443bd26491c6bbd20ca0"
+    }
+  ]
+}

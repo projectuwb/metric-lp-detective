@@ -1,0 +1,8 @@
+{
+  "number": "0x78a46f3",
+  "hash": "0x8428f8a1dd27024d0988442dbc619056c7b9d43aa44e5bbcd90d0c74c332f1b7",
+  "parentHash": "0x2c7f917f4fcf0082ef44d07714e1b0ebc42d8a00ce3eb37a468d30c83c86a1be",
+  "timestamp": "0x6ac7f3b3",
+  "transactionsRoot": "0x33ac0c89bd1b8130c5498c341c94e8459e2b692cc477f49a85717e1f01bb8e83",
+  "receiptsRoot": "0x48fbb85b5735f7fca8794ce219bf0c9e878cffcb08330bc5ba17823ef296a1ab"
+}

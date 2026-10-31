@@ -1,0 +1,332 @@
+{
+  "sourceRevision": "ddf8ae0cdb2ad0041c3ff3aebc200cf488d5b0d3",
+  "openzeppelinRevision": "dde766bd542e4a1695fe8e4a07dc03b77305f367",
+  "compiler": "0.8.35+commit.47b9dedd",
+  "settings": {
+    "optimizerRuns": 1999,
+    "viaIR": true,
+    "evmVersion": "cancun",
+    "bytecodeHash": "none"
+  },
+  "poolMatch": true,
+  "libraryMatch": true,
+  "linkAddressesMatch": true,
+  "libraryGuardMatch": true,
+  "poolCodeHash": "0x680a3f08381d929a747413e52c8523feffd16c92f49ec774b181f4682de3aad6",
+  "libraryCodeHash": "0x11b5f5a0ca47a5649216a19ce5b7485da3d715a5d7c48c46155b44a3096ce683",
+  "poolBytes": 20024,
+  "libraryBytes": 6220,
+  "immutableReferences": {
+    "19": [
+      {
+        "length": 32,
+        "start": 3054
+      },
+      {
+        "length": 32,
+        "start": 16136
+      }
+    ],
+    "21": [
+      {
+        "length": 32,
+        "start": 3102
+      },
+      {
+        "length": 32,
+        "start": 16215
+      }
+    ],
+    "23": [
+      {
+        "length": 32,
+        "start": 3150
+      },
+      {
+        "length": 32,
+        "start": 16179
+      }
+    ],
+    "25": [
+      {
+        "length": 32,
+        "start": 3198
+      },
+      {
+        "length": 32,
+        "start": 16312
+      }
+    ],
+    "27": [
+      {
+        "length": 32,
+        "start": 3246
+      },
+      {
+        "length": 32,
+        "start": 16276
+      }
+    ],
+    "29": [
+      {
+        "length": 32,
+        "start": 3294
+      },
+      {
+        "length": 32,
+        "start": 16391
+      }
+    ],
+    "31": [
+      {
+        "length": 32,
+        "start": 3342
+      },
+      {
+        "length": 32,
+        "start": 16355
+      }
+    ],
+    "34": [
+      {
+        "length": 32,
+        "start": 3382
+      },
+      {
+        "length": 32,
+        "start": 7650
+      }
+    ],
+    "37": [
+      {
+        "length": 32,
+        "start": 3421
+      },
+      {
+        "length": 32,
+        "start": 7944
+      }
+    ],
+    "40": [
+      {
+        "length": 32,
+        "start": 3460
+      },
+      {
+        "length": 32,
+        "start": 8407
+      }
+    ],
+    "43": [
+      {
+        "length": 32,
+        "start": 3499
+      },
+      {
+        "length": 32,
+        "start": 8680
+      }
+    ],
+    "46": [
+      {
+        "length": 32,
+        "start": 3538
+      },
+      {
+        "length": 32,
+        "start": 9941
+      }
+    ],
+    "49": [
+      {
+        "length": 32,
+        "start": 3577
+      },
+      {
+        "length": 32,
+        "start": 13492
+      }
+    ],
+    "601": [
+      {
+        "length": 32,
+        "start": 2600
+      },
+      {
+        "length": 32,
+        "start": 3631
+      },
+      {
+        "length": 32,
+        "start": 8977
+      }
+    ],
+    "603": [
+      {
+        "length": 32,
+        "start": 2072
+      },
+      {
+        "length": 32,
+        "start": 2644
+      },
+      {
+        "length": 32,
+        "start": 6268
+      },
+      {
+        "length": 32,
+        "start": 14376
+      }
+    ],
+    "605": [
+      {
+        "length": 32,
+        "start": 1786
+      },
+      {
+        "length": 32,
+        "start": 2691
+      },
+      {
+        "length": 32,
+        "start": 6356
+      },
+      {
+        "length": 32,
+        "start": 14218
+      }
+    ],
+    "608": [
+      {
+        "length": 32,
+        "start": 2730
+      },
+      {
+        "length": 32,
+        "start": 6305
+      },
+      {
+        "length": 32,
+        "start": 6582
+      },
+      {
+        "length": 32,
+        "start": 10041
+      },
+      {
+        "length": 32,
+        "start": 11159
+      },
+      {
+        "length": 32,
+        "start": 13099
+      }
+    ],
+    "611": [
+      {
+        "length": 32,
+        "start": 2768
+      },
+      {
+        "length": 32,
+        "start": 6391
+      },
+      {
+        "length": 32,
+        "start": 6704
+      },
+      {
+        "length": 32,
+        "start": 11199
+      },
+      {
+        "length": 32,
+        "start": 13009
+      },
+      {
+        "length": 32,
+        "start": 13056
+      }
+    ],
+    "613": [
+      {
+        "length": 32,
+        "start": 2806
+      }
+    ],
+    "615": [
+      {
+        "length": 32,
+        "start": 2844
+      }
+    ],
+    "617": [
+      {
+        "length": 32,
+        "start": 2882
+      }
+    ],
+    "620": [
+      {
+        "length": 32,
+        "start": 2928
+      },
+      {
+        "length": 32,
+        "start": 13701
+      }
+    ],
+    "622": [
+      {
+        "length": 32,
+        "start": 2968
+      },
+      {
+        "length": 32,
+        "start": 4359
+      },
+      {
+        "length": 32,
+        "start": 10651
+      }
+    ],
+    "624": [
+      {
+        "length": 32,
+        "start": 3007
+      },
+      {
+        "length": 32,
+        "start": 4687
+      },
+      {
+        "length": 32,
+        "start": 11579
+      }
+    ]
+  },
+  "linkReferences": {
+    "contracts/libraries/LiquidityLib.sol": {
+      "LiquidityLib": [
+        {
+          "length": 20,
+          "start": 7833
+        },
+        {
+          "length": 20,
+          "start": 8561
+        }
+      ]
+    }
+  },
+  "libraryImmutableReferences": {
+    "library_deploy_address": [
+      {
+        "length": 32,
+        "start": 8
+      }
+    ]
+  },
+  "normalization": "Only compiler-declared immutable and link regions masked; library link and self-address verified separately; pool immutable values saved from getImmutables."
+}

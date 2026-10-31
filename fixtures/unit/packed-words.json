@@ -1,0 +1,9 @@
+{
+  "kind": "ARTIFICIAL_CODEC_TEST_VECTORS_NOT_CHAIN_DATA",
+  "sourceRevision": "ddf8ae0cdb2ad0041c3ff3aebc200cf488d5b0d3",
+  "pairs": [
+    {"word": "0", "high": "0", "low": "0"},
+    {"word": "115792089237316195423570985008687907853269984665640564039457584007913129639935", "high": "-1", "low": "-1"},
+    {"word": "680564733841876926926749214863536422911", "high": "1", "low": "-1"}
+  ]
+}
