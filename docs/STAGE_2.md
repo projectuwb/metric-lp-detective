@@ -31,6 +31,19 @@ Permitted tolerance: zero base units. Endpoint balances: exactly zero CRCLB/USDT
 Thirteen historical block-end marks cover every replay block plus indexed head.
 These marks are distinct from the nine execution-time quotes.
 
+| Checkpoint | Block | Canonical block hash |
+|---|---:|---|
+| Initial deposit | 128750025 | `0x045699719d53040b836200b53592c9309c74d85a3ab48968db90779446da48fb` |
+| Full withdrawal | 128752283 | `0x0d77dc04d71590c97558f9f6e77ef27bfa7571ce39dc1fe84d845076dea4c412` |
+| Fixed indexed head | 130841348 | `0xd4b50c9afe0934057d61ccf2821e30c5b6dbf3553b6348ccb846e9f5a074ea7e` |
+
+All fifteen hashes are in
+[canonical-headers.json](../fixtures/positions/632f7d8c3d6ef54f/canonical-headers.json).
+Raw independent calls are in
+[states.json](../fixtures/positions/632f7d8c3d6ef54f/states.json);
+receipt-reconciled cashflow summaries are in
+[config.json](../fixtures/positions/632f7d8c3d6ef54f/config.json).
+
 ## Bounded reusable proof pipeline
 
 `npm run analyse:position -- --id <publicProvider:uint80Salt>` uses the saved
@@ -129,3 +142,9 @@ HTTPS Git fetch/push works. The required network capability for automatic PR and
 policy-aware merge is outbound HTTPS to `api.github.com:443`; no bypass or security
 setting change is attempted. CI is triggered by branch pushes; its result and
 Vercel production deployment are not inferred from a successful Git push.
+
+Public GitHub Actions subsequently confirmed both milestone runs succeeded:
+[evidence 9b4f77e](https://github.com/projectuwb/metric-lp-detective/actions/runs/41200743193)
+and [web 97aa95b](https://github.com/projectuwb/metric-lp-detective/actions/runs/41201033804).
+Code is pushed on `codex/stage2-second-position`; no PR/merge or production
+rollout is claimed while permission/protection API queries are blocked.

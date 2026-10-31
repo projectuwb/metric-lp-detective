@@ -157,3 +157,15 @@ HTTPS Git works. Required network capability: outbound HTTPS api.github.com:443.
 Cannot observe required checks/policies or safely create/merge a PR through this
 API. No direct main push, deployment command, paid service or setting change.
 Stage 1B and arbitrary hosted-wallet replay remain incomplete as documented.
+
+## Stage 2 push / CI receipt — 2026-10-31
+
+Web milestone 97aa95b65c7fca4af096f7492c02630570ed24d6 was pushed successfully to
+codex/stage2-second-position; remote ref was fetched and matches the local hash.
+The public GitHub Actions page independently confirms SUCCESS for both evidence
+commit 9b4f77e (run 41200743193) and web commit 97aa95b (run 41201033804).
+This is observed CI evidence, not an inference from pushing. API access is still
+Forbidden, so repository permission/protection queries and automatic PR/merge
+remain blocked. Main is still 9c1bc7dd1bdd637c63928c24ece470aaad7e63f8.
+No deployment was initiated or verified. This final documentation receipt does not
+change code or chain evidence; the code milestone passed all local and remote gates.
