@@ -1,0 +1,66 @@
+[
+  {
+    "method": "eth_call",
+    "function": "poolDeployer()",
+    "block": "0x78a46f3",
+    "raw": "0x0000000000000000000000002e0a99a2e352043d1ca489cf45bf7b511bccc738",
+    "value": "0x2E0A99A2E352043d1CA489cF45bf7B511BCcC738"
+  },
+  {
+    "method": "eth_call",
+    "function": "poolDeployer()",
+    "block": "0x7cbc648",
+    "raw": "0x0000000000000000000000002e0a99a2e352043d1ca489cf45bf7b511bccc738",
+    "value": "0x2E0A99A2E352043d1CA489cF45bf7B511BCcC738"
+  },
+  {
+    "method": "eth_call",
+    "function": "provider.token0()",
+    "block": "0x7cbc648",
+    "raw": "0x00000000000000000000000080f3d493ebce97e343c53d29a137942416b4ffc0",
+    "value": "0x80f3D493EBCe97e343c53D29a137942416B4ffC0"
+  },
+  {
+    "method": "eth_call",
+    "function": "provider.token1()",
+    "block": "0x7cbc648",
+    "raw": "0x00000000000000000000000055d398326f99059ff775485246999027b3197955",
+    "value": "0x55d398326f99059fF775485246999027B3197955"
+  },
+  {
+    "method": "eth_call",
+    "function": "extsload(positionBinShares)",
+    "block": "0x78a60c5",
+    "provider": "0x3216FBdef81Be1842A80D648C83C7aa10bc00787",
+    "salt": "198136120981933274567974",
+    "bin": "-10",
+    "slot": "0x5801d8403ddc39c6882e6e435e0330b12ccfe0335c3c59d704ba494c50401203",
+    "raw": "0x00000000000000000000000000000000000000000000000066c4c858bf1c400a",
+    "shares": "7405263970792914954",
+    "eventShares": "7405263970792914954"
+  },
+  {
+    "method": "eth_getCode",
+    "owner": "0x3216FBdef81Be1842A80D648C83C7aa10bc00787",
+    "block": "0x78a60c5",
+    "result": "0x"
+  },
+  {
+    "method": "eth_call",
+    "function": "extsload(positionBinShares)",
+    "block": "0x78ae525",
+    "provider": "0xaDD454F43AFf689f0B694161a950Dd8f82a5d0D4",
+    "salt": "1068754547228601823113491",
+    "bin": "-8",
+    "slot": "0xf3c9100a28166764baceef08664a453f1f500fc9aa3804a86bb039dc0676866f",
+    "raw": "0x0000000000000000000000000000000000000000000000010a6e0ed676745a51",
+    "shares": "19198298575800130129",
+    "eventShares": "19198298575800130129"
+  },
+  {
+    "method": "eth_getCode",
+    "owner": "0xaDD454F43AFf689f0B694161a950Dd8f82a5d0D4",
+    "block": "0x78ae525",
+    "result": "0x"
+  }
+]

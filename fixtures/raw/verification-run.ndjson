@@ -1,0 +1,7 @@
+{"method":"eth_chainId","chainId":56,"head":"130796529"}
+{"method":"eth_getTransactionReceipt","transactionHash":"0x600833c852f7ef412cf3653b788dd35642e48ecbbb43776317dc20286300a804","status":"matched"}
+{"method":"eth_getTransactionReceipt","transactionHash":"0xbe072d693de89938c714e49795610ee589df1e90773c21a234268fcc46ac9e87","status":"matched"}
+{"method":"eth_getTransactionReceipt","transactionHash":"0x6a72450dbeb1d0697369ee41479f0bd0d274d6c7c0253b009ca3c6590809e31f","status":"matched"}
+{"method":"eth_getTransactionReceipt","transactionHash":"0x485250b8cdd5b91c53cce53ba4e2f4bba97a49f82b7a8aa8b8e3da3441682d6a","status":"matched"}
+{"method":"eth_getLogs","from":"130794081","to":"130795080","count":10,"status":"matched"}
+{"verifiedHistoricalFixtures":true,"runtimeCodeHash":"0x680a3f08381d929a747413e52c8523feffd16c92f49ec774b181f4682de3aad6"}

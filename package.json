@@ -1,0 +1,30 @@
+{
+  "name": "metric-lp-detective",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit",
+    "audit:rpc": "node --import tsx scripts/audit-rpc.ts",
+    "verify:stage0:live": "node --import tsx scripts/verify-stage0-live.ts",
+    "verify:source": "node scripts/compile-source.mjs && node scripts/verify-source.mjs",
+    "verify:fixture": "node --import tsx scripts/verify-attribution.ts",
+    "capture:attribution": "node --import tsx scripts/acquire-attribution.ts --refresh-logs",
+    "scan:credentials": "node scripts/scan-credentials.mjs",
+    "check": "npm test && npm run typecheck && npm run verify:fixture && npm run scan:credentials"
+  },
+  "dependencies": {
+    "viem": "2.38.5"
+  },
+  "devDependencies": {
+    "@types/node": "22.18.12",
+    "solc": "0.8.35",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "vitest": "3.2.4"
+  }
+}
