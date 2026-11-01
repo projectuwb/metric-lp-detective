@@ -17,3 +17,7 @@
 .analysis-panel{background:#fff;border:1px solid #ded7ef;border-radius:11px;padding:24px;margin:24px 0}.analysis-panel h3{font-size:20px;letter-spacing:-.5px}.analysis-panel>p,.analysis-progress p{font-size:11px;line-height:1.9;color:var(--muted);max-width:850px}.analysis-progress{margin:20px 0;padding:20px;background:#f6f3fc;border:1px solid #e0d7ef;border-radius:8px}.analysis-progress>strong{font-size:13px;color:var(--purple);letter-spacing:1px}.analysis-panel button:not(.sample-button){padding:9px 13px;border:1px solid #d9d3e7;border-radius:5px;background:white;color:#65517f;font-size:10px}.analysis-panel .analysis-refresh{margin-top:17px}.analysis-panel .sample-button{max-width:350px}
 
 .primary-sample{background:#eaf5f0;border-color:#b8dbcf;color:#267c65}
+
+.remote-handoff label{display:block;font-size:13px;color:var(--muted)}
+.remote-handoff input{display:block;width:100%;min-width:0;padding:12px;margin:8px 0;border:1px solid var(--line);border-radius:8px;background:#faf9fd;color:var(--ink);font-family:monospace;font-size:12px;box-sizing:border-box}
+.remote-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:12px 0}.remote-handoff a{color:#6744bf}.remote-handoff p{overflow-wrap:anywhere;font-size:12px;line-height:1.8}.remote-handoff summary{cursor:pointer;font-size:11px;color:#635a7b}.remote-handoff details{margin-top:20px}

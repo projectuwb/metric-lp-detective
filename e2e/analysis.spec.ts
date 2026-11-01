@@ -8,6 +8,7 @@ test('public site offers a real request download and does not pretend a hosted q
   await expect(panel).toContainText('Nothing is queued or saved here');
   await expect(page.getByRole('button', { name: 'Request verified reconstruction', exact: true })).toHaveCount(0);
   const download = page.waitForEvent('download');
+  await panel.getByText('Alternative: existing owner-local file handoff', { exact: true }).click();
   await page.getByRole('button', { name: 'Download owner analysis request', exact: true }).click();
   expect((await download).suggestedFilename()).toBe('metric-owner-analysis-request.json');
   await expect(panel.getByRole('status')).toContainText('has not been sent or queued');
@@ -22,5 +23,5 @@ test('capability failure terminates and can be refreshed', async ({ page }) => {
   await page.getByRole('button', { name: /salt 1068754547228601823113491/ }).click();
   await expect(page.getByRole('alert').filter({ hasText: 'Analysis capabilities are unavailable' })).toBeVisible();
   await page.getByRole('button', { name: 'Refresh analysis status', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'Download owner analysis request', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Open owner Request Analysis workflow ↗', exact: true })).toBeVisible();
 });

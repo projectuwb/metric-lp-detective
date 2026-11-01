@@ -1,6 +1,7 @@
 import 'server-only';
 import { ownerLocal, context, workerOnline } from '../analysis/store';
 import { SERVICE_LIMITS } from '../analysis/types';
+import { OWNER_WORKFLOW } from '../domain/remoteWorkflow';
 export function localAccessReason(request: Request, mutation = false) {
   if (!ownerLocal()) return 'DISABLED';
   const url = new URL(request.url);
@@ -22,9 +23,9 @@ export function localAccessReason(request: Request, mutation = false) {
 export const localAccess = (request: Request, mutation = false) => localAccessReason(request, mutation) === null;
 export function capabilities(request: Request) {
   const enabled = localAccess(request);
-  return { mode: enabled ? 'OWNER_LOCAL' : 'PUBLIC_DOWNLOAD_ONLY', queueAvailable: enabled, accessReason: localAccessReason(request), workerOnline: enabled && workerOnline(), durable: enabled,
-    context: context(), limits: SERVICE_LIMITS,
-    message: enabled ? 'Owner-local disk queue. Processing continues after the browser closes while the owner worker and its disk remain available.' : 'No hosted analysis worker is configured. Nothing is queued or saved here. Download a request for the owner-controlled worker; completed verified evidence can be published to this site.' };
+  return { mode: enabled ? 'OWNER_LOCAL' : 'PUBLIC_OWNER_HANDOFF', queueAvailable: enabled, accessReason: localAccessReason(request), workerOnline: enabled && workerOnline(), durable: enabled,
+    context: context(), limits: SERVICE_LIMITS, ownerWorkflow: OWNER_WORKFLOW,
+    message: enabled ? 'Owner-local disk queue. Processing continues after the browser closes while the owner worker and its disk remain available.' : 'Owner authorization required in GitHub. Nothing is queued or saved here. GitHub reports setup and actual remote progress; this site does not check secret configuration or claim that a job has started.' };
 }
 export async function boundedJson(request: Request) {
   if (Number(request.headers.get('content-length') ?? 0) > 1024) throw new Error('Request too large');

@@ -1,0 +1,88 @@
+name: Owner LP reconstruction
+
+on:
+  workflow_dispatch:
+    inputs:
+      position_id:
+        description: 'Paste provider:salt copied from the site (fixed CRCLB/USDT index only)'
+        required: true
+        type: string
+      resume_checkpoint:
+        description: 'Explicitly resume the last matching unexpired failed checkpoint (next UTC day)'
+        type: boolean
+        default: false
+
+# Same group across every revision; never cancel an active RPC worker.
+concurrency:
+  group: metric-owner-reconstruction
+  cancel-in-progress: false
+
+permissions: {}
+
+jobs:
+  reconstruct:
+    if: github.actor == 'projectuwb' && github.repository == 'projectuwb/metric-lp-detective' && github.ref == 'refs/heads/main' && github.event.repository.private == false && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    permissions:
+      contents: write
+      pull-requests: write
+      # GITHUB_TOKEN pushes do not trigger CI. Explicitly dispatch the existing
+      # read-only Validate workflow at the evidence commit; never spoof a check.
+      actions: write
+    env:
+      LP_ANALYSIS_DIR: artifacts/remote-analysis
+      NODE_OPTIONS: --max-old-space-size=4096
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run prepare:web
+      - name: Validate input and durably reserve the full daily allowance
+        id: admit
+        env:
+          POSITION_ID: ${{ inputs.position_id }}
+          RESUME_CHECKPOINT: ${{ inputs.resume_checkpoint }}
+          HAS_RPC_SECRET: ${{ secrets.BNB_RPC_URL != '' }}
+          GH_TOKEN: ${{ github.token }}
+        run: node --import tsx scripts/remote-analysis.ts admit
+      - name: Real bounded reconstruction (no mock or paid fallback)
+        if: steps.admit.outputs.proceed == 'true'
+        env:
+          BNB_RPC_URL: ${{ secrets.BNB_RPC_URL }}
+        run: node --import tsx scripts/remote-analysis.ts work
+      - name: Preserve sanitized checkpoints even when provider fails
+        if: always() && steps.admit.outputs.proceed == 'true'
+        env:
+          # Both are available only for scanning; no RPC calls in this command.
+          BNB_RPC_URL: ${{ secrets.BNB_RPC_URL }}
+          GH_TOKEN: ${{ github.token }}
+        run: node --import tsx scripts/remote-analysis.ts checkpoint
+      - name: Export independently verified evidence and actual runner receipt
+        if: success() && steps.admit.outputs.proceed == 'true'
+        run: node --import tsx scripts/remote-analysis.ts export
+      - name: Automated arithmetic, reconciliation, fixtures, types and credential checks
+        if: success() && steps.admit.outputs.proceed == 'true'
+        run: npm run check
+      - name: Production build and browser credential scan
+        if: success() && steps.admit.outputs.proceed == 'true'
+        run: |
+          npm run build
+          npm run check:client
+      - name: Production browser regression tests
+        if: success() && steps.admit.outputs.proceed == 'true'
+        run: |
+          npx playwright install --with-deps chromium
+          npm run test:e2e
+      - name: Push only validated evidence and propose policy-controlled integration
+        if: success() && steps.admit.outputs.proceed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node --import tsx scripts/remote-analysis.ts publish

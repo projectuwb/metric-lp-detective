@@ -244,3 +244,105 @@ HTTPS api.github.com:443 or another authorized GitHub integration connector.
 Stage 3 remains PARTIAL for truly hosted on-demand jobs; the owner-local path is
 operational and proved, public file handoff is honest. No new paid service,
 provider upgrade, Vercel project, security setting or deployment was created.
+
+## Stage 4 implementation — 1 November 2026 (Australia/Sydney)
+
+Synced main 07fbef99e21a8a66800467d7b6bbdb194059f2c3 (PR #8, owner confirms
+successful Vercel deployment). Read Issue #9 and all required contracts/runbooks.
+Branch: codex/stage4-remote-owner-worker.
+
+Implemented owner-only/main-only workflow_dispatch on standard public-repo Ubuntu,
+validated provider/salt preflight, durable non-force full daily RPC reservation,
+UTC rollover stop, checksummed sanitized checkpoint restore, existing exact
+collector/verifier reuse, actual-run-only evidence export, all publication gates,
+explicit read-only CI dispatch and policy-controlled branch/PR/auto-merge attempt.
+No secret, repository setting, paid resource or deployment was created. Browser
+copy-ID/workflow links replace the primary local-file handoff; clipboard failure
+has a usable fallback. The nine-swap demo defaults to its Start / Payout / Net exit;
+all three existing replays and initial-event playback remain operational.
+
+Validation: npm run check PASS — 79/79 tests (71 existing plus 8 remote safety
+checks), typecheck, original A–D attribution, full history, oracle/performance and
+fixture/credential checks. Independent Python Fraction: 31 real selected points,
+310 exact value/percentage comparisons PASS. Pinned source recompile/runtime,
+library links and guard PASS. Production build and client scan PASS (11 assets).
+All 16 production Chromium tests PASS (13 retained plus 3 remote/exit/clipboard
+regressions); mobile handoff screenshot inspected. Focused remote/API tests and
+workflow YAML parsing pass. Committed blockchain fixtures are unchanged; zero
+reconciliation tolerance retained. Staged credential scan is required before commit.
+
+Offline real-index research found a genuinely unpublished one-swap closed position:
+0xd85440db4b63cd61e0be731b5dcb36e2f36f9eba:880320313732695054146242;
+7 checkpoints, 1 trace, <=43 reads. Tx/log evidence and minimal setup are in
+REMOTE_WORKER_RUNBOOK.md. This is eligibility, NOT independent chain verification.
+The eleven-swap candidate was refused because it exceeded the ten-trace cap.
+No extra live requests were made: the existing local day ledger already records
+86/100 attempts on 2026-10-31 UTC. No quota reset, fictional fixture or fourth
+playback registration was introduced.
+
+GitHub API check still fails exactly:
+Get "https://api.github.com/repos/projectuwb/metric-lp-detective": Forbidden.
+Enforced HTTPS egress to api.github.com:443 is missing; no alternative GitHub tool
+is available. Repo Actions secret/settings/dispatch cannot be inspected or run.
+Remote reconstruction, fourth independent fixture, main merge and new public replay
+remain NOT VERIFIED. Stage 4 and original Stage 1B remain PARTIAL. The smallest
+browser-only setup is integrate Stage 4, explicitly approve/add BNB_RPC_URL as a
+repo Actions secret, then Run workflow on main with the documented pilot ID.
+
+### Stage 4 Git receipt
+
+Implementation 115f3df51fd3228bb8d113104459e2d71eab49eb is pushed to
+origin/codex/stage4-remote-owner-worker; git ls-remote confirms the identical SHA.
+Exact staged scan: 23 files, zero findings. Official actionlint v1.7.7 release
+checksum verified; both workflows pass semantic lint (no workflow errors).
+GitHub's public page shows Validate run 41251471309 in progress for this commit:
+https://github.com/projectuwb/metric-lp-detective/actions/runs/41251471309
+
+PR creation was attempted with a full description and failed exactly:
+Post "https://api.github.com/graphql": Forbidden.
+No PR/main merge or Stage 4 deployment is claimed. Main was fetched again and
+remains 07fbef99e21a8a66800467d7b6bbdb194059f2c3. Integration can use the
+connected GitHub account or restored enforced api.github.com:443 egress; no direct
+main bypass was attempted. Remote owner reconstruction remains NOT VERIFIED until
+its actual first dispatch, independent evidence and deployed replay are observed.
+
+### Successful-checkpoint recovery regression
+
+Documentation receipt bcebbae3868e82ca0e8ab4abc82e2ec26a761373 was pushed.
+Hosted Validate run 41251471309 for implementation 115f3df completed SUCCESS,
+including every check/build/client/browser/unchanged-fixture step.
+
+The final test refinement also replaces a runner after a successful raw storage
+checkpoint, restores the sanitized cache and lifetime counters, revalidates
+canonical headers and completes the real saved nine-swap fixture in three bounded
+attempts within 100 total requests. Independent 6,000 storage / 12 withdrawal
+checks still agree exactly. Focused worker/remote suite: 9/9 PASS. Failures here
+are explicitly synthetic transport tests over real saved chain inputs, not a new
+RPC capture or proof of a live Actions worker. Production code/UI are unchanged
+from the hosted-CI-passing implementation; all 16 production-browser checks remain
+applicable. No new blockchain requests, evidence rewrites or secret/setting
+changes were made. Stage 4 remote/public gate stays NOT VERIFIED.
+
+### Cross-dispatch lifetime-budget hardening
+
+Recovery milestone b080d9a34011c6aa5b23b0af558cdff8bf285dac is pushed; hosted
+Validate run 41252076642 completed SUCCESS. Earlier implementation and receipt
+runs 41251471309 / 41251782467 also completed SUCCESS.
+
+Final review caught an admission loophole before integration: a later-day fresh
+workflow could otherwise reset an unfinished job's counters when resume was left
+off. Fixed by persisting the exact reservation/job expiry, requiring explicit
+resume of any unexpired same-context job, and refusing a checkpoint older than
+the latest reserved attempt (unknown spent requests after a lost runner). A fresh
+local job inherits the durable expiry; API latency cannot extend its lifetime.
+No RPC was sent while investigating or testing this issue.
+
+Final npm run check PASS: 80/80 automated tests, typecheck, all original independent
+reconciliation and performance checks, 310 exact Fraction comparisons, credential
+scan (208 files, zero findings). The added safety test covers cross-UTC dispatch,
+missing/latest/stale checkpoints and expiry. Actionlint still passes. Existing
+production build/client scan and all 16 browser tests passed for the unchanged
+web code; the final pushed revision also receives the complete hosted CI suite.
+Original blockchain fixtures remain byte-for-byte unchanged. Remote Actions
+reconstruction and fourth public replay remain NOT VERIFIED, and GitHub API PR /
+merge remains blocked as recorded above. No secrets/settings/deployments changed.

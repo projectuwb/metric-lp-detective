@@ -1,0 +1,51 @@
+import { test, expect } from '@playwright/test';
+import { readFileSync } from 'node:fs';
+import type { PositionSummary } from '../lib/domain/web';
+const positions: PositionSummary[] = JSON.parse(readFileSync('.web-data/positions.json', 'utf8'));
+const pilot = '0xd85440db4b63cd61e0be731b5dcb36e2f36f9eba:880320313732695054146242';
+// Once the real pilot publishes, continue testing handoff with an unregistered ID.
+const id = positions.find(p => p.id === pilot && p.status === 'indexed-only')?.id ?? positions.find(p => p.status === 'indexed-only')!.id;
+test('new wallet gets a browser-only owner handoff, with no fake dispatch or anonymous quota access', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  const submissions: string[] = [];
+  page.on('request', r => { if (r.method() === 'POST' && r.url().includes('/api/analysis')) submissions.push(r.url()); });
+  await page.setViewportSize({ width: 390, height: 844 }); await page.goto('/');
+  await page.getByLabel('START WITH A PUBLIC WALLET').fill(id.split(':')[0]);
+  await page.getByRole('button', { name: 'Find positions', exact: true }).click();
+  await page.getByRole('button', { name: new RegExp('salt ' + id.split(':')[1]) }).click();
+  const panel = page.getByLabel('Verified position analysis');
+  await expect(panel).toContainText('Owner authorization required');
+  await expect(panel).toContainText('through 130841348');
+  await expect(panel).toContainText('Later history is unsupported');
+  await expect(page.getByLabel('Position ID for owner workflow')).toHaveValue(id);
+  await panel.getByRole('button', { name: 'Copy position ID', exact: true }).click();
+  await expect(panel.getByRole('status')).toContainText('Nothing has been sent or queued');
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(id);
+  await expect(panel.getByRole('link', { name: 'Open owner Request Analysis workflow ↗', exact: true })).toHaveAttribute('href', 'https://github.com/projectuwb/metric-lp-detective/actions/workflows/owner-analysis.yml');
+  expect(submissions).toEqual([]);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
+  await page.screenshot({ path: 'artifacts/stage4-owner-handoff-mobile.png', fullPage: true });
+});
+test('primary closed demo opens directly at Start / Payout / Net and can replay from its deposit', async ({ page }) => {
+  await page.goto('/'); await page.getByRole('button', { name: /Try the smaller sample/ }).click();
+  await expect(page.getByTestId('outcome-net')).toHaveText('-1.812248');
+  await expect(page.getByLabel('Replay event', { exact: true })).toHaveValue('13');
+  await expect(page.getByLabel('LP financial outcome')).toContainText('Start · total put in');
+  await expect(page.getByLabel('LP financial outcome')).toContainText('Payout · all withdrawals');
+  await expect(page.getByTestId('stable-balance')).toHaveText('0 USDT');
+  await page.getByRole('button', { name: /Initial deposit · #1/ }).click();
+  await expect(page.getByTestId('stock-balance')).toContainText('5.581308');
+  await page.getByRole('button', { name: 'Next event' }).click();
+  await expect(page.getByTestId('stock-balance')).toContainText('8.081029');
+});
+test('clipboard denial offers manual selection and leaves the workflow link usable', async ({ page }) => {
+  await page.addInitScript(() => Object.defineProperty(navigator, 'clipboard', { value: { writeText: () => Promise.reject(new Error('Denied for this UI test')) } }));
+  await page.goto('/'); await page.getByLabel('START WITH A PUBLIC WALLET').fill(id.split(':')[0]);
+  await page.getByRole('button', { name: 'Find positions', exact: true }).click();
+  await page.getByRole('button', { name: new RegExp('salt ' + id.split(':')[1]) }).click();
+  const panel = page.getByLabel('Verified position analysis');
+  await panel.getByRole('button', { name: 'Copy position ID', exact: true }).click();
+  await expect(panel.getByRole('alert')).toContainText('Select and copy the position ID above');
+  await expect(page.getByLabel('Position ID for owner workflow')).toHaveValue(id);
+  await expect(panel.getByRole('link', { name: 'Open owner Request Analysis workflow ↗', exact: true })).toBeVisible();
+});

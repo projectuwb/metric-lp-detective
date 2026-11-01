@@ -44,11 +44,12 @@ export default function Detective() {
   const [analysisId, setAnalysisId] = useState('');
   const lookupId = useRef(0);
   const sampleId = useRef<string | undefined>(undefined);
+  const sampleExit = useRef(false);
   const lastAction = useRef<'sample' | 'lookup' | 'events'>('sample');
   const page = meta ? Math.floor(index / meta.pageSize) : 0;
   const event = pages[page]?.find(e => e.index === index);
-  async function sample(positionId?: string) {
-    sampleId.current = positionId; setAnalysisId('');
+  async function sample(positionId?: string, showExit = false) {
+    sampleId.current = positionId; sampleExit.current = showExit; setAnalysisId('');
     lastAction.current = 'sample';
     const id = ++lookupId.current;
     setBusy('Loading verified sample…'); setError(''); setNotice(''); setPlaying(false);
@@ -56,7 +57,7 @@ export default function Detective() {
       const data = await request<ReplayMeta>('/api/replay' + (positionId ? '?id=' + encodeURIComponent(positionId) : ''));
       const first = await request<{ events: ReplayEvent[] }>(`/api/replay/${encodeURIComponent(data.id)}/events?page=0`);
       if (id !== lookupId.current) return;
-      setMeta(data); setSelectedId(data.id); setPages({ 0: first.events }); setIndex(0);
+      setMeta(data); setSelectedId(data.id); setPages({ 0: first.events }); setIndex(showExit ? [...data.milestones].reverse().find(m => m.kind === 'FULL_CLOSE')?.index ?? 0 : 0);
       setPositions(old => old?.map(p => p.id === data.id ? { ...p, status: 'reconciled' as const } : p) ?? null);
     } catch (e) { if (id === lookupId.current) setError(e instanceof Error ? e.message : 'Unable to load sample.'); }
     finally { if (id === lookupId.current) setBusy(''); }
@@ -90,7 +91,7 @@ export default function Detective() {
     return () => window.clearTimeout(timer);
   }, [playing, event, index, meta, speed]);
   function seek(value: number) { setPlaying(false); setError(''); setIndex(value); if (meta && !pages[Math.floor(value / meta.pageSize)]) setPages(old => ({ ...old })); }
-  function retry() { setError(''); if (lastAction.current === 'lookup') void lookup(); else if (!meta || lastAction.current === 'sample') void sample(sampleId.current); else setPages(old => { const next = { ...old }; delete next[page]; return next; }); }
+  function retry() { setError(''); if (lastAction.current === 'lookup') void lookup(); else if (!meta || lastAction.current === 'sample') void sample(sampleId.current, sampleExit.current); else setPages(old => { const next = { ...old }; delete next[page]; return next; }); }
   const change = event?.delta;
   const narrative = event ? event.type === 'swap' ? 'A real swap changed this position’s withdrawable inventory, using its shares in each touched bin.' : event.type === 'deposit' ? 'The provider added liquidity. These are the actual token credits and minted bin shares.' : event.type === 'withdrawal' ? 'The provider removed liquidity. These token amounts left the position.' : 'Another LP changed liquidity. Contract rounding changed this position’s entitlement; no trade is invented.' : '';
   return <div className="shell">
@@ -103,7 +104,7 @@ export default function Detective() {
     <main id="investigate">
       <header className="topbar"><span>THE ON-CHAIN INVESTIGATION TOOL</span><a href="https://bscscan.com/address/0xdC2b2F96bC1eb01E7286C688d5354e081AF188C4" target="_blank" rel="noreferrer">Verified pool <ArrowUpRight size={14} /></a></header>
       <section className="hero"><div><div className="eyebrow"><span className="live-dot" /> METRIC · CRCLB / USDT · BNB CHAIN</div><h1>Your liquidity.<br /><span>The whole story.</span></h1><p>Follow the real trades. See how your tokens changed.<br className="desktop" /> Understand what happened to your Metric LP.</p></div><div className="hero-seal"><ShieldCheck size={25} /><strong>Evidence, not estimates.</strong><span>Every inventory change links<br />back to a real transaction.</span></div></section>
-      <section className="search-panel" aria-label="Find a liquidity position"><form onSubmit={lookup}><label htmlFor="wallet">START WITH A PUBLIC WALLET</label><div className="search-row"><div className="input-wrap"><Wallet size={18} /><input id="wallet" disabled={!!busy} autoComplete="off" spellCheck={false} placeholder="0x… public wallet address" value={wallet} onChange={e => setWallet(e.target.value)} aria-describedby="privacy" /></div><button className="primary" disabled={!!busy || !wallet.trim()}><Search size={16} /> Find positions</button></div><p className="privacy" id="privacy"><ShieldCheck size={12} /> No wallet connection. Address used for lookup, not saved as search history.</p></form><div className="search-divider">OR</div><div className="sample"><span>Follow a real position, from the start.</span><button className="sample-button primary-sample" onClick={() => void sample(SMALL_SAMPLE_ID)} disabled={!!busy}>Try the smaller sample · 9 swaps <ArrowRight size={16} /></button><button className="sample-button" onClick={() => void sample()} disabled={!!busy}>Try the verified sample <ArrowRight size={16} /></button></div></section>
+      <section className="search-panel" aria-label="Find a liquidity position"><form onSubmit={lookup}><label htmlFor="wallet">START WITH A PUBLIC WALLET</label><div className="search-row"><div className="input-wrap"><Wallet size={18} /><input id="wallet" disabled={!!busy} autoComplete="off" spellCheck={false} placeholder="0x… public wallet address" value={wallet} onChange={e => setWallet(e.target.value)} aria-describedby="privacy" /></div><button className="primary" disabled={!!busy || !wallet.trim()}><Search size={16} /> Find positions</button></div><p className="privacy" id="privacy"><ShieldCheck size={12} /> No wallet connection. Address used for lookup, not saved as search history.</p></form><div className="search-divider">OR</div><div className="sample"><span>Start with a real exit. Replay every step.</span><button className="sample-button primary-sample" onClick={() => void sample(SMALL_SAMPLE_ID, true)} disabled={!!busy}>Try the smaller sample · 9 swaps <ArrowRight size={16} /></button><button className="sample-button" onClick={() => void sample()} disabled={!!busy}>Try the verified sample <ArrowRight size={16} /></button></div></section>
       {busy && <div className="status" role="status"><LoaderCircle className="spin" size={17} /> {busy}</div>}
       {error && <div className="error" role="alert"><AlertCircle size={18} /><span>{error}</span><button onClick={retry}><RefreshCw size={14} /> Retry</button></div>}
       {notice && <div className="notice" role="status">{notice}</div>}

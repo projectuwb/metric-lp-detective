@@ -99,3 +99,30 @@ you. These instructions persist across future Codex tasks.
 - Owner publication can use beta:publish after Stage 3 reaches main; no Git write
   credentials belong in a browser/public job trigger. Never claim merge/deployment
   solely from a successful push or an auto-merge request.
+
+## Stage 4 remote-worker boundaries
+
+- Read docs/STAGE_4.md and docs/REMOTE_WORKER_RUNBOOK.md. The browser handoff is
+  implemented; the first real Actions reconstruction/public deployment is NOT
+  VERIFIED until an actual runner receipt, independent new-wallet evidence and
+  deployed browser replay are observed. Do not relabel offline tests as live proof.
+- Owner-only workflow_dispatch on main, public repository, standard Ubuntu runner;
+  no public dispatch token, PR/fork secret trigger, paid runner or new service.
+  Adding BNB_RPC_URL as an Actions secret requires explicit owner approval; do not
+  silently copy the cloud environment credential. Workflow-level write scopes are
+  documented; do not relax global policies to obtain a merge.
+- Preserve the non-force, confirmed state-branch reservation before RPC. Reserve
+  all 100 requests/day with no refunds, refuse reruns, stop at UTC rollover and
+  keep the lifetime job/attempt, checkpoint and trace caps. Do not delete/reset
+  the state branch to bypass quota. Coordinate other provider clients separately.
+- Never create a fresh job to reset an unexpired same-context position's counters.
+  Require explicit resume from the latest attempt's durable checkpoint; a lost
+  latest checkpoint makes spent requests unknown, so refuse stale-cache resume.
+- Public wallet copy/link is not admission. Only GitHub's actual run state may
+  claim queued/running. Resume must be explicit and matching/unexpired, with safe
+  paths/checksums and canonical-header checks. Public-chain checkpoint Git history
+  is retained intentionally; no search history, IPs or credentials belong in it.
+- Only independently verified artifacts pass export and all checks before push.
+  GITHUB_TOKEN pushes do not trigger CI; explicitly dispatch the existing read-only
+  Validate workflow at the evidence branch. Never spoof required checks or bypass
+  protection. Main merge and successful Vercel/public replay are separate gates.

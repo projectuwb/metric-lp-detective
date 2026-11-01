@@ -119,3 +119,20 @@ the first/easiest choice.
 queue. It offers a browser request download for owner import/process/publication.
 No new paid service or hosting project was created. See [Stage 3 evidence](docs/STAGE_3.md),
 [the owner runbook](docs/OWNER_BETA_RUNBOOK.md) and [the architecture decision](docs/STAGE_3_ARCHITECTURE.md).
+
+## Stage 4 — browser-only owner workflow (remote proof pending)
+
+New indexed positions now offer **Copy position ID → Open owner Request Analysis
+workflow**. The owner authorizes a bounded reconstruction in GitHub's browser UI;
+no local installation, file upload, public write token or anonymous RPC queue is
+introduced. The primary nine-swap demo opens directly at its Exit Summary with
+Start / Payout / Net; deposit navigation and all three verified replays remain.
+
+The workflow implements durable daily reservations, safe explicit checkpoint
+resume, exact independent reconciliation, all tests/build/browser gates and
+feature-branch/PR publication. Standard public-repo Ubuntu runners only; no new
+paid infrastructure or deployment command. Actual GitHub Actions execution and a
+fourth public replay are **NOT VERIFIED**. The cloud RPC variable is not an
+Actions secret. See [the three browser-only setup steps and real one-swap pilot](docs/REMOTE_WORKER_RUNBOOK.md)
+and [Stage 4 release gates](docs/STAGE_4.md). Main-to-Vercel remains unchanged;
+branch push, PR creation and auto-merge requests do not prove deployment.
