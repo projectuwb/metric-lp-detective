@@ -511,3 +511,66 @@ passes all 115 tests and independent numerical/credential checks. No further
 live RPC, paid action, account/secret change, merge or deployment occurred.
 The follow-up commit records this hash/receipt and the tested guard; its own
 Validate result must be observed separately before integration.
+
+### Stage 7 — offline implementation; fifth-wallet gate still pending
+
+Started from fetched main `5cf3a38f9b8ac9366c70be879b7f8a5a5ad5e1bc`
+on `codex/stage7-new-wallet`. Read Issue #16, AGENTS, Stage 6, prepaid report
+and remote-worker runbook. No new live RPC requests or charges. Existing four
+positions were rechecked offline only; no RPC reconstruction was repeated.
+
+Added reproducible offline owner/share-per-bin candidate preflight. Exhaustive
+attribution reproduces all four known swap counts and finds no untested provider
+with 1–10 attributable swaps. Proposed new provider/salt
+`0xa598e2658ef74196f498b00b289a7d5d64a42cd7:615031639178913965778603`:
+zero swaps, deposit/full removal, five checkpoints, expected 26 calls, hard
+31-attempt reservation on 2 November UTC. New approval remains pending; no
+workflow dispatch or index scan is authorized by the earlier 12-call probe.
+
+Measured 30k liquidity windows now fall back on explicit range/result caps,
+without retrying quota/rate/temporary errors or advancing an unfinished page.
+Dense combined windows remain separately checksummed bounded pages. Added
+main/owner-only full-event accounting candidate capture with exact target,
+shared request/cost reservations, <=1k adaptive pages, canonical event/boundary
+checks and independent 100-bin reserve/total/owner-share reconciliation. It does
+not alter published source heads or unlock LPs. Candidate verification is part
+of prepare:web/check. Versioned later LP job contexts/proofs and live catch-up
+remain unfinished; docs give precise separately unapproved next experiments.
+
+Added public release identity and read-only actual production browser acceptance
+following main Validate. It enters the unfamiliar wallet and checks honest owner
+handoff until real proof exists; then it steps every replay event and checks
+inventory, witnesses, cashflow PnL and exit/source evidence. Actual Actions log
+proof is separate from local regressions. No RPC secrets, public job dispatch,
+repository write token, artifact storage upload or new host is involved.
+
+Validation: full `npm run check` PASS (127 tests / 20 suites, types, original
+A–D fixture/storage/execution checks, history/oracle/performance/outcomes,
+independent Python Fraction checks, accounting candidate status NOT_CAPTURED,
+credential scan zero findings). Final dense-discovery regression then added;
+focused discovery/capability tests PASS **25/25**, final typecheck PASS.
+Production build PASS; client credential check PASS (11 assets). Initial browser
+launch found no Playwright-managed browser; reran using installed system Chromium
+(`PLAYWRIGHT_CHROMIUM_EXECUTABLE=/usr/bin/chromium`), **22/22 PASS** against the
+production build, including both shared operational acceptance paths. Pinned
+source/library/runtime/link/guard compilation verification PASS. YAML parsing
+and diff checks PASS. Exact staged scan required immediately before commit.
+
+Cloud environment is running with its RPC binding ready, but its enforced
+network policy excludes direct api.github.com and Vercel access. Connected
+GitHub can manage normal PR integration, but exposes no workflow-dispatch tool;
+one real owner Run workflow action remains necessary after exact RPC/day
+approval. Do not bypass network policy or ask for the installed secret again.
+No new independent wallet proof, merged Stage 7 change or public replay claimed
+at this milestone. Git/CI/deployment receipt follows after observing it.
+
+### Stage 7 implementation push receipt
+
+Implementation `727a1e7512323608f7664f32ec6015e1b93b07f6` was pushed to
+`codex/stage7-new-wallet`; [PR #17](https://github.com/projectuwb/metric-lp-detective/pull/17)
+is open. [Validate 41362864667](https://github.com/projectuwb/metric-lp-detective/actions/runs/41362864667)
+and the PR Validate run were in progress at this receipt; branch Vercel status
+was pending. Integration is permitted only after the current head checks pass.
+The four financial-engine/evidence paths are unchanged from main. Exact staged
+credential scan passed for all 24 changed files. This receipt does not claim a
+merge, deployment, fifth independent proof or approved live budget.

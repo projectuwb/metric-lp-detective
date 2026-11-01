@@ -1,0 +1,37 @@
+name: Production wallet acceptance
+on:
+  workflow_run:
+    workflows: [Validate]
+    types: [completed]
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: metric-production-acceptance
+  cancel-in-progress: false
+jobs:
+  public-browser:
+    if: github.repository == 'projectuwb/metric-lp-detective' && github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_repository.full_name == 'projectuwb/metric-lp-detective' && github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      EXPECTED_COMMIT: ${{ github.event.workflow_run.head_sha }}
+      BNB_RPC_URL: ''
+      LP_RPC_URL: ''
+      NEXT_TELEMETRY_DISABLED: '1'
+      NODE_OPTIONS: --max-old-space-size=4096
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run prepare:web
+      - run: npx playwright install --with-deps chromium
+      - name: Real public wallet input and deployed replay or honest owner handoff
+        run: node --import tsx scripts/production-acceptance.ts
+      # Proof JSON stays in actual Actions logs. No artifact upload/storage plan,
+      # RPC credentials, repository writes, dispatch token or payment exists here.

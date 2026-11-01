@@ -60,13 +60,19 @@ export async function advanceDiscovery(index: DiscoveryIndex, rpc: Rpc, budget: 
     if (BigInt(final.block) < BigInt(last?.through ?? index.base.through)) throw new Error('Finalised head precedes checked coverage');
     if (keccak256(await call('eth_getCode', [POOL, '0x' + BigInt(final.block).toString(16)]) as Hex) !== RUNTIME_CODE_HASH) throw new Error('Discovery pool runtime differs from verified source');
     index.observedFinalizedHead = { ...final, observedAt: now().toISOString() }; persist(index);
-    let cursor = BigInt(last?.through ?? index.base.through) + 1n, previousHash = last?.headHash ?? index.base.headHash;
+    let cursor = BigInt(last?.through ?? index.base.through) + 1n, previousHash = last?.headHash ?? index.base.headHash, currentSize = pageSize;
     while (cursor <= BigInt(final.block)) {
-      const end = cursor + pageSize - 1n < BigInt(final.block) ? cursor + pageSize - 1n : BigInt(final.block);
+      const end = cursor + currentSize - 1n < BigInt(final.block) ? cursor + currentSize - 1n : BigInt(final.block);
       // A page is committed only after every event block and its final boundary
       // are canonical. Budget exhaustion discards that page, keeping the old cursor.
       const before = await header(String(end));
-      const logs = await liquidityPage(call, cursor, end, undefined, Number(pageSize));
+      let logs: RawLog[];
+      try { logs = await liquidityPage(call, cursor, end, undefined, Number(pageSize)); }
+      catch (e) {
+        if (!(e instanceof RpcFailure) || e.kind !== 'range') throw e;
+        if (cursor === end) throw new Error('Single-block discovery result cap; coverage incomplete');
+        currentSize = (end - cursor + 1n) / 2n || 1n; continue;
+      }
       const hashes = new Map<string, string>();
       for (const log of logs) {
         const block = BigInt(log.blockNumber).toString(), previous = hashes.get(block);

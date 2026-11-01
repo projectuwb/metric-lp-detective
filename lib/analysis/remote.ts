@@ -8,6 +8,7 @@ import { SERVICE_LIMITS, type AnalysisContext } from './types';
 import { jobKey, AnalysisLimit } from './store';
 import type { Rpc } from '../chain/rpc';
 import { checkedDiscoveryIndex, type DiscoveryIndex } from '../chain/discoveryIndex';
+import { checkedAccountingIndex, type AccountingIndex } from '../chain/accountingIndex';
 import { allocateUsage, checkedUsage, type UsageLedger, type UsagePolicy, type UsageAllocation } from './usageBudget';
 
 export const REPOSITORY = 'projectuwb/metric-lp-detective';
@@ -28,7 +29,7 @@ export function reservationRpc(rpc: Rpc, day: string, now = () => new Date()): R
 }
 export interface Reservation { day: string; runId: string; key: string; requests: number; expiresAt: string; allocationVersion?: 2 }
 export interface Snapshot { runId: string; key: string; contextHash: string; expiresAt: string; sha256: string; gzip: string }
-export interface RemoteState { schema: 1; reservations: Reservation[]; snapshot?: Snapshot; discovery?: DiscoveryIndex; usage?: UsageLedger }
+export interface RemoteState { schema: 1; reservations: Reservation[]; snapshot?: Snapshot; discovery?: DiscoveryIndex; accounting?: AccountingIndex; usage?: UsageLedger }
 const hash = (v: string) => /^[a-f0-9]{64}$/.test(v);
 export function checkedState(value: unknown): RemoteState {
   const s = value as RemoteState;
@@ -36,6 +37,7 @@ export function checkedState(value: unknown): RemoteState {
   if (new Set(s.reservations.map(r => r.runId)).size !== s.reservations.length) throw new Error('Duplicate remote reservation');
   if (s.snapshot && (!hash(s.snapshot.key) || !hash(s.snapshot.sha256) || !hash(s.snapshot.contextHash) || !/^\d{1,20}$/.test(s.snapshot.runId) || !Number.isFinite(Date.parse(s.snapshot.expiresAt)) || typeof s.snapshot.gzip !== 'string' || s.snapshot.gzip.length > 24_000_000)) throw new Error('Remote checkpoint envelope invalid');
   if (s.discovery) checkedDiscoveryIndex(s.discovery, s.discovery.base);
+  if (s.accounting) checkedAccountingIndex(s.accounting, s.accounting.base);
   if (s.usage) checkedUsage(s.usage);
   for (const r of s.reservations.filter(r => r.allocationVersion === 2)) {
     const a = s.usage?.allocations.find(a => a.runId === r.runId);

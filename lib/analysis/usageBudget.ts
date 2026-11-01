@@ -35,7 +35,7 @@ export const policyHash = (p: UsagePolicy) => createHash('sha256').update(JSON.s
 const meteredHooks = new WeakMap<(method: string) => void, string>();
 export const isMeteredHook = (hook: ((method: string) => void) | undefined, p: UsagePolicy) => !!hook && meteredHooks.get(hook) === policyHash(p);
 export interface UsageAllocation {
-  runId: string; day: string; kind: 'analysis' | 'discovery' | 'probe'; requests: number; traces: number;
+  runId: string; day: string; kind: 'analysis' | 'discovery' | 'accounting' | 'probe'; requests: number; traces: number;
   reservedNanoUsd: string; attempts: number; traceAttempts: number; attemptedNanoUsd: string;
   methods: Record<string, number>; checkpointed: boolean;
   unitPriceNanoUsd: string;
@@ -45,7 +45,7 @@ export function checkedUsage(ledger: UsageLedger, p?: UsagePolicy) {
   if (!ledger || ledger.schema !== 1 || !safeName(ledger.account) || !/^[a-f0-9]{64}$/.test(ledger.policyHash) || !amount(ledger.reservedNanoUsd) || !Array.isArray(ledger.allocations) || ledger.allocations.length > 10000) throw new Error('Invalid durable RPC usage ledger');
   let total = 0n; const runs = new Set<string>();
   for (const a of ledger.allocations) {
-    if (!/^\d{1,20}$/.test(a.runId) || runs.has(a.runId) || !/^\d{4}-\d{2}-\d{2}$/.test(a.day) || !['analysis', 'discovery', 'probe'].includes(a.kind) || !count(a.requests, 100) || a.requests < 1 || !count(a.traces, 10) || a.traces > a.requests || !count(a.attempts, a.requests) || !count(a.traceAttempts, a.traces) || !amount(a.reservedNanoUsd) || !amount(a.attemptedNanoUsd) || !amount(a.unitPriceNanoUsd) || BigInt(a.reservedNanoUsd) !== BigInt(a.unitPriceNanoUsd) * BigInt(a.requests) || BigInt(a.attemptedNanoUsd) !== BigInt(a.unitPriceNanoUsd) * BigInt(a.attempts) || typeof a.checkpointed !== 'boolean' || !a.methods || Object.entries(a.methods).some(([k, v]) => !/^(eth_[A-Za-z0-9]+|debug_traceTransaction)$/.test(k) || !count(v, a.requests)) || Object.values(a.methods).reduce((n, v) => n + v, 0) !== a.attempts || (a.methods.debug_traceTransaction ?? 0) !== a.traceAttempts) throw new Error('Invalid RPC allocation/counters; refusing requests');
+    if (!/^\d{1,20}$/.test(a.runId) || runs.has(a.runId) || !/^\d{4}-\d{2}-\d{2}$/.test(a.day) || !['analysis', 'discovery', 'accounting', 'probe'].includes(a.kind) || !count(a.requests, 100) || a.requests < 1 || !count(a.traces, 10) || a.traces > a.requests || !count(a.attempts, a.requests) || !count(a.traceAttempts, a.traces) || !amount(a.reservedNanoUsd) || !amount(a.attemptedNanoUsd) || !amount(a.unitPriceNanoUsd) || BigInt(a.reservedNanoUsd) !== BigInt(a.unitPriceNanoUsd) * BigInt(a.requests) || BigInt(a.attemptedNanoUsd) !== BigInt(a.unitPriceNanoUsd) * BigInt(a.attempts) || typeof a.checkpointed !== 'boolean' || !a.methods || Object.entries(a.methods).some(([k, v]) => !/^(eth_[A-Za-z0-9]+|debug_traceTransaction)$/.test(k) || !count(v, a.requests)) || Object.values(a.methods).reduce((n, v) => n + v, 0) !== a.attempts || (a.methods.debug_traceTransaction ?? 0) !== a.traceAttempts) throw new Error('Invalid RPC allocation/counters; refusing requests');
     total += BigInt(a.reservedNanoUsd); runs.add(a.runId);
   }
   if (total !== BigInt(ledger.reservedNanoUsd)) throw new Error('Cumulative RPC cost ledger mismatch');

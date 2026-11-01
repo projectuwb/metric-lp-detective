@@ -222,3 +222,22 @@ exists. Git transport works; a branch push does not prove merge or deployment.
 The live remote/public release gates remain **NOT VERIFIED** until the first
 actual owner dispatch and deployment replay succeed. Offline fixture transport
 tests and a copy-ID browser test do not count as that proof.
+
+## Stage 7 bounded accounting capture and public acceptance
+
+See [STAGE_7.md](STAGE_7.md) for the pending exact new-wallet budget, UTC day,
+owner Run action and precise unapproved index experiments. The fifth position
+remains unverified until a real independently reconciled Actions result is
+published. The existing secret does not need reinstalling.
+
+`owner-accounting.yml` captures a full-event, independently reconciled pool index
+candidate at an explicit target and attempt cap, sharing the existing state
+branch and daily cost/request reservations. It does not promote LP replays or
+extend the website's accounting head. Never dispatch it under a liquidity-only
+or wallet-only approval. `verify:accounting` rechecks every saved boundary.
+
+`production-acceptance.yml` uses no RPC/key/write token: after main Validate it
+checks the exact deployed commit and the unfamiliar wallet through the existing
+public UI. Its actual `PUBLIC_BROWSER_PROOF` distinguishes a working owner
+handoff from a verified playable result. A local browser PASS is separate from
+this public deployment receipt.

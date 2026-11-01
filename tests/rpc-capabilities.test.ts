@@ -10,6 +10,8 @@ import { advanceDiscovery, checkedDiscoveryIndex, type DiscoveryIndex } from '..
 import { liquidityTopics } from '../lib/chain/discovery';
 import { executionQuotes } from '../lib/metric/oracleTrace';
 import { reconstructionCalls, discoveryCalls } from '../lib/analysis/rpcEstimate';
+import { liquidityPage } from '../lib/chain/discovery';
+import { RpcFailure } from '../lib/chain/rpc';
 const raw = readFileSync('fixtures/rpc/solidrpc-free-probe.json'), probe = JSON.parse(raw.toString());
 const h = historyInputs(), sourceHash = keccak256(readFileSync('fixtures/history/pool-logs.json.gz'));
 
@@ -52,6 +54,33 @@ describe('actual owner-approved 12-call probe and source provenance', () => {
 });
 
 describe('measured forward windows and reproducible resource estimates', () => {
+  it('persists separate dense discovery pages when a fully split combined window would exceed the checkpoint cap', async () => {
+    // Synthetic density/header vector, reusing a real ABI-valid event payload.
+    const hash = (n: bigint) => '0x' + n.toString(16).padStart(64, '0');
+    const index: DiscoveryIndex = { schema: 1, base: { chainId: 56, pool: h.logs[0].address, from: '1', through: '100', headHash: hash(100n), sourceHash, accountingVersion: 'synthetic-density-only' }, pages: [], observedFinalizedHead: null };
+    const original = h.logs.find(l => l.topics[0] === liquidityTopics[0])!;
+    const result = await advanceDiscovery(index, async (method, params) => {
+      if (method === 'eth_chainId') return '0x38';
+      if (method === 'eth_getCode') return JSON.parse(readFileSync('fixtures/raw/code-and-identity.json', 'utf8')).runtimeCode;
+      if (method === 'eth_getLogs') { const p = params[0] as any, n = BigInt(p.fromBlock), count = BigInt(p.toBlock) - n >= 500n ? 1200 : 600; return Array.from({ length: count }, (_, i) => ({ ...original, blockNumber: p.fromBlock, blockHash: hash(n), transactionHash: hash(n * 10000n + BigInt(i)), logIndex: '0x' + i.toString(16) })); }
+      const n = params[0] === 'finalized' ? 1100n : BigInt(params[0] as string); return { number: '0x' + n.toString(16), hash: hash(n) };
+    }, 20, () => {}, { pace: async () => {} });
+    expect(result).toEqual({ requests: 16, state: 'CAUGHT_UP_TO_OBSERVED_FINALISED_HEAD' });
+    expect(index.pages.map(p => [p.from, p.through, p.logs.length])).toEqual([['101', '600', 600], ['601', '1100', 600]]);
+    expect(checkedDiscoveryIndex(index, index.base)).toEqual(index);
+  });
+  it('falls back from measured 30k on explicit range limits only, preserving the entire inclusive window', async () => {
+    const ranges: [bigint, bigint][] = [];
+    expect(await liquidityPage(async (_m, params) => {
+      const p = params[0] as any, from = BigInt(p.fromBlock), to = BigInt(p.toBlock); ranges.push([from, to]);
+      if (to - from >= 15000n) throw new RpcFailure('range'); return [];
+    }, 101n, 30100n, undefined, 30000)).toEqual([]);
+    expect(ranges).toEqual([[101n, 30100n], [101n, 15100n], [15101n, 30100n]]);
+    for (const kind of ['rate', 'quota', 'temporary'] as const) {
+      let calls = 0; await expect(liquidityPage(async () => { calls++; throw new RpcFailure(kind); }, 101n, 30100n, undefined, 30000)).rejects.toThrow(kind);
+      expect(calls).toBe(1);
+    }
+  });
   it('uses contiguous 30k pages only with measured provenance; legacy pages remain valid', async () => {
     const profile = publishedRangeProfile(sourceHash), headHash = '0x' + 'a'.repeat(64);
     const index: DiscoveryIndex = { schema: 1, base: { chainId: 56, pool: h.logs[0].address, from: '1', through: '100', headHash, sourceHash, accountingVersion: 'synthetic-transport-only' }, pages: [], observedFinalizedHead: null };
