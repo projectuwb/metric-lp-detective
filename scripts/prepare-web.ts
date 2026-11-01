@@ -13,8 +13,11 @@ import type { PositionSummary, ReplayMeta, Amounts, BlockMark } from '../lib/dom
 import { liquidityPositions } from '../lib/chain/discovery.js';
 import { checkedDiscoveryIndex } from '../lib/chain/discoveryIndex.js';
 import { publishedRangeProfile } from '../lib/chain/rpcCapabilities.js';
+import { execFileSync } from 'node:child_process';
+import { verifyPublishedAccountingCandidate } from './verify-accounting-index';
 
 verifyHistory(); verifyOracle(); verifiedPerformance();
+verifyPublishedAccountingCandidate();
 const h = historyInputs();
 // Keep the last complete index available while the replacement is being verified.
 const destination = new URL('../artifacts/web-data-staging/', import.meta.url);
@@ -55,6 +58,9 @@ for (const v of additional) {
   publish(v.config.id, v.config.slug, 'Verified owner-requested position · ' + v.verification.swaps + ' swaps', v.replay, marks, { poolIndex: v.config.sourceHash, checkpointEvidence: createHash('sha256').update(readFileSync(new URL('../fixtures/positions/' + v.config.slug + '/states.json', import.meta.url))).digest('hex') });
 }
 save('positions.json', positions); save('registry.json', registry);
+let releaseCommit = process.env.VERCEL_GIT_COMMIT_SHA ?? process.env.GITHUB_SHA ?? '';
+if (!/^[a-f0-9]{40}$/.test(releaseCommit)) { try { execFileSync('git', ['diff', '--quiet', 'HEAD']); if (execFileSync('git', ['ls-files', '--others', '--exclude-standard'], { encoding: 'utf8' }).trim()) throw new Error('Untracked source'); releaseCommit = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(); } catch { releaseCommit = ''; } }
+save('release.json', { schema: 1, commit: /^[a-f0-9]{40}$/.test(releaseCommit) ? releaseCommit : null, playable: registry.map(r => r.id), chainId: 56, pool: h.logs[0].address, replayThrough: h.acquisition.to });
 save('manifest.json', { schema: 2, selectedPosition: key, playable: registry.map(r => r.id), eventCount: original.events.length, pageSize, inventoryVerified: true, adjustmentEvents: original.events.filter(e => e.type === 'rounding').length });
 
 save('context.json', { chainId: 56, pool: h.logs[0].address, indexEnd: h.acquisition.to, indexEndHash: h.acquisition.endHash, sourceHash: small.config.sourceHash, accountingVersion: accountingVersion() });

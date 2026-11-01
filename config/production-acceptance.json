@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "baseURL": "https://metric-lp-detective.vercel.app",
+  "positionId": "0xa598e2658ef74196f498b00b289a7d5d64a42cd7:615031639178913965778603",
+  "source": "Stage 7 offline preflight; test configuration only, never a playback registration",
+  "expectedRequests": 26,
+  "hardLimit": 31,
+  "budgetDay": "2026-11-02",
+  "rpcApproval": "PENDING_OWNER_APPROVAL"
+}
