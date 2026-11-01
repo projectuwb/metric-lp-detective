@@ -12,6 +12,7 @@ import { accountingVersion } from '../lib/analysis/version.js';
 import type { PositionSummary, ReplayMeta, Amounts, BlockMark } from '../lib/domain/web.js';
 import { liquidityPositions } from '../lib/chain/discovery.js';
 import { checkedDiscoveryIndex } from '../lib/chain/discoveryIndex.js';
+import { publishedRangeProfile } from '../lib/chain/rpcCapabilities.js';
 
 verifyHistory(); verifyOracle(); verifiedPerformance();
 const h = historyInputs();
@@ -31,6 +32,7 @@ const enabled = new Set([key, small.config.id, ...additional.map(v => v.config.i
 const discoveryBase = { chainId: 56 as const, pool: h.logs[0].address, from: h.acquisition.from, through: h.acquisition.to, headHash: h.acquisition.endHash, sourceHash: small.config.sourceHash, accountingVersion: accountingVersion() };
 const discoveryFile = new URL('../fixtures/discovery/index.json', import.meta.url);
 const discovery = existsSync(discoveryFile) ? checkedDiscoveryIndex(JSON.parse(readFileSync(discoveryFile, 'utf8')), discoveryBase) : null;
+if (discovery?.rangeProfile && JSON.stringify(discovery.rangeProfile) !== JSON.stringify(publishedRangeProfile(discoveryBase.sourceHash))) throw new Error('Published discovery range profile does not match retained probe evidence');
 const discoveryLogs = [...h.logs, ...(discovery?.pages.flatMap(p => p.logs) ?? [])];
 const positions = liquidityPositions(discoveryLogs, enabled);
 const pageSize = 128;
@@ -57,7 +59,11 @@ save('manifest.json', { schema: 2, selectedPosition: key, playable: registry.map
 
 save('context.json', { chainId: 56, pool: h.logs[0].address, indexEnd: h.acquisition.to, indexEndHash: h.acquisition.endHash, sourceHash: small.config.sourceHash, accountingVersion: accountingVersion() });
 const discoveryEnd = discovery?.pages.at(-1)?.through ?? h.acquisition.to;
-const observation = discovery?.observedFinalizedHead ?? null;
+const probe = JSON.parse(readFileSync(new URL('../fixtures/rpc/solidrpc-free-probe.json', import.meta.url), 'utf8'));
+const observedHead = probe.results.find((r: any) => r.name === 'finalised chain head' && r.status === 'PASS')?.result;
+const probeObservation = observedHead ? { block: observedHead.block, hash: observedHead.hash, observedAt: probe.observedAt } : null;
+const indexedObservation = discovery?.observedFinalizedHead ?? null;
+const observation = indexedObservation && (!probeObservation || Date.parse(indexedObservation.observedAt) >= Date.parse(probeObservation.observedAt)) ? indexedObservation : probeObservation;
 save('discovery.json', { ...discoveryBase, through: discoveryEnd, headHash: discovery?.pages.at(-1)?.headHash ?? h.acquisition.endHash,
   replayThrough: h.acquisition.to, replayHeadHash: h.acquisition.endHash,
   refreshState: 'OWNER_REFRESH_REQUIRED', observedFinalizedHead: observation,

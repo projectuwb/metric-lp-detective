@@ -1,5 +1,31 @@
 # Browser-only owner reconstruction pilot
 
+## Stage 6 update — bounded allocations, measured ranges, no paid activation
+
+The active Free policy still permits 100 combined RPC attempts/day, 100 lifetime
+attempts/job, ten trace attempts/day and two analysis allocations/day. New runs
+reserve their computed bounded requests/cost rather than the entire day. Old
+full-100 reservations are retained without refunds. Both owner workflows share
+the durable ledger/concurrency group. Failure, cancellation or runner loss cannot
+release reserved capacity or reset lifetime counters.
+
+The existing key's 30,000-block liquidity-topic range was measured against saved
+complete data in an explicitly approved 12-call probe. Discovery refresh on main
+can explicitly authorise 20/40/80 calls within the same 100/day global cap; no
+automatic campaign or cap increase occurs. Source/ABI/report provenance, canonical
+event/boundary checks and the separate accounting-index gate remain. No recent
+index refresh or fifth replay was executed in this task.
+
+No paid policy is enabled. Ordinary card PAYG/automatic overage are excluded.
+Prepaid/alternative endpoint configuration requires explicit owner approval,
+confirmed account/credit/terms and a hard all-in sub-$10 ceiling. Never add a
+management token or payment flow to the site. Existing secret is unchanged;
+optional `LP_RPC_URL` is unused without an approved policy/private binding.
+See [Stage 6](STAGE_6.md) and [the prepaid decision](RPC_PREPAID_PILOT.md).
+
+The Stage 4/5 full-day descriptions below are dated historical receipts and are
+superseded for new Stage 6 allocations; their existing reservations stay binding.
+
 ## Current owner path — Stage 5
 
 The original remote pilot is **VERIFIED**: real run

@@ -8,6 +8,7 @@ import { SERVICE_LIMITS, type AnalysisContext } from './types';
 import { jobKey, AnalysisLimit } from './store';
 import type { Rpc } from '../chain/rpc';
 import { checkedDiscoveryIndex, type DiscoveryIndex } from '../chain/discoveryIndex';
+import { allocateUsage, checkedUsage, type UsageLedger, type UsagePolicy, type UsageAllocation } from './usageBudget';
 
 export const REPOSITORY = 'projectuwb/metric-lp-detective';
 export const STATE_BRANCH = 'codex/analysis-worker-state';
@@ -25,17 +26,37 @@ export function reservationRpc(rpc: Rpc, day: string, now = () => new Date()): R
     return rpc(method, params);
   };
 }
-export interface Reservation { day: string; runId: string; key: string; requests: number; expiresAt: string }
+export interface Reservation { day: string; runId: string; key: string; requests: number; expiresAt: string; allocationVersion?: 2 }
 export interface Snapshot { runId: string; key: string; contextHash: string; expiresAt: string; sha256: string; gzip: string }
-export interface RemoteState { schema: 1; reservations: Reservation[]; snapshot?: Snapshot; discovery?: DiscoveryIndex }
+export interface RemoteState { schema: 1; reservations: Reservation[]; snapshot?: Snapshot; discovery?: DiscoveryIndex; usage?: UsageLedger }
 const hash = (v: string) => /^[a-f0-9]{64}$/.test(v);
 export function checkedState(value: unknown): RemoteState {
   const s = value as RemoteState;
-  if (!s || s.schema !== 1 || !Array.isArray(s.reservations) || s.reservations.length > 100 || s.reservations.some(r => !/^\d{4}-\d{2}-\d{2}$/.test(r.day) || !/^\d{1,20}$/.test(r.runId) || !hash(r.key) || r.requests !== SERVICE_LIMITS.jobRequests || !Number.isFinite(Date.parse(r.expiresAt)))) throw new Error('Remote budget ledger invalid; refusing all RPC work');
+  if (!s || s.schema !== 1 || !Array.isArray(s.reservations) || s.reservations.length > 100 || s.reservations.some(r => !/^\d{4}-\d{2}-\d{2}$/.test(r.day) || !/^\d{1,20}$/.test(r.runId) || !hash(r.key) || (r.allocationVersion === 2 ? !Number.isSafeInteger(r.requests) || r.requests < 1 || r.requests > SERVICE_LIMITS.jobRequests : r.allocationVersion !== undefined || r.requests !== SERVICE_LIMITS.jobRequests) || !Number.isFinite(Date.parse(r.expiresAt)))) throw new Error('Remote budget ledger invalid; refusing all RPC work');
   if (new Set(s.reservations.map(r => r.runId)).size !== s.reservations.length) throw new Error('Duplicate remote reservation');
   if (s.snapshot && (!hash(s.snapshot.key) || !hash(s.snapshot.sha256) || !hash(s.snapshot.contextHash) || !/^\d{1,20}$/.test(s.snapshot.runId) || !Number.isFinite(Date.parse(s.snapshot.expiresAt)) || typeof s.snapshot.gzip !== 'string' || s.snapshot.gzip.length > 24_000_000)) throw new Error('Remote checkpoint envelope invalid');
   if (s.discovery) checkedDiscoveryIndex(s.discovery, s.discovery.base);
+  if (s.usage) checkedUsage(s.usage);
+  for (const r of s.reservations.filter(r => r.allocationVersion === 2)) {
+    const a = s.usage?.allocations.find(a => a.runId === r.runId);
+    if (!a || a.requests !== r.requests || a.day !== r.day) throw new Error('Missing or inconsistent cost-aware reservation; refusing RPC');
+  }
   return s;
+}
+export function reserveBudgetedRun(state: RemoteState, runId: string, key: string, p: UsagePolicy, requests: number, traces: number, kind: UsageAllocation['kind'], now = new Date(), expiresAt = new Date(now.getTime() + 86400000).toISOString()): RemoteState {
+  checkedState(state);
+  if (!hash(key) || !/^\d{1,20}$/.test(runId) || state.reservations.some(r => r.runId === runId) || !Number.isFinite(Date.parse(expiresAt)) || Date.parse(expiresAt) <= now.getTime() || Date.parse(expiresAt) > now.getTime() + 86400000) throw new Error('Invalid or reused RPC reservation identity/expiry');
+  const day = now.toISOString().slice(0, 10);
+  const used = state.reservations.filter(r => r.day === day).reduce((n, r) => n + r.requests, 0);
+  const legacy = state.reservations.filter(r => r.day === day && r.allocationVersion !== 2).length;
+  const current = state.usage?.allocations.filter(a => a.day === day) ?? [];
+  // Older receipts lack method/kind breakdowns. Treat each as a full trace and
+  // analysis allocation even if a later explicitly approved policy raises quota.
+  if (legacy && (legacy * SERVICE_LIMITS.maxTraceTransactions + current.reduce((n, a) => n + a.traces, 0) + traces > p.traceRequests || kind === 'analysis' && legacy + current.filter(a => a.kind === 'analysis').length >= SERVICE_LIMITS.dailyJobs)) throw new AnalysisLimit('RATE_LIMITED', 'Legacy combined daily trace/job allowance remains reserved; no refund');
+  const usage = allocateUsage(state.usage, p, { runId, day, requests, traces, kind }, used);
+  // Historical full-day reservations remain charged in full. No retroactive
+  // refunds, even when their old actual usage was smaller than 100 requests.
+  return checkedState({ ...state, usage, reservations: [...state.reservations.filter(r => r.day >= new Date(now.getTime() - 8 * 86400000).toISOString().slice(0, 10)), { runId, day, key, requests, expiresAt, allocationVersion: 2 }] });
 }
 export function requireResume(state: RemoteState, key: string, resume: boolean, now = Date.now()) {
   checkedState(state);
@@ -112,7 +133,9 @@ export function snapshot(folder: string, key: string, c: AnalysisContext, runId:
 }
 export function rejectSecrets(text: string) {
   const secrets = Object.entries(process.env).filter(([name, value]) => value && value.length >= 12 && /(?:TOKEN|SECRET|PASSWORD|RPC_URL|API_KEY)$/.test(name)).map(([, value]) => value!);
-  try { const u = new URL(process.env.BNB_RPC_URL ?? 'https://example.invalid'); secrets.push(...[...u.searchParams.values(), ...u.pathname.split('/'), u.username, u.password].filter(v => v.length >= 8)); } catch { throw new Error('Invalid RPC configuration (redacted)'); }
+  for (const name of ['BNB_RPC_URL', 'LP_RPC_URL']) {
+    try { const u = new URL(process.env[name] ?? 'https://example.invalid'); secrets.push(...[...u.searchParams.values(), ...u.pathname.split('/'), u.username, u.password].filter(v => v.length >= 8)); } catch { throw new Error('Invalid RPC configuration (redacted)'); }
+  }
   if (secrets.some(s => text.includes(s)) || /\b(?:gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,})\b|-----BEGIN (?:\w+ )?PRIVATE KEY-----/.test(text)) throw new Error('Credential scan rejected checkpoint (matching data redacted)');
 }
 export function restoreSnapshot(s: Snapshot, folder: string, key: string, c: AnalysisContext, now = Date.now()) {

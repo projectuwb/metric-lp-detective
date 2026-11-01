@@ -1,0 +1,20 @@
+{
+  "schema": 1,
+  "id": "existing-solidrpc-free-v1",
+  "account": "owner-existing-bnb",
+  "provider": "solidrpc",
+  "endpointEnv": "BNB_RPC_URL",
+  "mode": "FREE",
+  "dailyRequests": 100,
+  "jobRequests": 100,
+  "traceRequests": 10,
+  "unitPriceNanoUsd": "0",
+  "usageCapNanoUsd": "0",
+  "paymentTotalNanoUsd": "0",
+  "externalFeesNanoUsd": "0",
+  "creditNanoUsd": "0",
+  "hardStopNoOverage": true,
+  "automaticTopups": false,
+  "recurringCharges": false,
+  "approval": null
+}

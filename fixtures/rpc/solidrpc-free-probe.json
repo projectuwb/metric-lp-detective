@@ -1,0 +1,269 @@
+{
+  "schema": 1,
+  "approvedAttempts": 12,
+  "attempts": 12,
+  "mode": "EXISTING_ACCOUNT_READ_ONLY_RESEARCH",
+  "observedAt": "2026-11-01T21:18:28.273Z",
+  "observations": [
+    {
+      "method": "eth_chainId",
+      "httpStatus": 200,
+      "quotaLimit": 10000,
+      "quotaUsed": 39,
+      "quotaRemaining": 9961,
+      "quotaResetSeconds": 9691,
+      "rateLimit": 10,
+      "quotaWindow": "day"
+    },
+    {
+      "method": "eth_getBlockByNumber",
+      "httpStatus": 200,
+      "quotaLimit": 10000,
+      "quotaUsed": 40,
+      "quotaRemaining": 9960,
+      "quotaResetSeconds": 9689,
+      "rateLimit": 10,
+      "quotaWindow": "day"
+    },
+    {
+      "method": "eth_getBlockByNumber",
+      "httpStatus": 200,
+      "quotaLimit": 10000,
+      "quotaUsed": 41,
+      "quotaRemaining": 9959,
+      "quotaResetSeconds": 9688,
+      "rateLimit": 10,
+      "quotaWindow": "day"
+    },
+    {
+      "method": "eth_getCode",
+      "httpStatus": 200,
+      "quotaLimit": 10000,
+      "quotaUsed": 42,
+      "quotaRemaining": 9958,
+      "quotaResetSeconds": 9687,
+      "rateLimit": 10,
+      "quotaWindow": "day"
+    },
+    {
+      "method": "eth_getLogs",
+      "httpStatus": 200,
+      "quotaLimit": 10000,
+      "quotaUsed": 43,
+      "quotaRemaining": 9957,
+      "quotaResetSeconds": 9686,
+      "rateLimit": 10,
+      "quotaWindow": "day"
+    },
+    {
+      "method": "eth_getLogs",
+      "httpStatus": 200,
+      "quotaLimit": 10000,
+      "quotaUsed": 44,
+      "quotaRemaining": 9956,
+      "quotaResetSeconds": 9684,
+      "rateLimit": 10,
+      "quotaWindow": "day"
+    },
+    {
+      "method": "eth_getLogs",
+      "httpStatus": 200,
+      "quotaLimit": 10000,
+      "quotaUsed": 45,
+      "quotaRemaining": 9955,
+      "quotaResetSeconds": 9683,
+      "rateLimit": 10,
+      "quotaWindow": "day"
+    },
+    {
+      "method": "eth_getLogs",
+      "httpStatus": 200,
+      "quotaLimit": 10000,
+      "quotaUsed": 46,
+      "quotaRemaining": 9954,
+      "quotaResetSeconds": 9682,
+      "rateLimit": 10,
+      "quotaWindow": "day"
+    },
+    {
+      "method": "eth_getLogs",
+      "httpStatus": 200,
+      "quotaLimit": 10000,
+      "quotaUsed": 47,
+      "quotaRemaining": 9953,
+      "quotaResetSeconds": 9680,
+      "rateLimit": 10,
+      "quotaWindow": "day"
+    },
+    {
+      "method": "eth_call",
+      "httpStatus": 200,
+      "quotaLimit": 10000,
+      "quotaUsed": 48,
+      "quotaRemaining": 9952,
+      "quotaResetSeconds": 9678,
+      "rateLimit": 10,
+      "quotaWindow": "day"
+    },
+    {
+      "method": "eth_getStorageAt",
+      "httpStatus": 200,
+      "quotaLimit": 10000,
+      "quotaUsed": 49,
+      "quotaRemaining": 9951,
+      "quotaResetSeconds": 9677,
+      "rateLimit": 10,
+      "quotaWindow": "day"
+    },
+    {
+      "method": "debug_traceTransaction",
+      "httpStatus": 200,
+      "quotaLimit": 10000,
+      "quotaUsed": 50,
+      "quotaRemaining": 9950,
+      "quotaResetSeconds": 9676,
+      "rateLimit": 10,
+      "quotaWindow": "day"
+    }
+  ],
+  "results": [
+    {
+      "name": "chain and quota observation",
+      "method": "eth_chainId",
+      "status": "PASS",
+      "milliseconds": 298,
+      "result": {
+        "chainId": 56
+      }
+    },
+    {
+      "name": "finalised chain head",
+      "method": "eth_getBlockByNumber",
+      "status": "PASS",
+      "milliseconds": 101,
+      "result": {
+        "block": "131119667",
+        "hash": "0x938487df0caa952d6df79d34fc156974ad9ee3cae22c948dd83664538ee58815",
+        "gapFromPinnedHead": "278319"
+      }
+    },
+    {
+      "name": "pinned canonical head",
+      "method": "eth_getBlockByNumber",
+      "status": "PASS",
+      "milliseconds": 90,
+      "result": {
+        "block": "130841348",
+        "hash": "0xd4b50c9afe0934057d61ccf2821e30c5b6dbf3553b6348ccb846e9f5a074ea7e"
+      }
+    },
+    {
+      "name": "verified pool runtime",
+      "method": "eth_getCode",
+      "status": "PASS",
+      "milliseconds": 101,
+      "result": {
+        "runtimeHash": "0x680a3f08381d929a747413e52c8523feffd16c92f49ec774b181f4682de3aad6"
+      }
+    },
+    {
+      "name": "historical liquidity range 1000",
+      "method": "eth_getLogs",
+      "status": "PASS",
+      "milliseconds": 148,
+      "result": {
+        "from": "129628000",
+        "through": "129628999",
+        "blocks": "1000",
+        "logCount": 2,
+        "matchesPinnedIndexExactly": true
+      }
+    },
+    {
+      "name": "historical liquidity range 5000",
+      "method": "eth_getLogs",
+      "status": "PASS",
+      "milliseconds": 378,
+      "result": {
+        "from": "129628000",
+        "through": "129632999",
+        "blocks": "5000",
+        "logCount": 4,
+        "matchesPinnedIndexExactly": true
+      }
+    },
+    {
+      "name": "historical liquidity range 10000",
+      "method": "eth_getLogs",
+      "status": "PASS",
+      "milliseconds": 361,
+      "result": {
+        "from": "129628000",
+        "through": "129637999",
+        "blocks": "10000",
+        "logCount": 4,
+        "matchesPinnedIndexExactly": true
+      }
+    },
+    {
+      "name": "historical liquidity range 30000",
+      "method": "eth_getLogs",
+      "status": "PASS",
+      "milliseconds": 1180,
+      "result": {
+        "from": "129628000",
+        "through": "129657999",
+        "blocks": "30000",
+        "logCount": 8,
+        "matchesPinnedIndexExactly": true
+      }
+    },
+    {
+      "name": "targeted provider 30000",
+      "method": "eth_getLogs",
+      "status": "PASS",
+      "milliseconds": 423,
+      "result": {
+        "from": "129628000",
+        "through": "129657999",
+        "logCount": 3,
+        "matchesPinnedIndexExactly": true
+      }
+    },
+    {
+      "name": "historical eth_call reference",
+      "method": "eth_call",
+      "status": "PASS",
+      "milliseconds": 88,
+      "result": {
+        "block": "129628417",
+        "matchesSavedQuote": true
+      }
+    },
+    {
+      "name": "historical archive storage",
+      "method": "eth_getStorageAt",
+      "status": "PASS",
+      "milliseconds": 84,
+      "result": {
+        "block": "129628416",
+        "matchesSavedStorage": true
+      }
+    },
+    {
+      "name": "historical callTracer compatibility",
+      "method": "debug_traceTransaction",
+      "status": "FAILED",
+      "milliseconds": 1225,
+      "error": "Independent fixture/capability check failed"
+    }
+  ],
+  "newPositionVerified": false,
+  "moneyAuthorised": false,
+  "status": "STOPPED",
+  "review": {
+    "sourceHash": "0x2c6c8e6f1f3175cca4e31d0231777255deb75132ddf1b1804d6cf28db08f8f51",
+    "traceResult": "NOT VERIFIED by this probe: the comparison harness contained a BigInt JSON serialization defect. The response/error type was not retained, so a separate mismatch cannot be excluded. Fixed and tested offline; no additional RPC was sent. The original immutable fourth-position evidence remains verified.",
+    "quotaInterpretation": "Observed quota/rate headers match published Free limits; Billing/overage settings and prepaid migration eligibility are not exposed by the RPC key. No paid management access exists."
+  }
+}

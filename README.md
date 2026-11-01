@@ -1,5 +1,14 @@
 # Metric LP Detective
 
+Stage 6: the existing SolidRPC key demonstrated 30k-block liquidity queries and
+10k/day quota headers in an owner-approved 12-call probe. New shared request/cost
+reservations keep the active app at 100/day and **$0 paid budget**, while allowing
+indexing and small reconstructions to share that day. No payment or fifth replay
+was executed. Current coverage and larger-job limits remain explicit. See
+[the RPC pilot decision](docs/RPC_PREPAID_PILOT.md),
+[Stage 6 gates](docs/STAGE_6.md), and the
+[current owner workflow](docs/REMOTE_WORKER_RUNBOOK.md).
+
 A functional browser MVP is available. See [viewing and hosting instructions](docs/VISUAL_MVP.md).
 With Node 24+, run `npm ci --ignore-scripts` then `npm run dev`; open the address
 printed by Next.js and choose **Try the verified sample**. No RPC key is needed
