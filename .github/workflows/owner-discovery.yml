@@ -1,0 +1,42 @@
+name: Owner discovery index refresh
+on:
+  workflow_dispatch:
+    inputs:
+      rpc_budget:
+        description: 'Fixed index RPC attempt budget (5..20). Reserves full shared provider day; no refund.'
+        required: true
+        type: choice
+        options: ['10', '20', '5']
+concurrency:
+  group: metric-owner-reconstruction
+  cancel-in-progress: false
+permissions: {}
+jobs:
+  refresh:
+    if: github.actor == 'projectuwb' && github.repository == 'projectuwb/metric-lp-detective' && github.ref == 'refs/heads/main' && github.event.repository.private == false && github.run_attempt == 1
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    permissions:
+      contents: write
+      pull-requests: write
+      actions: write
+    env:
+      NODE_OPTIONS: --max-old-space-size=4096
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: 24
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run prepare:web
+      - name: Owner-authorised fixed-budget discovery update and evidence branch
+        env:
+          BNB_RPC_URL: ${{ secrets.BNB_RPC_URL }}
+          GH_TOKEN: ${{ github.token }}
+          INDEX_RPC_BUDGET: ${{ inputs.rpc_budget }}
+        run: node --import tsx scripts/remote-discovery.ts

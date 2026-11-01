@@ -16,12 +16,12 @@ test('new wallet gets a browser-only owner handoff, with no fake dispatch or ano
   const panel = page.getByLabel('Verified position analysis');
   await expect(panel).toContainText('Owner authorization required');
   await expect(panel).toContainText('through 130841348');
-  await expect(panel).toContainText('Later history is unsupported');
+  await expect(panel).toContainText('Later history is not checked yet');
   await expect(page.getByLabel('Position ID for owner workflow')).toHaveValue(id);
   await panel.getByRole('button', { name: 'Copy position ID', exact: true }).click();
   await expect(panel.getByRole('status')).toContainText('Nothing has been sent or queued');
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe(id);
-  await expect(panel.getByRole('link', { name: 'Open owner Request Analysis workflow ↗', exact: true })).toHaveAttribute('href', 'https://github.com/projectuwb/metric-lp-detective/actions/workflows/owner-analysis.yml');
+  await expect(panel.getByRole('link', { name: 'Open owner-run workflow ↗', exact: true })).toHaveAttribute('href', 'https://github.com/projectuwb/metric-lp-detective/actions/workflows/owner-analysis.yml');
   expect(submissions).toEqual([]);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
   await page.screenshot({ path: 'artifacts/stage4-owner-handoff-mobile.png', fullPage: true });
@@ -47,5 +47,5 @@ test('clipboard denial offers manual selection and leaves the workflow link usab
   await panel.getByRole('button', { name: 'Copy position ID', exact: true }).click();
   await expect(panel.getByRole('alert')).toContainText('Select and copy the position ID above');
   await expect(page.getByLabel('Position ID for owner workflow')).toHaveValue(id);
-  await expect(panel.getByRole('link', { name: 'Open owner Request Analysis workflow ↗', exact: true })).toBeVisible();
+  await expect(panel.getByRole('link', { name: 'Open owner-run workflow ↗', exact: true })).toBeVisible();
 });

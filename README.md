@@ -120,7 +120,32 @@ queue. It offers a browser request download for owner import/process/publication
 No new paid service or hosting project was created. See [Stage 3 evidence](docs/STAGE_3.md),
 [the owner runbook](docs/OWNER_BETA_RUNBOOK.md) and [the architecture decision](docs/STAGE_3_ARCHITECTURE.md).
 
-## Stage 4 — browser-only owner workflow (remote proof pending)
+## Stage 4 — browser-only owner workflow (fourth replay verified)
+
+PR #12 published the real one-swap fourth LP from owner Actions run 41293561165
+(38 RPC attempts, seven checkpoints, 2,800 storage comparisons, zero discrepancy).
+It is merged and the existing Vercel deployment succeeded. Do not repeat that
+reconstruction. The Stage 4 notes below describe its original implementation.
+
+## Stage 5 — truthful wallet coverage and clearer PnL
+
+Wallet discovery distinguishes FOUND, NONE FOUND IN CHECKED WINDOW, later blocks
+NOT CHECKED YET, and unknown managed-position ownership. Each separate salt shows
+first/last activity and indexed versus verified replay. Feasible holding
+comparisons are optional; an infeasible comparison explains the assumed stock
+sale without suggesting that cashflow PnL is unavailable.
+
+New replay: **Copy position ID** → **Open owner-run workflow** → **Run workflow**
+on **main**. This is authenticated owner work, not an anonymous queue. Published
+verified evidence unlocks replay automatically after integration and deployment.
+The new owner-only incremental discovery workflow uses fixed 5–20-request budgets,
+1000-block windows, checksummed canonical checkpoints and the existing shared
+daily reservation. It has not been run live; recent coverage remains explicit.
+Larger jobs need a staged owner review rather than a permanent unsupported label.
+See [Stage 5 gates and quota limits](docs/STAGE_5.md) and the
+[current browser-only runbook](docs/REMOTE_WORKER_RUNBOOK.md).
+
+### Historical Stage 4 implementation notes
 
 New indexed positions now offer **Copy position ID → Open owner Request Analysis
 workflow**. The owner authorizes a bounded reconstruction in GitHub's browser UI;

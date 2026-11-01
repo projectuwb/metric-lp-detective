@@ -4,7 +4,7 @@ import type { ReplayEvent, ReplayMeta } from '../lib/domain/web';
 import { lifecycleOutcome } from '../lib/metric/outcome';
 import { decimal, type Rational } from '../lib/metric/rational';
 import { tokens, price } from '../lib/domain/format';
-const show = (value: Rational | null) => value ? decimal(value) : 'Unavailable';
+const show = (value: Rational | null) => value ? decimal(value) : 'Not calculated — missing verified reference mark';
 const mix = (value: readonly bigint[]) => `${tokens(String(value[0]), 9)} CRCLB + ${tokens(String(value[1]), 9)} USDT`;
 export default function OutcomeSummary({ meta, event }: { meta: ReplayMeta; event: ReplayEvent }) {
   const [unit, setUnit] = useState<'USDT' | 'CRCLB' | 'TOKENS'>('USDT'), [settlement, setSettlement] = useState<'USDT' | 'CRCLB'>('USDT');

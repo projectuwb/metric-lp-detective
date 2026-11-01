@@ -21,3 +21,10 @@
 .remote-handoff label{display:block;font-size:13px;color:var(--muted)}
 .remote-handoff input{display:block;width:100%;min-width:0;padding:12px;margin:8px 0;border:1px solid var(--line);border-radius:8px;background:#faf9fd;color:var(--ink);font-family:monospace;font-size:12px;box-sizing:border-box}
 .remote-actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:12px 0}.remote-handoff a{color:#6744bf}.remote-handoff p{overflow-wrap:anywhere;font-size:12px;line-height:1.8}.remote-handoff summary{cursor:pointer;font-size:11px;color:#635a7b}.remote-handoff details{margin-top:20px}
+
+/* Discovery and provenance remain readable on small screens. */
+.discovery-coverage { margin: 20px 0; padding: 20px 24px; border: 1px solid var(--line); border-radius: 14px; background: #fff; }
+.discovery-coverage h3 { font-size: 15px; margin: 0 0 12px; }
+.discovery-coverage p { color: #5c6273; font-size: 12px; line-height: 1.7; margin: 8px 0; overflow-wrap: anywhere; }
+.discovery-coverage a, .discovery-coverage code { overflow-wrap: anywhere; }
+.holding-comparison { margin-top: 16px; }

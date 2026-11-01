@@ -10,8 +10,8 @@ import { positionReplay } from '../lib/metric/positionReplay.js';
 import { createReplayBundle } from '../lib/analysis/bundle.js';
 import { accountingVersion } from '../lib/analysis/version.js';
 import type { PositionSummary, ReplayMeta, Amounts, BlockMark } from '../lib/domain/web.js';
-import { encodeEventTopics } from 'viem';
-import { sourceAbi } from '../lib/chain/decode.js';
+import { liquidityPositions } from '../lib/chain/discovery.js';
+import { checkedDiscoveryIndex } from '../lib/chain/discoveryIndex.js';
 
 verifyHistory(); verifyOracle(); verifiedPerformance();
 const h = historyInputs();
@@ -28,14 +28,11 @@ const original = positionReplay(h.logs, h.abi, key, quotes);
 const small = verifyPosition('632f7d8c3d6ef54f');
 const additional = readdirSync(new URL('../fixtures/positions/', import.meta.url)).filter(slug => /^[a-f0-9]{16}$/.test(slug) && slug !== '632f7d8c3d6ef54f' && existsSync(new URL('../fixtures/positions/' + slug + '/request-proof.json', import.meta.url))).sort().map(slug => verifyPosition(slug));
 const enabled = new Set([key, small.config.id, ...additional.map(v => v.config.id)]);
-const liquidityTopics = new Set((['LiquidityAdded', 'LiquidityRemoved'] as const).map(eventName => encodeEventTopics({ abi: sourceAbi, eventName })[0]));
-const positionMap = new Map<string, PositionSummary>();
-for (const log of h.logs) if (liquidityTopics.has(log.topics[0] as `0x${string}`)) {
-  const provider = '0x' + log.topics[1].slice(-40).toLowerCase(), salt = BigInt(log.topics[2]).toString(), id = provider + ':' + salt, block = BigInt(log.blockNumber).toString();
-  const previous = positionMap.get(id);
-  positionMap.set(id, { id, provider, salt, firstBlock: previous?.firstBlock ?? block, lastBlock: block, status: enabled.has(id) ? 'reconciled' : 'indexed-only' });
-}
-const positions = [...positionMap.values()];
+const discoveryBase = { chainId: 56 as const, pool: h.logs[0].address, from: h.acquisition.from, through: h.acquisition.to, headHash: h.acquisition.endHash, sourceHash: small.config.sourceHash, accountingVersion: accountingVersion() };
+const discoveryFile = new URL('../fixtures/discovery/index.json', import.meta.url);
+const discovery = existsSync(discoveryFile) ? checkedDiscoveryIndex(JSON.parse(readFileSync(discoveryFile, 'utf8')), discoveryBase) : null;
+const discoveryLogs = [...h.logs, ...(discovery?.pages.flatMap(p => p.logs) ?? [])];
+const positions = liquidityPositions(discoveryLogs, enabled);
 const pageSize = 128;
 const registry: { id: string; directory: string; label: string }[] = [];
 function publish(id: string, directory: string, label: string, r: ReturnType<typeof positionReplay>, marks: BlockMark[], sourceHashes: Record<string, string>) {
@@ -59,6 +56,12 @@ save('positions.json', positions); save('registry.json', registry);
 save('manifest.json', { schema: 2, selectedPosition: key, playable: registry.map(r => r.id), eventCount: original.events.length, pageSize, inventoryVerified: true, adjustmentEvents: original.events.filter(e => e.type === 'rounding').length });
 
 save('context.json', { chainId: 56, pool: h.logs[0].address, indexEnd: h.acquisition.to, indexEndHash: h.acquisition.endHash, sourceHash: small.config.sourceHash, accountingVersion: accountingVersion() });
+const discoveryEnd = discovery?.pages.at(-1)?.through ?? h.acquisition.to;
+const observation = discovery?.observedFinalizedHead ?? null;
+save('discovery.json', { ...discoveryBase, through: discoveryEnd, headHash: discovery?.pages.at(-1)?.headHash ?? h.acquisition.endHash,
+  replayThrough: h.acquisition.to, replayHeadHash: h.acquisition.endHash,
+  refreshState: 'OWNER_REFRESH_REQUIRED', observedFinalizedHead: observation,
+  recentHeadLag: observation ? String(BigInt(observation.block) - BigInt(discoveryEnd)) : null });
 const published = new URL('../.web-data/', import.meta.url), previous = new URL('../artifacts/previous-web-data/', import.meta.url);
 rmSync(previous, { recursive: true, force: true });
 if (existsSync(published)) renameSync(published, previous);

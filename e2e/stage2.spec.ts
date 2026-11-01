@@ -18,7 +18,7 @@ test('smaller verified lifecycle: initial funding, swaps, selected marks and ful
   await expect(page.getByTestId('selected-pnl')).toHaveText('-1.812248');
   await expect(page.getByTestId('stock-balance')).toHaveText('0 CRCLB');
   await expect(page.getByTestId('stable-balance')).toHaveText('0 USDT');
-  await expect(page.getByTestId('selected-holding')).toHaveText('Unsupported');
+  await expect(page.getByTestId('selected-holding')).toContainText('would need an assumed stock sale; not calculated');
   await expect(page.getByText('Fully withdrawn', { exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Play replay' })).toBeVisible();
   await expect(page.getByTestId('source-link')).toHaveAttribute('href', /0x1eecbac1ff505109332535ec78f76c26079a1120ab99383012e9dcf645f1633a/);
