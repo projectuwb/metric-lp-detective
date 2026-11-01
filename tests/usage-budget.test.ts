@@ -94,6 +94,7 @@ describe('server-only provider selection and fail-closed transport', () => {
   it('never permits prepaid use through the legacy unmetered transport', () => {
     vi.stubEnv('LP_RPC_URL', 'https://synthetic.invalid/credential-not-to-log');
     expect(() => configuredRpc({ policy: paid() })).toThrow('configuration');
+    expect(() => configuredRpc({ policy: paid(), beforeAttempt: () => {} })).toThrow('configuration');
   });
   it('selects an explicitly approved server endpoint, counts a 402 once, and exposes safe quota headers only', async () => {
     const p = paid(), allocation = allocateUsage(undefined, p, { runId: '1', day: '2026-11-02', kind: 'discovery', requests: 2, traces: 0 }, 0).allocations[0];

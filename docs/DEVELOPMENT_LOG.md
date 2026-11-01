@@ -497,3 +497,17 @@ YAML parsing and diff checks PASS; exact staged credential scan precedes commit.
 GitHub connection reports repository push permission and an empty ruleset list;
 branch-protection detail reads remain integration HTTP 403. No bypass/integration
 is attempted. Deliverable branch: `codex/stage6-rpc-budget`; push/CI receipt follows.
+
+### Stage 6 Git receipt and final prepaid guard
+
+Implementation `1d015e5bce51d1574bcb00a6ab67da7bf233ff82` was pushed to
+`codex/stage6-rpc-budget` after fetching main and confirming it remains an
+ancestor. Exact staged scan: 30 files, zero findings. The push started
+[Validate run 41353713433](https://github.com/projectuwb/metric-lp-detective/actions/runs/41353713433),
+which was still running when this receipt was written. A final review additionally
+bound prepaid transport to a policy-matching durable meter: a missing or no-op
+callback is refused, with a regression assertion. Full `npm run check` again
+passes all 115 tests and independent numerical/credential checks. No further
+live RPC, paid action, account/secret change, merge or deployment occurred.
+The follow-up commit records this hash/receipt and the tested guard; its own
+Validate result must be observed separately before integration.

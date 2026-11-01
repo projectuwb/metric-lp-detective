@@ -1,6 +1,6 @@
 // Server-side only. No write methods, caller-selected contracts or wallet-query storage.
 import { POOL } from './poolConfig.js';
-import { usagePolicy, checkedPolicy, type UsagePolicy } from '../analysis/usageBudget.js';
+import { usagePolicy, checkedPolicy, isMeteredHook, type UsagePolicy } from '../analysis/usageBudget.js';
 export type Rpc = (method: string, params: unknown[]) => Promise<unknown>;
 export class RpcFailure extends Error {
   method?: string;
@@ -19,7 +19,7 @@ const methods = new Set(['eth_chainId', 'eth_blockNumber', 'eth_getCode', 'eth_g
 export interface RpcObservation { method: string; httpStatus: number; quotaLimit?: number; quotaUsed?: number; quotaRemaining?: number; quotaResetSeconds?: number; quotaWindow?: 'day' | 'month'; rateLimit?: number }
 export function configuredRpc(options: { policy?: UsagePolicy; beforeAttempt?: (method: string) => void; observe?: (o: RpcObservation) => void } = {}): Rpc {
   const policy = checkedPolicy(options.policy ?? usagePolicy());
-  if (policy.mode === 'PREPAID' && !options.beforeAttempt) throw new RpcFailure('configuration');
+  if (policy.mode === 'PREPAID' && !isMeteredHook(options.beforeAttempt, policy)) throw new RpcFailure('configuration');
   const endpoint = process.env[policy.endpointEnv];
   if (!endpoint) throw new RpcFailure('configuration');
   try { if (new URL(endpoint).protocol !== 'https:') throw 0; }

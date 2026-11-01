@@ -32,6 +32,8 @@ export function checkedPolicy(p: UsagePolicy): UsagePolicy {
 }
 export function usagePolicy() { return checkedPolicy(JSON.parse(readFileSync(process.env.LP_RPC_POLICY_FILE ?? 'config/rpc-usage-policy.json', 'utf8'))); }
 export const policyHash = (p: UsagePolicy) => createHash('sha256').update(JSON.stringify(checkedPolicy(p))).digest('hex');
+const meteredHooks = new WeakMap<(method: string) => void, string>();
+export const isMeteredHook = (hook: ((method: string) => void) | undefined, p: UsagePolicy) => !!hook && meteredHooks.get(hook) === policyHash(p);
 export interface UsageAllocation {
   runId: string; day: string; kind: 'analysis' | 'discovery' | 'probe'; requests: number; traces: number;
   reservedNanoUsd: string; attempts: number; traceAttempts: number; attemptedNanoUsd: string;
@@ -95,6 +97,7 @@ export function usageMeter(allocation: UsageAllocation, p: UsagePolicy, file: st
     // still consumes the entire remote reservation, never an inferred refund.
     atomicJson(file, saved);
   });
+  meteredHooks.set(beforeAttempt, policyHash(p));
   return { beforeAttempt, current: () => locked(() => { saved = load(); return structuredClone(saved); }), wrap: (rpc: Rpc): Rpc => async (method, params) => { beforeAttempt(method); return rpc(method, params); } };
 }
 export function usageSummary(ledger: UsageLedger, p: UsagePolicy) {
