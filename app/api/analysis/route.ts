@@ -11,7 +11,7 @@ export async function GET(request: Request) {
     const job = info.queueAvailable && id ? getJob(jobKey(positionIdentity(id), context())) : null;
     const position = id ? getPositions().find(p => p.id === id) : null;
     const eligibility = !position ? 'NO_INDEXED_POSITION' : position.status === 'reconciled' ? 'VERIFIED_REPLAY' : BigInt(position.lastBlock) > BigInt(info.context.indexEnd) ? 'ACCOUNTING_INDEX_REQUIRED' : 'OWNER_PREFLIGHT_REQUIRED';
-    return Response.json({ ...info, job, eligibility }, { headers });
+    return Response.json({ ...info, job, eligibility, position }, { headers });
   } catch { return Response.json({ error: 'Analysis status is unavailable. Retry shortly.' }, { status: 503, headers }); }
 }
 export async function POST(request: Request) {

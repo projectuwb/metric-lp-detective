@@ -1,9 +1,10 @@
 // Server-side only. No write methods, caller-selected contracts or wallet-query storage.
 import { POOL } from './poolConfig.js';
+import { usagePolicy, checkedPolicy, type UsagePolicy } from '../analysis/usageBudget.js';
 export type Rpc = (method: string, params: unknown[]) => Promise<unknown>;
 export class RpcFailure extends Error {
   method?: string;
-  constructor(public kind: 'configuration' | 'denied' | 'rate' | 'range' | 'temporary' | 'invalid' | 'reverted', public code?: number) {
+  constructor(public kind: 'configuration' | 'denied' | 'rate' | 'quota' | 'range' | 'temporary' | 'invalid' | 'reverted', public code?: number) {
     super(`RPC ${kind}${code === undefined ? '' : ` (code ${code})`}`);
   }
 }
@@ -15,14 +16,18 @@ function classify(message: string, code?: number): RpcFailure {
   return new RpcFailure(code === -32601 || code === -32602 ? 'invalid' : 'temporary', code);
 }
 const methods = new Set(['eth_chainId', 'eth_blockNumber', 'eth_getCode', 'eth_getLogs', 'eth_call', 'eth_getStorageAt', 'eth_getTransactionReceipt', 'eth_getBlockByNumber', 'debug_traceTransaction']);
-export function configuredRpc(): Rpc {
-  const endpoint = process.env.BNB_RPC_URL;
+export interface RpcObservation { method: string; httpStatus: number; quotaLimit?: number; quotaUsed?: number; quotaRemaining?: number; quotaResetSeconds?: number; quotaWindow?: 'day' | 'month'; rateLimit?: number }
+export function configuredRpc(options: { policy?: UsagePolicy; beforeAttempt?: (method: string) => void; observe?: (o: RpcObservation) => void } = {}): Rpc {
+  const policy = checkedPolicy(options.policy ?? usagePolicy());
+  if (policy.mode === 'PREPAID' && !options.beforeAttempt) throw new RpcFailure('configuration');
+  const endpoint = process.env[policy.endpointEnv];
   if (!endpoint) throw new RpcFailure('configuration');
   try { if (new URL(endpoint).protocol !== 'https:') throw 0; }
   catch { throw new RpcFailure('configuration'); }
   let id = 0;
   const request: Rpc = async (method, params) => {
     if (!methods.has(method)) throw new RpcFailure('invalid');
+    options.beforeAttempt?.(method);
     let response: Response;
     try {
       response = await fetch(endpoint, {
@@ -31,7 +36,13 @@ export function configuredRpc(): Rpc {
         signal: AbortSignal.timeout(20_000), redirect: 'error',
       });
     } catch { throw new RpcFailure('temporary'); }
-    if (!response.ok) throw new RpcFailure(response.status === 429 ? 'rate' : [401, 403].includes(response.status) ? 'denied' : 'temporary', response.status);
+    const observation: RpcObservation = { method, httpStatus: response.status };
+    for (const [field, header] of [['quotaLimit', 'x-quota-limit'], ['quotaUsed', 'x-quota-used'], ['quotaRemaining', 'x-quota-remaining'], ['quotaResetSeconds', 'x-quota-reset'], ['rateLimit', 'x-ratelimit-limit']] as const) {
+      const raw = response.headers.get(header); if (raw && /^\d{1,12}$/.test(raw) && Number.isSafeInteger(Number(raw))) observation[field] = Number(raw);
+    }
+    const window = response.headers.get('x-quota-window'); if (window === 'day' || window === 'month') observation.quotaWindow = window;
+    options.observe?.(observation);
+    if (!response.ok) throw new RpcFailure(response.status === 402 ? 'quota' : response.status === 429 ? 'rate' : [401, 403].includes(response.status) ? 'denied' : 'temporary', response.status);
     // Bound response memory; never include provider body, URL or credentials in diagnostics.
     if (Number(response.headers.get('content-length') ?? 0) > 8_000_000) {
       await response.body?.cancel(); throw new RpcFailure('range');
@@ -107,7 +118,7 @@ export async function getPoolLogs(rpc: Rpc, from: bigint, to: bigint, options: {
         if (batch.length >= cap) throw new RpcFailure('range');
         progress('complete', { count: batch.length }); break;
       } catch (error) {
-        if (!(error instanceof RpcFailure) || ['configuration', 'denied', 'invalid', 'reverted'].includes(error.kind)) throw error;
+        if (!(error instanceof RpcFailure) || ['configuration', 'denied', 'quota', 'invalid', 'reverted'].includes(error.kind)) throw error;
         if (error.kind === 'range') {
           if (size === 1n) throw new Error('Single-block result limit; coverage incomplete');
           size = size / 2n || 1n; batch = undefined;

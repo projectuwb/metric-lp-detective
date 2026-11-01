@@ -1,8 +1,9 @@
 // Invoked only by the owner-dispatched, main-only GitHub Actions workflow.
-import { appendFileSync } from 'node:fs';
+import { appendFileSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { authorizeRun, contextHash, github, loadState, saveState, reserveRun, requireResume, snapshot, restoreSnapshot, reservationRpc, rejectSecrets, REPOSITORY, WORKFLOW, type RunIdentity } from '../lib/analysis/remote';
+import { authorizeRun, contextHash, github, loadState, saveState, reserveBudgetedRun, requireResume, snapshot, restoreSnapshot, reservationRpc, rejectSecrets, REPOSITORY, WORKFLOW, type RunIdentity } from '../lib/analysis/remote';
+import { usagePolicy, policyHash, usageMeter, checkpointUsage, usageSummary, formatNanoUsd, type UsageAllocation } from '../lib/analysis/usageBudget';
 import { atomicJson, context, getJob, jobFolder, jobKey, readJson, storeRoot, submit, updateJob } from '../lib/analysis/store';
 import { positionIdentity } from '../lib/domain/position';
 import { positionPlan } from '../lib/analysis/collect';
@@ -29,7 +30,8 @@ async function main() {
     const position = positions.find(p => p.id === id);
     if (!position) throw new Error('No provider/salt in the fixed indexed window. No RPC sent. Later history is unsupported, not absent forever.');
     if (position.status === 'reconciled') { summary('Verified replay already published. No reconstruction or RPC requests started.'); output('proceed', 'false'); return; }
-    if (process.env.HAS_RPC_SECRET !== 'true') throw new Error('Missing repository Actions secret BNB_RPC_URL. No RPC sent. See docs/REMOTE_WORKER_RUNBOOK.md.');
+    const selectedPolicy = usagePolicy();
+    if (process.env[selectedPolicy.endpointEnv === 'BNB_RPC_URL' ? 'HAS_RPC_SECRET' : 'HAS_ALTERNATE_RPC_SECRET'] !== 'true') throw new Error('Missing approved server-only RPC secret. No RPC sent. See docs/REMOTE_WORKER_RUNBOOK.md.');
     const plan = positionPlan(id);
     if (plan.r.events.filter(e => e.type === 'swap').length >= 100) throw new Error('Remote pilot requires fewer than 100 swaps');
     const api = github(), loaded = await loadState(api);
@@ -42,19 +44,22 @@ async function main() {
       if (!['RUNNING', 'FAILED', 'PARTIAL', 'RATE_LIMITED'].includes(previous.status) || previous.requests >= 100) throw new Error('Checkpoint is not retryable within the lifetime budget');
       updateJob(key, { status: 'QUEUED', cancelled: false, error: undefined, phase: 'Owner explicitly resumed a durable remote checkpoint' });
     }
-    const state = reserveRun(loaded.state, run.runId, key, new Date(), getJob(key)?.expiresAt), head = await saveState(api, state, loaded.head, 'Reserve full bounded owner analysis allowance for run ' + run.runId);
+    const policy = usagePolicy(), requests = Math.min(plan.upperBound, 100 - (getJob(key)?.requests ?? 0));
+    const state = reserveBudgetedRun(loaded.state, run.runId, key, policy, requests, Math.min(plan.swapTransactions.length, requests), 'analysis', new Date(), getJob(key)?.expiresAt), head = await saveState(api, state, loaded.head, 'Reserve bounded owner analysis requests and cost for run ' + run.runId);
     atomicJson(path.join(storeRoot(), 'budget.json'), { day: new Date().toISOString().slice(0, 10), issued: 0, jobs: 0 });
     const job = getJob(key) ?? submit(id, c).job;
     // New jobs inherit the exact durable expiry; GitHub API latency cannot open
     // a gap where fresh admission resets a still-live job's lifetime budget.
     updateJob(key, { expiresAt: state.reservations.at(-1)!.expiresAt });
-    atomicJson(controlFile, { runId: run.runId, sha: run.sha, id, key, contextHash: contextHash(c), reservationDay: state.reservations.at(-1)!.day, reservationHead: head, initialRequests: job.requests });
-    summary(`Owner authorization and durable 100-attempt reservation confirmed. Job ${key}; ${plan.r.events.length} events, ${plan.blocks.length} checkpoints, ${plan.swapTransactions.length} traces, <=${plan.upperBound} reads. No anonymous queue. Public evidence/checkpoints will be retained in Git.`);
+    atomicJson(controlFile, { runId: run.runId, sha: run.sha, id, key, contextHash: contextHash(c), reservationDay: state.reservations.at(-1)!.day, reservationHead: head, initialRequests: job.requests, usagePolicyHash: policyHash(policy), allocation: state.usage!.allocations.at(-1) });
+    summary(`Owner authorization and durable ${requests}-attempt reservation confirmed within the combined ${policy.dailyRequests}/day cap. Job ${key}; ${plan.r.events.length} events, ${plan.blocks.length} checkpoints, ${plan.swapTransactions.length} traces. ${policy.mode}; reserved provider cost upper bound ${formatNanoUsd(state.usage!.allocations.at(-1)!.reservedNanoUsd)}. No refunds or automatic top-ups; no anonymous queue.`);
     output('proceed', 'true'); output('key', key);
   } else if (command === 'work') {
     const saved = control(), job = getJob(saved.key);
     if (!job || job.status !== 'QUEUED') throw new Error('No admitted queued job');
-    await processJob(job, reservationRpc(configuredRpc(), saved.reservationDay));
+    const policy = usagePolicy(); if (saved.usagePolicyHash !== policyHash(policy)) throw new Error('RPC account/price policy changed after admission');
+    const meter = usageMeter(saved.allocation, policy, path.join(storeRoot(), 'usage-attempts.json'));
+    await processJob(job, reservationRpc(configuredRpc({ policy, beforeAttempt: meter.beforeAttempt }), saved.reservationDay));
     const result = getJob(job.key)!;
     summary(`Actual worker state: ${result.status}; attempts ${result.attempts}/3; lifetime RPC attempts ${result.requests}/100; checkpoints ${result.completedCheckpoints}/${result.totalCheckpoints}. ${result.method ?? ''} ${result.error ?? ''}`);
     if (result.status !== 'VERIFIED') process.exitCode = 1;
@@ -64,12 +69,14 @@ async function main() {
     const api = github(), loaded = await loadState(api);
     if (!loaded.state.reservations.some(r => r.runId === run.runId && r.key === saved.key)) throw new Error('Durable reservation missing; checkpoint refused');
     loaded.state.snapshot = snapshot(jobFolder(saved.key), saved.key, context(), run.runId, new Date(Math.min(Date.parse(job.expiresAt), Date.now() + 86400000)).toISOString());
+    if (existsSync(path.join(storeRoot(), 'usage-attempts.json'))) loaded.state.usage = checkpointUsage(loaded.state.usage!, usagePolicy(), readJson<UsageAllocation>(path.join(storeRoot(), 'usage-attempts.json')));
     await saveState(api, loaded.state, loaded.head, 'Save sanitized public-chain checkpoint for owner run ' + run.runId);
-    summary(`Durable remote checkpoint saved. State ${job.status}; ${job.requests} lifetime attempts. A hard cancellation before this step can lose current progress; its full daily reservation remains consumed.`);
+    const costs = usageSummary(loaded.state.usage!, usagePolicy());
+    summary(`Durable remote checkpoint saved. State ${job.status}; ${job.requests} lifetime attempts. Cumulative reserved cost upper bound ${formatNanoUsd(costs.reservedNanoUsd)}; remaining authorised provider credit ${formatNanoUsd(costs.remainingNanoUsd)}. Hard cancellation cannot refund or reset the reserved requests/cost.`);
   } else if (command === 'export') {
     const saved = control(), job = getJob(saved.key)!;
     const destination = exportVerifiedJob(saved.key, 'GITHUB_ACTIONS_OWNER');
-    atomicJson(path.join(destination, 'remote-proof.json'), { schema: 1, processingMode: 'GITHUB_ACTIONS_OWNER', repository: REPOSITORY, workflow: WORKFLOW, runId: run.runId, runUrl: `https://github.com/${REPOSITORY}/actions/runs/${run.runId}`, sourceCommit: run.sha, key: job.key, context: job.context, attempts: job.attempts, requests: job.requests, requestsThisRun: job.requests - saved.initialRequests, verification: job.verification, verifiedAt: job.updatedAt, reservationCommit: saved.reservationHead, productionDeploymentVerified: false, note: 'Actual Actions capture and independent reconciliation. Publication, merge and public Vercel replay require separate observation.' });
+    atomicJson(path.join(destination, 'remote-proof.json'), { schema: 1, processingMode: 'GITHUB_ACTIONS_OWNER', repository: REPOSITORY, workflow: WORKFLOW, runId: run.runId, runUrl: `https://github.com/${REPOSITORY}/actions/runs/${run.runId}`, sourceCommit: run.sha, key: job.key, context: job.context, attempts: job.attempts, requests: job.requests, requestsThisRun: job.requests - saved.initialRequests, verification: job.verification, verifiedAt: job.updatedAt, reservationCommit: saved.reservationHead, rpcUsage: readJson(path.join(storeRoot(), 'usage-attempts.json')), productionDeploymentVerified: false, note: 'Actual Actions capture and independent reconciliation. Usage costs are conservative upper bounds, not a payment receipt. Publication, merge and public Vercel replay require separate observation.' });
   } else if (command === 'publish') {
     const saved = control(), job = getJob(saved.key)!;
     if (job.status !== 'VERIFIED') throw new Error('Only verified evidence may be published');

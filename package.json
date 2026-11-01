@@ -37,7 +37,9 @@
     "beta:import": "node --import tsx scripts/beta-import.ts",
     "beta:export": "node --max-old-space-size=4096 --import tsx scripts/beta-export.ts",
     "test:beta:live": "playwright test --config playwright.beta.config.ts",
-    "beta:publish": "node scripts/beta-publish.mjs"
+    "beta:publish": "node scripts/beta-publish.mjs",
+    "estimate:rpc": "node --import tsx scripts/estimate-rpc.ts",
+    "probe:rpc": "node --import tsx scripts/probe-rpc-capabilities.ts"
   },
   "dependencies": {
     "lucide-react": "1.66.0",

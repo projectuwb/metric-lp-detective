@@ -4,6 +4,7 @@ node_modules/
 !.env.example
 coverage/
 artifacts/
+work/
 .next/
 .web-data/
 test-results/

@@ -45,24 +45,27 @@ jobs:
           node-version: 24
       - run: npm ci --ignore-scripts --no-audit --no-fund
       - run: npm run prepare:web
-      - name: Validate input and durably reserve the full daily allowance
+      - name: Validate input and durably reserve bounded requests and provider cost
         id: admit
         env:
           POSITION_ID: ${{ inputs.position_id }}
           RESUME_CHECKPOINT: ${{ inputs.resume_checkpoint }}
           HAS_RPC_SECRET: ${{ secrets.BNB_RPC_URL != '' }}
+          HAS_ALTERNATE_RPC_SECRET: ${{ secrets.LP_RPC_URL != '' }}
           GH_TOKEN: ${{ github.token }}
         run: node --import tsx scripts/remote-analysis.ts admit
       - name: Real bounded reconstruction (no mock or paid fallback)
         if: steps.admit.outputs.proceed == 'true'
         env:
           BNB_RPC_URL: ${{ secrets.BNB_RPC_URL }}
+          LP_RPC_URL: ${{ secrets.LP_RPC_URL }}
         run: node --import tsx scripts/remote-analysis.ts work
       - name: Preserve sanitized checkpoints even when provider fails
         if: always() && steps.admit.outputs.proceed == 'true'
         env:
           # Both are available only for scanning; no RPC calls in this command.
           BNB_RPC_URL: ${{ secrets.BNB_RPC_URL }}
+          LP_RPC_URL: ${{ secrets.LP_RPC_URL }}
           GH_TOKEN: ${{ github.token }}
         run: node --import tsx scripts/remote-analysis.ts checkpoint
       - name: Export independently verified evidence and actual runner receipt

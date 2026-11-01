@@ -2,9 +2,11 @@
 import { appendFileSync, existsSync, readFileSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { execFileSync } from 'node:child_process';
-import { authorizeRun, github, loadState, saveState, reserveRun, reservationRpc, REPOSITORY, rejectSecrets, type RunIdentity } from '../lib/analysis/remote';
+import { authorizeRun, github, loadState, saveState, reserveBudgetedRun, reservationRpc, REPOSITORY, rejectSecrets, type RunIdentity } from '../lib/analysis/remote';
+import { usagePolicy, usageMeter, checkpointUsage, usageSummary, formatNanoUsd } from '../lib/analysis/usageBudget';
 import { advanceDiscovery, checkedDiscoveryIndex, type DiscoveryIndex } from '../lib/chain/discoveryIndex';
 import { configuredRpc } from '../lib/chain/rpc';
+import { measuredRangeProfile } from '../lib/chain/rpcCapabilities';
 import { atomicJson } from '../lib/analysis/store';
 
 // Avoid importing server-only into the Actions runner: read prepared context directly.
@@ -16,8 +18,8 @@ async function main() {
   if (process.env.GITHUB_ACTIONS !== 'true' || process.env.VERCEL || git(['rev-parse', 'HEAD']) !== run.sha) throw new Error('Trusted Actions source required');
   if (git(['status', '--porcelain'])) throw new Error('Clean source required before discovery update');
   const budget = Number(process.env.INDEX_RPC_BUDGET);
-  if (!Number.isInteger(budget) || budget < 5 || budget > 20) throw new Error('Choose an explicit 5..20 request index budget');
-  if (!process.env.BNB_RPC_URL) throw new Error('Missing Actions secret BNB_RPC_URL; no RPC sent');
+  if (!Number.isInteger(budget) || budget < 5 || budget > 100) throw new Error('Choose an explicit 5..100 request index budget within shared daily allowance');
+  if (!process.env[usagePolicy().endpointEnv]) throw new Error('Missing approved Actions RPC secret; no RPC sent');
   const coverage = JSON.parse(readFileSync('.web-data/discovery.json', 'utf8'));
   const base: DiscoveryIndex['base'] = { chainId: coverage.chainId, pool: coverage.pool, from: coverage.from, through: coverage.replayThrough, headHash: coverage.replayHeadHash ?? coverage.headHash, sourceHash: coverage.sourceHash, accountingVersion: coverage.accountingVersion };
   const published: DiscoveryIndex | null = existsSync('fixtures/discovery/index.json') ? JSON.parse(readFileSync('fixtures/discovery/index.json', 'utf8')) : null;
@@ -25,19 +27,23 @@ async function main() {
   const index = checkedDiscoveryIndex(loaded.state.discovery ?? published ?? { schema: 1, base, pages: [], observedFinalizedHead: null }, base);
   if (published && (index.pages.length < published.pages.length || published.pages.some((p, i) => p.sha256 !== index.pages[i]?.sha256))) throw new Error('Durable index is behind or conflicts with published evidence');
   const key = createHash('sha256').update('discovery:' + JSON.stringify(base)).digest('hex');
-  // Shares the analysis reservation ledger and concurrency group. Index requests
-  // are capped at 20, but all 100 provider requests remain reserved without refund.
-  const state = reserveRun(loaded.state, run.runId, key);
+  // Only this job's actual request ceiling is reserved. Legacy 100-request
+  // reservations are never refunded; global request/cost/trace caps still apply.
+  const policy = usagePolicy(), state = reserveBudgetedRun(loaded.state, run.runId, key, policy, budget, 0, 'discovery');
   state.discovery = index;
   let head = await saveState(api, state, loaded.head, 'Reserve bounded index refresh ' + run.runId);
-  summary(`Owner-only index refresh: at most ${budget} RPC attempts; full shared daily allowance reserved. No position replay acquisition.`);
+  summary(`Owner-only index refresh: ${budget} RPC attempts reserved within the shared ${policy.dailyRequests}/day cap. ${policy.mode}; no top-ups or public trigger. No position replay acquisition.`);
+  const meter = usageMeter(state.usage!.allocations.at(-1)!, policy, 'artifacts/discovery-usage-attempts.json');
   let failure: unknown;
   try {
-    const result = await advanceDiscovery(index, reservationRpc(configuredRpc(), state.reservations.at(-1)!.day), budget, current => { state.discovery = current; });
+    const result = await advanceDiscovery(index, reservationRpc(configuredRpc({ policy, beforeAttempt: meter.beforeAttempt }), state.reservations.at(-1)!.day), budget, current => { state.discovery = current; }, { rangeProfile: measuredRangeProfile(policy, base.sourceHash) });
     summary(`Index state ${result.state}; ${result.requests}/${budget} attempts; last scanned block ${index.pages.at(-1)?.through ?? base.through}.`);
   } catch (e) { failure = e; }
   // Even on a provider failure, retain only completed, canonical, checksummed pages.
+  state.usage = checkpointUsage(state.usage!, policy, meter.current());
   head = await saveState(api, state, head, 'Retain discovery coverage checkpoint ' + run.runId);
+  const costs = usageSummary(state.usage, policy);
+  summary(`Cumulative reserved provider cost ${formatNanoUsd(costs.reservedNanoUsd)}; remaining authorised cost budget ${formatNanoUsd(costs.remainingNanoUsd)}. Unused reservation capacity is not refunded.`);
   if (failure) throw failure;
   atomicJson('fixtures/discovery/index.json', index);
   execFileSync('npm', ['run', 'prepare:web'], { stdio: 'inherit' });

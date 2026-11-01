@@ -6,7 +6,7 @@ export interface ReplayEvent {
   bins: BinChange[]; reference: null | { kind: 'EXECUTION'; referenceX64: string; bidX64: string; askX64: string };
   execution: null | { stockBase: string; stableBase: string };
 }
-export interface PositionSummary { id: string; provider: string; salt: string; firstBlock: string; lastBlock: string; status: 'reconciled' | 'indexed-only'; adds?: number; removals?: number; episodes?: number; liquidityState?: 'CLOSED_IN_CHECKED_WINDOW' | 'SHARES_REMAIN_IN_CHECKED_WINDOW' }
+export interface PositionSummary { id: string; provider: string; salt: string; firstBlock: string; lastBlock: string; firstTransactionHash?: string; lastTransactionHash?: string; status: 'reconciled' | 'indexed-only'; adds?: number; removals?: number; episodes?: number; liquidityState?: 'CLOSED_IN_CHECKED_WINDOW' | 'SHARES_REMAIN_IN_CHECKED_WINDOW' }
 export interface ChartPoint { index: number; block: string; balances: Amounts }
 export interface FundingPoint { index: number; block: string; tokens: Amounts; transactionHash: string; logIndex: string }
 export interface Milestone { index: number; block: string; kind: 'INITIAL_DEPOSIT' | 'ADD' | 'PARTIAL_WITHDRAWAL' | 'FULL_CLOSE' | 'REENTRY' }

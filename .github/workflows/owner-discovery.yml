@@ -3,10 +3,10 @@ on:
   workflow_dispatch:
     inputs:
       rpc_budget:
-        description: 'Fixed index RPC attempt budget (5..20). Reserves full shared provider day; no refund.'
+        description: 'Explicit owner-authorised attempts. Shares 100/day combined cap; no refunds or paid fallback.'
         required: true
         type: choice
-        options: ['10', '20', '5']
+        options: ['20', '40', '80', '10', '5']
 concurrency:
   group: metric-owner-reconstruction
   cancel-in-progress: false
@@ -37,6 +37,7 @@ jobs:
       - name: Owner-authorised fixed-budget discovery update and evidence branch
         env:
           BNB_RPC_URL: ${{ secrets.BNB_RPC_URL }}
+          LP_RPC_URL: ${{ secrets.LP_RPC_URL }}
           GH_TOKEN: ${{ github.token }}
           INDEX_RPC_BUDGET: ${{ inputs.rpc_budget }}
         run: node --import tsx scripts/remote-discovery.ts

@@ -38,7 +38,7 @@ export async function processJob(job: AnalysisJob, suppliedRpc?: Rpc, wait?: (ms
     atomicJson(path.join(rawRoot, 'status.json'), { ...readJson<Record<string, unknown>>(path.join(rawRoot, 'status.json')), status: 'VERIFIED', phase: 'Independent reconciliation passed', requests: getJob(job.key)!.requests });
     promote(job.key, verified);
   } catch (e) {
-    const state = e instanceof AnalysisLimit ? e.state : e instanceof RpcFailure && e.kind === 'rate' ? 'RATE_LIMITED' : e instanceof Error && /mark|reference/i.test(e.message) ? 'PARTIAL' : 'FAILED';
+    const state = e instanceof AnalysisLimit ? e.state : e instanceof RpcFailure && ['rate', 'quota'].includes(e.kind) ? 'RATE_LIMITED' : e instanceof Error && /mark|reference/i.test(e.message) ? 'PARTIAL' : 'FAILED';
     const message = e instanceof RpcFailure || e instanceof AnalysisLimit ? e.message : state === 'PARTIAL' ? 'Required historical reference marks are incomplete. Captured token proof is retained; replay publication awaits the missing valuation inputs.' : 'Independent capture/verification failed; replay remains locked. Owner review is required.';
     updateJob(job.key, { status: state, phase: 'Stopped; replay remains locked', error: message, method: e instanceof RpcFailure ? e.method ?? method : method });
     console.error(JSON.stringify({ key: job.key, state, method: e instanceof RpcFailure ? e.method ?? method : method, error: message }));

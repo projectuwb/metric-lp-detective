@@ -4,7 +4,8 @@ test('empty wallet is checked only within named coverage; recent activity and ma
   await page.goto('/');
   const coverage = page.getByLabel('Wallet discovery coverage');
   await expect(coverage).toContainText('last scanned block 130841348');
-  await expect(coverage).toContainText('Recent-head lag unknown');
+  await expect(coverage).toContainText('Finalised head observed at 131119667');
+  await expect(coverage).toContainText('index lag then: 278319 blocks');
   await expect(coverage).toContainText('BNB Chain (56)');
   await expect(coverage).toContainText('0xdc2b2f96bc1eb01e7286c688d5354e081af188c4');
   await page.getByLabel('START WITH A PUBLIC WALLET').fill('0x000000000000000000000000000000000000dEaD');

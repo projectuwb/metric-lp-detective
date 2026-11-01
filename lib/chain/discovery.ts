@@ -32,6 +32,7 @@ export function liquidityPositions(logs: RawLog[], verified = new Set<string>())
     }
     shares.set(id, bins);
     positions.set(id, { id, provider, salt: String(salt), firstBlock: before?.firstBlock ?? block, lastBlock: block,
+      firstTransactionHash: before?.firstTransactionHash ?? log.transactionHash, lastTransactionHash: log.transactionHash,
       status: verified.has(id) ? 'reconciled' : 'indexed-only',
       adds: (before?.adds ?? 0) + Number(event.eventName === 'LiquidityAdded'), removals: (before?.removals ?? 0) + Number(event.eventName === 'LiquidityRemoved'),
       episodes: (before?.episodes ?? 0) + Number(event.eventName === 'LiquidityAdded' && changes.some(n => n > 0n) && (!before || wasClosed)),
@@ -43,8 +44,8 @@ export function liquidityPositions(logs: RawLog[], verified = new Set<string>())
 
 // Inclusive, non-overlapping 1000-block pages; caller supplies a quota-counting RPC.
 // No retry on 429 or other failures. A failure must never advance the caller's cursor.
-export async function liquidityPage(rpc: Rpc, from: bigint, to: bigint, provider?: string) {
-  if (from < 0n || to < from || to - from >= 1000n) throw new Error('Discovery page must contain 1..1000 blocks');
+export async function liquidityPage(rpc: Rpc, from: bigint, to: bigint, provider?: string, measuredMaxBlocks = 1000) {
+  if (!Number.isSafeInteger(measuredMaxBlocks) || measuredMaxBlocks < 1 || measuredMaxBlocks > 30000 || from < 0n || to < from || to - from >= BigInt(measuredMaxBlocks)) throw new Error('Discovery page exceeds measured maximum (default 1000 blocks)');
   const logs = checkedLogs(await rpc('eth_getLogs', [{ address: POOL, fromBlock: '0x' + from.toString(16), toBlock: '0x' + to.toString(16), topics: providerFilter(provider) }]), from, to);
   if (logs.length >= 1000) throw new Error('Possible provider result truncation; coverage incomplete');
   for (const log of logs) {

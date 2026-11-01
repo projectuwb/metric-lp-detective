@@ -429,3 +429,71 @@ which was in progress when this receipt was written. Local final validation is
 99 automated tests and 20 production-build Chromium tests PASS. No main merge or
 production deployment of Stage 5 is claimed. The following documentation commit
 records this implementation hash and push receipt; it does not change code.
+
+## Stage 6 RPC scope update — 2 November 2026 (Australia/Sydney)
+
+Started from fetched main `6cb218f1535892431f2ae9dbe21b2f1ce261d480` (PR #13).
+No existing Stage 6 branch or local changes were found. Read amended Issue #14,
+standing workflow/source/Stage 1–5 requirements and current worker/index code.
+Reviewed official SolidRPC Free, agent-prepaid, BNB, pricing and rate-limit
+documentation, plus only two stablecoin-funded alternatives: TheRPC and GetBlock.
+Decision and sources: `docs/RPC_PREPAID_PILOT.md`; gate report: `docs/STAGE_6.md`.
+
+The owner explicitly approved one separate 12-attempt existing-key research
+probe. Exactly 12 read-only calls were made, one-second paced, with durable
+pre-attempt recording. Actual headers showed 10,000/day, 10/s, billable usage
+38→50 and remaining 9,950 at the observation. 1k/5k/10k/30k liquidity ranges and
+30k provider filtering matched saved complete data; historical eth_call and
+storage matched retained evidence. Pinned head/runtime matched. Observed finalised
+head 131119667 leaves a 278,319-block gap from 130841348. Safe metadata is retained
+in `fixtures/rpc/solidrpc-free-probe.json`; no endpoint/key or searched-wallet
+history is stored. The local attempt record is in ignored work/.
+
+The final trace returned HTTP 200 but its comparison was not verified: the harness
+contained a BigInt JSON serialization defect and did not retain the raw failure
+type, so a separate mismatch cannot be excluded. Fixed/tested offline using the
+real saved trace. The failed comparison is not relabelled PASS, and no 13th call
+was made. Existing fourth-position reconstruction/proof was not repeated; no new
+position, quote or PnL is registered from the research probe.
+
+Implemented measured-range provenance for 30k liquidity pages with source/ABI and
+report hashes; canonical event-block/boundary/finality checks and old-page
+compatibility remain. Unmeasured/new-account profiles retain conservative ranges.
+The build checks the retained report checksum before publishing wider coverage.
+No forward refresh campaign was executed; UI shows a dated head/lag while keeping
+the actual checked window unchanged, plus first/last liquidity transaction links.
+
+Implemented shared cost-aware index/replay reservations in the existing state
+branch, preserving legacy full-100 reservations without refund. Default policy
+is Free, 100/day, 100/job, ten trace attempts/day, two analysis allocations/day,
+and $0 paid authority. Index allocations can explicitly reserve 20/40/80 rather
+than wasting the entire day. Each attempt is locked and saved before send;
+failures, lost runners and stale locks cannot refund/reset counters. Exact
+nanodollar upper bounds, locked prices, cumulative costs, policy-transition
+approval, strict all-in sub-$10/credit ceilings and no top-up/overage/recurrence
+are enforced. Prepaid unmetered transport and unapproved alternatives are refused.
+HTTP 402/429 stop. Optional LP_RPC_URL is a reference only; no secret was created
+or changed. No payment/account-management/signing API exists in this code.
+
+`npm run estimate:rpc` reproduces resource/cost scenarios offline. Existing Free
+is preferred; a conditional $1-USDC-on-Base / <=$2-all-in fallback is not ready to
+fund. Existing-account prepaid eligibility, binding fee/tax/credit quote and
+expiry/refund/hard-stop terms remain unconfirmed. No payments, accounts, plan
+changes, paid services, repo settings, main merge or production deployment were
+made. No fifth hosted replay is claimed: the only approved live allowance was
+the 12-call research probe. Larger staged jobs remain design/estimates only.
+
+Final validation: `npm run check` PASS — **115 tests / 18 suites**, typecheck,
+original fixtures/history/oracle/performance/outcomes and credential scan.
+Independent Python Fraction checks include 35 selected events / 350 exact
+lifecycle comparisons. Production build PASS, client credential scan PASS (11
+assets), Chromium production-build browser suite **20/20 PASS**. Pinned core +
+OpenZeppelin compilation/source/runtime/library/link/guard verification PASS,
+using the existing exact checkout under /workspace/work/stage5/source-check/core.
+No original position/history/raw evidence or accounting-engine file changed.
+Final measured-profile/cost tests also PASS after clarifying the trace limitation.
+YAML parsing and diff checks PASS; exact staged credential scan precedes commit.
+
+GitHub connection reports repository push permission and an empty ruleset list;
+branch-protection detail reads remain integration HTTP 403. No bypass/integration
+is attempted. Deliverable branch: `codex/stage6-rpc-budget`; push/CI receipt follows.
