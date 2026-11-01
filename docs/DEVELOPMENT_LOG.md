@@ -417,3 +417,15 @@ unavailable” diagnosis was too broad. GitHub ruleset collection is empty;
 branch-protection details return integration HTTP 403, so no protection bypass or
 integration is attempted. The deliverable is a validated feature branch; push/CI
 receipt follows after publication.
+
+### Stage 5 Git receipt
+
+Implementation commit `445f4a24bd0a279fd13221ece26a841d9147149e` was pushed to
+`codex/stage5-discovery`. Main was fetched again before push and remains an
+ancestor; no merge/conflict or force push was needed. Exact staged credential
+scan checked 32 files with zero findings; staged diff check passed. The push
+started [Validate run 41300754049](https://github.com/projectuwb/metric-lp-detective/actions/runs/41300754049),
+which was in progress when this receipt was written. Local final validation is
+99 automated tests and 20 production-build Chromium tests PASS. No main merge or
+production deployment of Stage 5 is claimed. The following documentation commit
+records this implementation hash and push receipt; it does not change code.
