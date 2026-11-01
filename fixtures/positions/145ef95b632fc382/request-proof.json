@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "key": "678ce9b351abc03b9b4e6ee9d343f07bbfdacfed228403fc6706d07b10d0359d",
+  "id": "0xd85440db4b63cd61e0be731b5dcb36e2f36f9eba:880320313732695054146242",
+  "context": {
+    "chainId": 56,
+    "pool": "0xdc2b2f96bc1eb01e7286c688d5354e081af188c4",
+    "indexEnd": "130841348",
+    "indexEndHash": "0xd4b50c9afe0934057d61ccf2821e30c5b6dbf3553b6348ccb846e9f5a074ea7e",
+    "sourceHash": "0x2c6c8e6f1f3175cca4e31d0231777255deb75132ddf1b1804d6cf28db08f8f51",
+    "accountingVersion": "50eddbdfa73d44c51460956b03a786c6f90a12f04e8b674af4f33be05ffa7e16"
+  },
+  "createdAt": "2026-11-01T09:33:30.816Z",
+  "verifiedAt": "2026-11-01T09:34:24.513Z",
+  "requests": 38,
+  "attempts": 1,
+  "verification": {
+    "status": "VERIFIED",
+    "id": "0xd85440db4b63cd61e0be731b5dcb36e2f36f9eba:880320313732695054146242",
+    "slug": "145ef95b632fc382",
+    "swaps": 1,
+    "events": 4,
+    "checkpoints": 7,
+    "storageComparisons": 2800,
+    "withdrawalChecks": 4,
+    "closed": true,
+    "final": [
+      "0",
+      "0"
+    ],
+    "tolerance": "0",
+    "from": "129628417",
+    "lastEventBlock": "129629243",
+    "indexedThrough": "130841348",
+    "executionQuoteEvents": 1
+  },
+  "processingMode": "GITHUB_ACTIONS_OWNER",
+  "note": "Explicit owner-requested job; no anonymous queue. Chain evidence is independently checked; deployment availability is a separate gate."
+}
