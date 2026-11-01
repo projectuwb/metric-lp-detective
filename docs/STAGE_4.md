@@ -1,5 +1,11 @@
 # Stage 4 — owner-authorized remote reconstruction
 
+**Live gate update, 1 November 2026:** PR #12 has since published the actual
+fourth-position Actions proof and merged to main. Its Vercel status is success
+and playback was owner-verified. The NOT VERIFIED entries below describe the
+earlier implementation receipt, not the current fourth-position state. See
+[Stage 5](STAGE_5.md) for current evidence, coverage and owner workflow.
+
 Started 1 November 2026 (Australia/Sydney), main `07fbef9` (PR #8).
 Issue #9, AGENTS, original specification, Stage 3 report/architecture and the
 owner-beta runbook were read in full. Stage 3 deployment is owner-confirmed;

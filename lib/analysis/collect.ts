@@ -10,14 +10,15 @@ import { PROVIDER, executionQuotes } from '../metric/oracleTrace';
 import { signedPair } from '../chain/decode';
 import { RpcFailure, type Rpc } from '../chain/rpc';
 import { atomicJson, readJson, AnalysisLimit } from './store';
-import { SERVICE_LIMITS } from './types';
+import { replayEligibility } from './eligibility';
 export function positionPlan(id: string) {
   const h = historyInputs(), r = positionReplay(h.logs, h.abi, id), [owner, salt] = id.split(':');
   const swapTransactions = [...new Set(r.events.filter(e => e.type === 'swap').map(e => e.transactionHash))];
   const fundingTransactions = [...new Set(r.funding.map(f => f.transactionHash))];
   const blocks = [...new Set([h.acquisition.to, (BigInt(r.events[0].block) - 1n).toString(), (BigInt(r.events.at(-1)!.block) - 1n).toString(), ...r.events.map(e => e.block)])].sort((a, b) => BigInt(a) < BigInt(b) ? -1 : 1);
-  const upperBound = 4 + blocks.length * 5 + fundingTransactions.length + swapTransactions.length;
-  if (r.events.filter(e => e.type === 'swap').length > SERVICE_LIMITS.maxSwaps || blocks.length > SERVICE_LIMITS.maxCheckpoints || swapTransactions.length > SERVICE_LIMITS.maxTraceTransactions || upperBound > SERVICE_LIMITS.jobRequests) throw new AnalysisLimit('UNSUPPORTED', `Too large for the conservative beta: ${r.events.filter(e => e.type === 'swap').length} swaps, ${blocks.length} checkpoints, ${swapTransactions.length} trace transactions, at most ${upperBound} reads. No RPC scan started. Owner review required.`);
+  const eligibility = replayEligibility({ swaps: r.events.filter(e => e.type === 'swap').length, checkpoints: blocks.length, fundingTransactions: fundingTransactions.length, traces: swapTransactions.length });
+  const upperBound = eligibility.maxRequests;
+  if (eligibility.mode !== 'OWNER_PILOT') throw new AnalysisLimit('UNSUPPORTED', eligibility.reason);
   return { h, r, owner, salt, swapTransactions, fundingTransactions, blocks, upperBound };
 }
 export async function collectPosition(id: string, slug: string, root: URL, rpc: Rpc, requests: () => number, report: (progress: { phase: string; completedCheckpoints: number; totalCheckpoints: number }) => void) {

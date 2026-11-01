@@ -1,2 +1,3 @@
 import Detective from '../components/Detective';
-export default function Page() { return <Detective />; }
+import { getDiscoveryCoverage } from '../lib/server/replay';
+export default function Page() { return <Detective coverage={getDiscoveryCoverage()} />; }

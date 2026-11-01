@@ -1,5 +1,36 @@
 # Browser-only owner reconstruction pilot
 
+## Current owner path — Stage 5
+
+The original remote pilot is **VERIFIED**: real run
+[41293561165](https://github.com/projectuwb/metric-lp-detective/actions/runs/41293561165)
+published the fourth position through merged PR #12. Main's Vercel status is
+success; public playback was owner-verified. Do not repeat that reconstruction or
+recreate its secret. The dated Stage 4 implementation notes below are historical.
+
+For another position, use the website's **Copy position ID** → **Open owner-run
+workflow** → **Run workflow**, branch **main**, paste into `position_id`.
+Leave resume off for new work. Follow the actual GitHub run, then its passing
+evidence PR/branch. If GitHub cannot create the PR, ChatGPT's connected GitHub
+integration can integrate the pushed branch after checks pass. Refresh the site
+after merge and successful Vercel deployment; verified replay unlocks generically.
+No terminal, download, PAT or public dispatch token is required.
+
+The full 2026-11-01 UTC provider allowance is already reserved by the fourth run.
+Failed jobs do not refund reservations. On a new day, use explicit checkpoint
+resume only for the latest matching unexpired incomplete job; never reset its
+lifetime cap. Already published positions skip reconstruction entirely.
+
+Stage 5 adds **Owner discovery index refresh** (`owner-discovery.yml`) after its
+code reaches main. Choose a 5/10/20-attempt budget there to increment discovery
+coverage. It shares the provider day and worker concurrency with reconstruction;
+do not run both expecting separate allowances. It creates a discovery-evidence
+branch, not new verified LP PnL. Later-history replays still need a full accounting
+index extension. Live execution of the new refresh is not yet verified.
+See [Stage 5 evidence and limitations](STAGE_5.md).
+
+## Historical Stage 4 implementation receipt
+
 Stage 4 status: **PARTIAL — implementation tested offline; real Actions execution,
 new-wallet reconciliation on that runner, merge and public replay NOT VERIFIED.**
 No repository secret/setting or deployment was changed by implementation.

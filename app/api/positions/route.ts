@@ -1,5 +1,6 @@
 import { isAddress } from 'viem';
-import { positionsFor, getMeta } from '../../../lib/server/replay';
+import { positionsFor, getDiscoveryCoverage } from '../../../lib/server/replay';
+import { discoveryResult } from '../../../lib/domain/discovery';
 import { limited } from '../../../lib/server/limit';
 export const runtime = 'nodejs';
 export async function POST(request: Request) {
@@ -19,8 +20,16 @@ export async function POST(request: Request) {
     text += decoder.decode();
     const body = JSON.parse(text);
     if (typeof body?.wallet !== 'string' || !isAddress(body.wallet, { strict: false })) return Response.json({ error: 'Enter a valid public 0x wallet address.' }, { status: 400 });
-    const meta = getMeta();
-    return Response.json({ positions: positionsFor(body.wallet), from: meta.from, through: meta.through, message: 'Discovery covers this pool only through the indexed block. Manager ownership paths are not inferred.' }, { headers: { 'Cache-Control': 'no-store' } });
+    let range;
+    if (body.fromBlock !== undefined || body.throughBlock !== undefined) {
+      if (![body.fromBlock, body.throughBlock].every(n => typeof n === 'string' && /^\d{1,20}$/.test(n)) || BigInt(body.fromBlock) > BigInt(body.throughBlock)) return Response.json({ error: 'Supply an ordered fromBlock and throughBlock as decimal strings.' }, { status: 400 });
+      range = { from: body.fromBlock, through: body.throughBlock };
+    }
+    const coverage = getDiscoveryCoverage();
+    // The published index is a deployment-origin snapshot, not a per-block search service.
+    if (range && (range.from !== coverage.from || range.through !== coverage.through) && BigInt(range.from) >= BigInt(coverage.from) && BigInt(range.through) <= BigInt(coverage.through)) return Response.json({ error: 'Use the complete published window; narrower event searches are not offered.' }, { status: 400 });
+    const result = discoveryResult(positionsFor(body.wallet), coverage, range);
+    return Response.json(result, { status: result.status === 'NOT_CHECKED_YET' ? 409 : 200, headers: { 'Cache-Control': 'no-store' } });
   } catch (error) {
     if (error instanceof SyntaxError) return Response.json({ error: 'Enter a valid wallet request.' }, { status: 400 });
     return Response.json({ error: 'The verified index is temporarily unavailable. Retry shortly.' }, { status: 503 });

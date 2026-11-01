@@ -9,7 +9,9 @@ export async function GET(request: Request) {
   try {
     const info = capabilities(request), id = new URL(request.url).searchParams.get('positionId');
     const job = info.queueAvailable && id ? getJob(jobKey(positionIdentity(id), context())) : null;
-    return Response.json({ ...info, job }, { headers });
+    const position = id ? getPositions().find(p => p.id === id) : null;
+    const eligibility = !position ? 'NO_INDEXED_POSITION' : position.status === 'reconciled' ? 'VERIFIED_REPLAY' : BigInt(position.lastBlock) > BigInt(info.context.indexEnd) ? 'ACCOUNTING_INDEX_REQUIRED' : 'OWNER_PREFLIGHT_REQUIRED';
+    return Response.json({ ...info, job, eligibility }, { headers });
   } catch { return Response.json({ error: 'Analysis status is unavailable. Retry shortly.' }, { status: 503, headers }); }
 }
 export async function POST(request: Request) {
@@ -20,6 +22,7 @@ export async function POST(request: Request) {
     const position = getPositions().find(p => p.id === id);
     if (!position) return Response.json({ accepted: false, error: 'No provider/salt in this fixed index; no job created.' }, { status: 404, headers });
     if (position.status === 'reconciled') return Response.json({ accepted: false, replayAvailable: true, status: 'VERIFIED', id, message: 'Verified replay already exists; no additional job or RPC requests created.' }, { headers });
+    if (BigInt(position.lastBlock) > BigInt(context().indexEnd)) return Response.json({ accepted: false, status: 'ACCOUNTING_INDEX_REQUIRED', error: 'Position activity extends beyond the verified accounting index. Discovery alone cannot start a replay job; a versioned accounting-index extension is required.' }, { status: 409, headers });
     const result = submit(id);
     return Response.json({ accepted: true, ...result }, { status: result.created ? 202 : 200, headers });
   } catch (e) { return Response.json({ accepted: false, error: e instanceof AnalysisLimit ? e.message : 'Invalid request or queue temporarily busy. Retry shortly.' }, { status: e instanceof AnalysisLimit ? 429 : 400, headers }); }

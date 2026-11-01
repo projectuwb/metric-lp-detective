@@ -8,12 +8,23 @@ import { GET, POST } from '../app/api/analysis/route';
 import { GET as jobStatus } from '../app/api/analysis/[key]/route';
 import { localAccess } from '../lib/server/analysis';
 import { getPositions } from '../lib/server/replay';
+import * as replayServer from '../lib/server/replay';
 import { GET as positionStatus } from '../app/api/positions/[id]/status/route';
 const id = '0xa19899f6b8416d8266f0d4f14688c8c6eeaec818:671085802901633847509096';
 let folder: string;
 beforeEach(() => { folder = mkdtempSync(path.join(os.tmpdir(), 'metric-job-unit-')); vi.stubEnv('LP_ANALYSIS_DIR', folder); vi.stubEnv('LP_ANALYSIS_MODE', 'owner-local'); vi.stubEnv('VERCEL', ''); });
 afterEach(() => { vi.unstubAllEnvs(); rmSync(folder, { recursive: true, force: true }); });
 describe('durable owner-local admission and protected API', () => {
+  it('refuses later-history jobs before admission even when discovered by an extended liquidity index', async () => {
+    const position = getPositions().find(p => p.status === 'indexed-only')!;
+    const spy = vi.spyOn(replayServer, 'getPositions').mockReturnValue([{ ...position, lastBlock: String(BigInt(context().indexEnd) + 1n) }]);
+    try {
+      expect(await (await GET(new Request('http://localhost/api/analysis?positionId=' + position.id))).json()).toMatchObject({ eligibility: 'ACCOUNTING_INDEX_REQUIRED', job: null });
+      const response = await POST(new Request('http://localhost/api/analysis', { method: 'POST', headers: { 'content-type': 'application/json', origin: 'http://localhost' }, body: JSON.stringify({ positionId: position.id }) }));
+      expect(response.status).toBe(409); expect(await response.json()).toMatchObject({ accepted: false, status: 'ACCOUNTING_INDEX_REQUIRED' });
+      expect(jobs()).toEqual([]);
+    } finally { spy.mockRestore(); }
+  });
   it('persists accepted jobs, deduplicates canonical identities and versions, and enforces both caps', () => {
     const c = context(), first = submit(id, c); expect(first.created).toBe(true); expect(first.job.status).toBe('QUEUED');
     expect(readJson(path.join(jobFolder(first.job.key), 'job.json')).id).toBe(id);

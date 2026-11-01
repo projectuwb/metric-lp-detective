@@ -23,5 +23,5 @@ test('capability failure terminates and can be refreshed', async ({ page }) => {
   await page.getByRole('button', { name: /salt 1068754547228601823113491/ }).click();
   await expect(page.getByRole('alert').filter({ hasText: 'Analysis capabilities are unavailable' })).toBeVisible();
   await page.getByRole('button', { name: 'Refresh analysis status', exact: true }).click();
-  await expect(page.getByRole('link', { name: 'Open owner Request Analysis workflow ↗', exact: true })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Open owner-run workflow ↗', exact: true })).toBeVisible();
 });

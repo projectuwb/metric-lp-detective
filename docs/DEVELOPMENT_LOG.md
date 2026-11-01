@@ -350,3 +350,82 @@ merge remains blocked as recorded above. No secrets/settings/deployments changed
 ### Owner Actions run 41293561165
 
 Source 74794158a53e37ab5d25898e316ad36e911ffb97; job 678ce9b351abc03b9b4e6ee9d343f07bbfdacfed228403fc6706d07b10d0359d; 38 lifetime RPC attempts, 1 attempts, zero-discrepancy independent reconciliation. Automated checks, production build, client scan and production browser suite passed in this workflow before publication. Evidence branch codex/remote-analysis-678ce9b351abc03b-41293561165. Merge and Vercel deployment are not yet confirmed.
+## Stage 5 — 1 November 2026 (Australia/Sydney)
+
+Started from fetched main `a425954b029823a139325741876b96b3b181483f`,
+including merged PR #12. Read AGENTS, original specification, Issues #7/#9/#11,
+Stage 3/4 reports and owner/remote runbooks. Existing fourth-position Actions
+receipt retained: run 41293561165, 38 actual RPC attempts, seven checkpoints,
+2,800 storage comparisons, four withdrawal checks and zero discrepancy. Connected
+GitHub confirms PR #12 merged and base-main Vercel status success; the owner had
+already confirmed public playback. This task does not repeat that reconstruction.
+
+Implemented explicit direct-provider discovery states, source/head/accounting
+coverage, unknown recent lag and manager ownership caveat, multiple salts with
+adds/removals/closed/re-entry episodes, and an HTTP 409 refusal for unscanned
+requested windows. Failed lookups clear stale replay/results. Later discoveries
+are distinct from the pinned accounting index; both UI and local admission refuse
+later-history jobs. Published verified evidence unlocks playback generically,
+including from the analysis status refresh.
+
+Removed the infeasible holding KPI from both grids, explained the required
+assumed stock sale/purchase, and made feasible holding comparison optional. Exact
+integer/rational cashflow PnL and all original reconciliation logic are preserved.
+Owner replay uses the existing copy-ID/GitHub workflow route; no public queue or
+fictitious progress. Large jobs have an explicit staged-review explanation with
+unchanged caps. STAGE_5.md records gates, throughput and remaining limits.
+
+Added an owner-only main-dispatched incremental liquidity index workflow, using
+the existing secret/standard runner/shared reservation state. Its fixed 5–20
+attempt budget, canonical 1000-block pages, event-block/boundary checks, runtime
+identity, durable cursor, source/checksum validation and explicit Validate dispatch
+are implemented and offline tested. It does not change the accounting index or
+publish unverified replay. Live refresh remains NOT VERIFIED; larger multi-day
+replay scheduling remains unimplemented. A 20-call refresh cannot promise chain
+catch-up. No background scan, paid infrastructure, secret, setting, public write
+endpoint, merge or deployment was created.
+
+The real state branch already reserves all 100 requests on 2026-11-01 UTC for
+the fourth-position run. **Zero live RPC calls** were made here. Topic1/provider
+and topic2/salt filtering were checked against the deployed ABI, saved real logs
+and fourth-position liquidity receipt, not relabelled as a new live probe.
+Offline preflight of another unregistered zero-swap position
+`0xa598e2658ef74196f498b00b289a7d5d64a42cd7:615031639178913965778603`
+predicts two events, five checkpoints and <=31 reads; it remains indexed-only.
+
+Final validation after implementation:
+
+- `npm run check`: PASS; **99 tests / 16 suites**, typecheck, original fixtures,
+  history, oracle, performance, lifecycle outcomes and credential scan.
+- Independent Python Fraction checks PASS, including **35 selected events / 350
+  exact lifecycle comparisons**, original performance and second-position PnL.
+- `npm run build`: PASS; Next production build. `npm run check:client`: PASS,
+  11 browser assets. Chromium production-build E2E: **20/20 PASS** (all original
+  16 tests retained plus four Stage 5 browser cases). Mobile screenshot reviewed.
+- Pinned Solidity core and exact OpenZeppelin submodule compiled; source/runtime,
+  library link and guard checks PASS. The old scratch checkout lacked submodule
+  Git metadata, so a separate exact checkout was used under `/workspace/work/`;
+  no repository validation was weakened to bypass that failure.
+- `git diff --check`: PASS; no tracked fixture/evidence changes. Final staged
+  credential scan is required immediately before commit/push.
+
+Runtime diagnosis: the first shell networking attempt lacked execution-level
+network permission. Repeating via the supported network-enabled execution profile
+connected through the unchanged proxy and fetched GitHub main. No proxy, DNS,
+credential or environment configuration was changed. Initial “cloud network
+unavailable” diagnosis was too broad. GitHub ruleset collection is empty;
+branch-protection details return integration HTTP 403, so no protection bypass or
+integration is attempted. The deliverable is a validated feature branch; push/CI
+receipt follows after publication.
+
+### Stage 5 Git receipt
+
+Implementation commit `445f4a24bd0a279fd13221ece26a841d9147149e` was pushed to
+`codex/stage5-discovery`. Main was fetched again before push and remains an
+ancestor; no merge/conflict or force push was needed. Exact staged credential
+scan checked 32 files with zero findings; staged diff check passed. The push
+started [Validate run 41300754049](https://github.com/projectuwb/metric-lp-detective/actions/runs/41300754049),
+which was in progress when this receipt was written. Local final validation is
+99 automated tests and 20 production-build Chromium tests PASS. No main merge or
+production deployment of Stage 5 is claimed. The following documentation commit
+records this implementation hash and push receipt; it does not change code.

@@ -7,6 +7,7 @@ import { positionIdentity } from '../domain/position';
 import { SERVICE_LIMITS, type AnalysisContext } from './types';
 import { jobKey, AnalysisLimit } from './store';
 import type { Rpc } from '../chain/rpc';
+import { checkedDiscoveryIndex, type DiscoveryIndex } from '../chain/discoveryIndex';
 
 export const REPOSITORY = 'projectuwb/metric-lp-detective';
 export const STATE_BRANCH = 'codex/analysis-worker-state';
@@ -26,13 +27,14 @@ export function reservationRpc(rpc: Rpc, day: string, now = () => new Date()): R
 }
 export interface Reservation { day: string; runId: string; key: string; requests: number; expiresAt: string }
 export interface Snapshot { runId: string; key: string; contextHash: string; expiresAt: string; sha256: string; gzip: string }
-export interface RemoteState { schema: 1; reservations: Reservation[]; snapshot?: Snapshot }
+export interface RemoteState { schema: 1; reservations: Reservation[]; snapshot?: Snapshot; discovery?: DiscoveryIndex }
 const hash = (v: string) => /^[a-f0-9]{64}$/.test(v);
 export function checkedState(value: unknown): RemoteState {
   const s = value as RemoteState;
   if (!s || s.schema !== 1 || !Array.isArray(s.reservations) || s.reservations.length > 100 || s.reservations.some(r => !/^\d{4}-\d{2}-\d{2}$/.test(r.day) || !/^\d{1,20}$/.test(r.runId) || !hash(r.key) || r.requests !== SERVICE_LIMITS.jobRequests || !Number.isFinite(Date.parse(r.expiresAt)))) throw new Error('Remote budget ledger invalid; refusing all RPC work');
   if (new Set(s.reservations.map(r => r.runId)).size !== s.reservations.length) throw new Error('Duplicate remote reservation');
   if (s.snapshot && (!hash(s.snapshot.key) || !hash(s.snapshot.sha256) || !hash(s.snapshot.contextHash) || !/^\d{1,20}$/.test(s.snapshot.runId) || !Number.isFinite(Date.parse(s.snapshot.expiresAt)) || typeof s.snapshot.gzip !== 'string' || s.snapshot.gzip.length > 24_000_000)) throw new Error('Remote checkpoint envelope invalid');
+  if (s.discovery) checkedDiscoveryIndex(s.discovery, s.discovery.base);
   return s;
 }
 export function requireResume(state: RemoteState, key: string, resume: boolean, now = Date.now()) {

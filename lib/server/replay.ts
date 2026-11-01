@@ -2,10 +2,12 @@ import 'server-only';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import type { PositionSummary, ReplayEvent, ReplayMeta } from '../domain/web';
+import type { DiscoveryCoverage } from '../domain/discovery';
 import { runtimeMeta, runtimePage, runtimeJobs } from '../analysis/artifact';
 const root = path.join(process.cwd(), '.web-data');
 function read<T>(file: string): T { return JSON.parse(readFileSync(path.join(root, file), 'utf8')) as T; }
 export const getRegistry = () => read<{ id: string; directory: string; label: string }[]>('registry.json');
+export const getDiscoveryCoverage = () => read<DiscoveryCoverage>('discovery.json');
 function directory(id?: string) {
   const entry = id ? getRegistry().find(r => r.id === id) : getRegistry()[0];
   return entry ? entry.directory ? entry.directory + '/' : '' : null;
