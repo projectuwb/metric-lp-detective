@@ -739,3 +739,46 @@ documentation only, requires implementation and explicit approval above existing
 lifetime policy, and does not change any running cap. Account type is UNKNOWN,
 no new RPC was performed, and the recommended small pilot stays 28/33, pending
 fresh approval. Current-head CI/main merge/production proof remain separate gates.
+
+## Range classification compatibility for two result-limit phrases (base 292222f)
+
+`classify` in `lib/chain/rpc.ts` now maps the phrases `query exceeds max results`
+and `response is too big` to `range`, including under code -32602, so
+`liquidityPage` can halve the page as the existing range contract intends
+(Refs #16). Rate/429, denied and revert checks still run first; other -32602
+messages stay `invalid`; no retry, budget, provider, endpoint, cursor or
+single-block saturation logic changed.
+
+Evidence: tests in `tests/rpc.test.ts` use stubbed `fetch` with artificial
+JSON-RPC errors through `configuredRpc` and `liquidityPage`. They are synthetic
+compatibility checks of two upstream message contracts, not SolidRPC output and
+not chain-history evidence. Focused run before the source change: 3 new tests
+FAIL (exit 1). After: `tests/rpc.test.ts` 17/17 PASS; `tests/rpc.test.ts` +
+`tests/discovery.test.ts` 35/35 PASS (after offline `prepare:web`); `npm run
+typecheck` PASS. These were the implementation-stage checks; live behavior
+is NOT VERIFIED.
+
+Leader follow-through: complete `npm run check` PASS (exit 0, 135/135
+tests in 20 suites, 129.18 seconds), including typecheck, the existing saved
+fixture/history/oracle/performance/outcome/accounting checks and credential
+scan (267 project files, zero findings). Existing PARTIAL oracle and
+NOT_CAPTURED accounting statuses remain unchanged. No live RPC, credentials,
+workflow dispatch, quota use or deployment. Independent source/test review
+APPROVE; this paragraph only records the subsequent deterministic checks.
+## Upstream integration follow-through (2026-11-03 UTC)
+
+Merge commit `93a96b6155faa6ff2b8e778c7d5d250e710d25c9` integrates upstream
+`63dda0deeb301ccf0bae085b386aee1cbb396f8b` into the existing PR #19 branch.
+Only the development log conflicted: both upstream and the original proposal
+records are retained. The classifier and RPC tests are byte-identical to the
+original proposal `a5819addb88a99505720a2457a0ca120f9227158`; all other paths
+match upstream. Independent read-only merge review approved this exact tree.
+
+On Node 24.21.0, the integrated tree passes complete `npm run check`
+(exit 0, 150 tests in 21 suites, 160.59 seconds), including typecheck and the
+saved fixture/history/oracle/performance/outcome/accounting checks. The project
+credential scan checks 270 files with zero findings. The prior 135-test result
+above remains historical; additional upstream tests are not new classifier
+coverage. Existing PARTIAL oracle and NOT_CAPTURED accounting states remain.
+No live RPC, new quota, workflow dispatch or deployment was used. Push, upstream
+review/merge and Vercel authorization are separate outcomes, not claimed here.

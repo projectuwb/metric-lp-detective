@@ -12,7 +12,7 @@ function classify(message: string, code?: number): RpcFailure {
   if (code === 3 || /execution reverted/i.test(message)) return new RpcFailure('reverted', code);
   if (/unauthor|forbidden|denied|api.?key|access/i.test(message)) return new RpcFailure('denied', code);
   if (/rate|too many requests|429/i.test(message)) return new RpcFailure('rate', code);
-  if (/range|too many (results|logs)|limit.*(block|result)|response size/i.test(message)) return new RpcFailure('range', code);
+  if (/range|too many (results|logs)|limit.*(block|result)|response size|query exceeds max results|response is too big/i.test(message)) return new RpcFailure('range', code);
   return new RpcFailure(code === -32601 || code === -32602 ? 'invalid' : 'temporary', code);
 }
 const methods = new Set(['eth_chainId', 'eth_blockNumber', 'eth_getCode', 'eth_getLogs', 'eth_call', 'eth_getStorageAt', 'eth_getTransactionReceipt', 'eth_getBlockByNumber', 'debug_traceTransaction']);

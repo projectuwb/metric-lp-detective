@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { configuredRpc, getPoolLogs, RpcFailure, type RawLog, type Rpc } from '../lib/chain/rpc.js';
 import { POOL } from '../lib/chain/poolConfig.js';
+import { liquidityPage } from '../lib/chain/discovery.js';
 // Artificial transport responses, never historical evidence or LP results.
 const log = (block = '0x1', idx = '0x0'): RawLog => ({ address: POOL, blockNumber: block, blockHash: `0x${'a'.repeat(64)}`, transactionHash: `0x${'b'.repeat(64)}`, transactionIndex: '0x0', logIndex: idx, topics: [], data: '0x' });
 const noSleep = async () => {};
@@ -86,6 +87,45 @@ describe('bounded retrieval', () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response('private-key do-not-print', { status: 403 })));
     try {
       await expect(configuredRpc()('eth_getLogs', [])).rejects.toMatchObject({ method: 'eth_getLogs', kind: 'denied', code: 403, message: 'eth_getLogs: RPC denied (code 403)' });
+    } finally { vi.unstubAllEnvs(); vi.unstubAllGlobals(); }
+  });
+  // Synthetic JSON-RPC errors only: not SolidRPC output and not chain-history evidence.
+  it('classifies the two upstream result-limit phrases as range under -32602, keeping rate/denied/revert first', async () => {
+    vi.stubEnv('BNB_RPC_URL', 'https://provider.invalid/private-key');
+    const kindFor = async (code: number, message: string) => {
+      vi.stubGlobal('fetch', vi.fn().mockImplementation(async () => new Response(JSON.stringify({ error: { code, message } }))));
+      return configuredRpc()('eth_getLogs', []).then(() => 'ok', (e: RpcFailure) => e.kind);
+    };
+    try {
+      expect(await kindFor(-32602, 'query exceeds max results')).toBe('range');
+      expect(await kindFor(-32602, 'response is too big')).toBe('range');
+      expect(await kindFor(-32602, 'query exceeds max results, 429 too many requests')).toBe('rate');
+      expect(await kindFor(-32602, 'response is too big: rate limit exceeded')).toBe('rate');
+      expect(await kindFor(-32602, 'query exceeds max results: unauthorized')).toBe('denied');
+      expect(await kindFor(-32602, 'response is too big: execution reverted')).toBe('reverted');
+      expect(await kindFor(-32602, 'invalid argument 0: hex string without 0x prefix')).toBe('invalid');
+      expect(await kindFor(-32601, 'the method does not exist')).toBe('invalid');
+    } finally { vi.unstubAllEnvs(); vi.unstubAllGlobals(); }
+  });
+  it('shrinks liquidityPage through configuredRpc on a synthetic -32602 result-limit error and keeps the original cursor', async () => {
+    vi.stubEnv('BNB_RPC_URL', 'https://provider.invalid/private-key');
+    const ranges: string[] = [];
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(async (_url: string, init: { body: string }) => {
+      const filter = JSON.parse(init.body).params[0] as { fromBlock: string; toBlock: string };
+      ranges.push(`${filter.fromBlock}-${filter.toBlock}`);
+      const wide = filter.fromBlock === '0x0' && filter.toBlock === '0x3';
+      return new Response(JSON.stringify(wide ? { error: { code: -32602, message: 'query exceeds max results' } } : { result: [] }));
+    }));
+    try {
+      expect(await liquidityPage(configuredRpc(), 0n, 3n)).toEqual([]);
+      expect(ranges).toEqual(['0x0-0x3', '0x0-0x1', '0x2-0x3']);
+    } finally { vi.unstubAllEnvs(); vi.unstubAllGlobals(); }
+  });
+  it('still reports incomplete coverage when one block keeps returning the synthetic limit error', async () => {
+    vi.stubEnv('BNB_RPC_URL', 'https://provider.invalid/private-key');
+    vi.stubGlobal('fetch', vi.fn().mockImplementation(async () => new Response(JSON.stringify({ error: { code: -32602, message: 'response is too big' } }))));
+    try {
+      await expect(liquidityPage(configuredRpc(), 5n, 5n)).rejects.toThrow('coverage incomplete');
     } finally { vi.unstubAllEnvs(); vi.unstubAllGlobals(); }
   });
 });
